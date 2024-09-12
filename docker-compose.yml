@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  flight-management-app:
+    build:
+      context: .
+    container_name: flight-management
+    image: nazarovv2/flight-management:latest
+    ports:
+      - "80:80"
+    networks:
+      - net
+    environment:
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SECURITY_TOKEN_ACCESS_SECRET_KEY=${SECURITY_TOKEN_ACCESS_SECRET_KEY}
+      - SECURITY_TOKEN_ACCESS_TIME=${SECURITY_TOKEN_ACCESS_TIME}
+      - SECURITY_TOKEN_REFRESH_SECRET_KEY=${SECURITY_TOKEN_REFRESH_SECRET_KEY}
+      - SECURITY_TOKEN_REFRESH_TIME=${SECURITY_TOKEN_REFRESH_TIME}
+networks:
+  net:
+    driver: "bridge"
