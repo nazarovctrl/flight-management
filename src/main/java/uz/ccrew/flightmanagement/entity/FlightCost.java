@@ -37,7 +37,7 @@ public class FlightCost {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class FlightCostsId implements Serializable {
-        private String flightNumber;
+        private Long flightNumber;
         @Enumerated(EnumType.STRING)
         private AircraftTypeCode aircraftTypeCode;
         private LocalDate validFromDate;
