@@ -27,7 +27,7 @@ public class AirportController {
 
     @PostMapping("/add")
     @Operation(summary = "Add airport, role admin")
-    public ResponseEntity<Response<AirportDTO>> addAirport(@Valid @RequestBody AirportCreateDTO airportCreateDTO) {
+    public ResponseEntity<Response<AirportDTO>> addAirport(@RequestBody @Valid AirportCreateDTO airportCreateDTO) {
         AirportDTO result = airportService.addAirport(airportCreateDTO);
         return ResponseMaker.ok(result);
     }
