@@ -1,5 +1,5 @@
 package uz.ccrew.flightmanagement.enums;
 
 public enum AircraftTypeCode {
-    TYPE1, TYPE2
+    B738, A320,B77W,A350;
 }
