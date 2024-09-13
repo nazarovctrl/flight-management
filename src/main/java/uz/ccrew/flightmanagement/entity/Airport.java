@@ -1,20 +1,20 @@
 package uz.ccrew.flightmanagement.entity;
 
+import lombok.Getter;
+import lombok.Builder;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import lombok.NoArgsConstructor;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 @Entity
 @Table(name = "airports")
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 public class Airport {
     @Id
     private String airportCode;

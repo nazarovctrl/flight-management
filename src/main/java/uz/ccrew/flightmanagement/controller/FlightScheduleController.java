@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/flightSchedule")
+@RequestMapping("/api/v1/flight-schedule")
 @RequiredArgsConstructor
 @Tag(name = "FlightSchedule Controller", description = "FlightSchedule API")
 @SecurityRequirement(name = "Bearer Authentication")
