@@ -17,10 +17,11 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Airport {
     @Id
+    @Column(nullable = false)
     private String airportCode;
-    @Column
+    @Column(nullable = false)
     private String airportName;
-    @Column
+    @Column(nullable = false)
     private String airportLocation;
     @Column
     private String otherDetails;
