@@ -70,11 +70,11 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.requestMatchers(SWAGGER_WHITELIST).permitAll()
-                        .requestMatchers("api/v1/auth/register", "api/v1/auth/login").permitAll()
-                        .requestMatchers("api/v1/auth/refresh").hasAnyAuthority(UserRole.all())
-                        .requestMatchers("api/v1/user/*").hasAnyAuthority(UserRole.all())
-                        .requestMatchers("api/v1/user/**").hasAuthority(UserRole.ADMINISTRATOR.name())
-                        .requestMatchers("api/v1/airport/add").hasAuthority(UserRole.ADMINISTRATOR.name())
+                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll()
+                        .requestMatchers("/api/v1/auth/refresh").hasAnyAuthority(UserRole.all())
+                        .requestMatchers("/api/v1/user/*").hasAnyAuthority(UserRole.all())
+                        .requestMatchers("/api/v1/user/**").hasAuthority(UserRole.ADMINISTRATOR.name())
+                        .requestMatchers("/api/v1/airport/add").hasAuthority(UserRole.ADMINISTRATOR.name())
                         .anyRequest().authenticated());
         return httpSecurity.build();
     }
