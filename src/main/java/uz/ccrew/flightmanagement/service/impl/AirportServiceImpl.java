@@ -3,7 +3,6 @@ package uz.ccrew.flightmanagement.service.impl;
 import uz.ccrew.flightmanagement.dto.airport.AirportCreateDTO;
 import uz.ccrew.flightmanagement.dto.airport.AirportDTO;
 import uz.ccrew.flightmanagement.entity.Airport;
-import uz.ccrew.flightmanagement.entity.User;
 import uz.ccrew.flightmanagement.exp.AlreadyExistException;
 import uz.ccrew.flightmanagement.mapper.AirportMapper;
 import uz.ccrew.flightmanagement.repository.AirportRepository;
@@ -24,15 +23,13 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public AirportDTO addAirport(AirportCreateDTO airportCreateDTO) {
-        User user = authUtil.loadLoggedUser();
-
         Optional<Airport> optionalAirport = airportRepository.findByAirportCode(airportCreateDTO.airportCode());
 
-        if (optionalAirport.isEmpty()) {
-            Airport airport = airportMapper.toEntity(airportCreateDTO);
-            airportRepository.save(airport);
-            return airportMapper.toDTO(airport);
+        if (optionalAirport.isPresent()) {
+            throw new AlreadyExistException("This Airport already exist");
         }
-        throw new AlreadyExistException("This Airport already exist");
+        Airport airport = airportMapper.toEntity(airportCreateDTO);
+        airportRepository.save(airport);
+        return airportMapper.toDTO(airport);
     }
 }
