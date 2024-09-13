@@ -1,6 +1,7 @@
 package uz.ccrew.flightmanagement.controller;
 
 import uz.ccrew.flightmanagement.dto.Response;
+import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.dto.airport.AirportCreateDTO;
 import uz.ccrew.flightmanagement.dto.airport.AirportDTO;
 import uz.ccrew.flightmanagement.service.AirportService;
@@ -21,10 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class AirportController {
     private final AirportService airportService;
 
-    @PostMapping("/addAirport")
+    @PostMapping("/add")
     @Operation(summary = "Add airport, role admin")
     public ResponseEntity<Response<AirportDTO>> addAirport(@RequestBody AirportCreateDTO airportCreateDTO) {
-        AirportDTO airportDTO = airportService.addAirport(airportCreateDTO);
-        return ResponseEntity.ok(new Response<>(airportDTO));
+        AirportDTO result = airportService.addAirport(airportCreateDTO);
+        return ResponseMaker.ok(result);
     }
 }

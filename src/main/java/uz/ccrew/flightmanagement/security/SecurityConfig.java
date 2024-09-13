@@ -74,7 +74,7 @@ public class SecurityConfig {
                         .requestMatchers("api/v1/auth/refresh").hasAnyAuthority(UserRole.all())
                         .requestMatchers("api/v1/user/*").hasAnyAuthority(UserRole.all())
                         .requestMatchers("api/v1/user/**").hasAuthority(UserRole.ADMINISTRATOR.name())
-                        .requestMatchers("api/v1/airport/addAirport").hasAuthority(UserRole.ADMINISTRATOR.name())
+                        .requestMatchers("api/v1/airport/add").hasAuthority(UserRole.ADMINISTRATOR.name())
                         .anyRequest().authenticated());
         return httpSecurity.build();
     }
