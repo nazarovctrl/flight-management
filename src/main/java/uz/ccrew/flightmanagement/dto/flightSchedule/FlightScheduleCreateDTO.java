@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 
 @Builder
 public record FlightScheduleCreateDTO(
-        @NotBlank(message = "Airline code must not be blank.")
+        @NotNull(message = "Airline code must not be blank.")
         @Schema(description = "Airline code", example = "DL")
         AirlineCode airlineCode,
-        @NotBlank(message = "Aircraft type code must not be blank.")
+        @NotNull(message = "Aircraft type code must not be blank.")
         @Schema(description = "Aircraft type code", example = "B738")
         AircraftTypeCode usualAircraftTypeCode,
         @NotBlank(message = "Origin airport code must not be blank.")
