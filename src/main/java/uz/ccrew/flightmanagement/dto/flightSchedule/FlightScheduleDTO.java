@@ -8,11 +8,10 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record FlightScheduleDTO(
-        Long flightNumber,
-        AirlineCode airlineCode,
-        AircraftTypeCode usualAircraftTypeCode,
-        String originAirportCode,
-        String destinationAirportCode,
-        LocalDateTime departureDateTime,
-        LocalDateTime arrivalDateTime) {}
+public record FlightScheduleDTO(Long flightNumber,
+                                AirlineCode airlineCode,
+                                AircraftTypeCode usualAircraftTypeCode,
+                                String originAirportCode,
+                                String destinationAirportCode,
+                                LocalDateTime departureDateTime,
+                                LocalDateTime arrivalDateTime) {}

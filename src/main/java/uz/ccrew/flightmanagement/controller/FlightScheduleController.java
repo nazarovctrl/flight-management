@@ -1,6 +1,7 @@
 package uz.ccrew.flightmanagement.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
@@ -23,12 +24,14 @@ public class FlightScheduleController {
     private final FlightScheduleService flightScheduleService;
 
     @PostMapping("/add")
+    @Operation(summary = "Add flightSchedule, role admin")
     public ResponseEntity<FlightScheduleDTO> add(@RequestBody @Valid FlightScheduleCreateDTO flightScheduleCreateDTO) {
         FlightScheduleDTO result = flightScheduleService.addFlightSchedule(flightScheduleCreateDTO);
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/delete/{id}")
+    @Operation(summary = "Delete flightSchedule, role admin")
     public ResponseEntity<Response<?>> delete(@PathVariable("id") Long id) {
         flightScheduleService.delete(id);
         return ResponseMaker.okMessage("FlightSchedule deleted");
