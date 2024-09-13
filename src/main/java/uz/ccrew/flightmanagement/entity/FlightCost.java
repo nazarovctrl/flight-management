@@ -1,12 +1,9 @@
 package uz.ccrew.flightmanagement.entity;
 
+import lombok.*;
 import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 
-import lombok.Builder;
-import lombok.Getter;
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 import java.util.Objects;
 import java.time.LocalDate;
@@ -14,8 +11,9 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "flight_costs")
-@Builder
 @Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FlightCost {
@@ -26,18 +24,19 @@ public class FlightCost {
     @MapsId("flightNumber")
     @JoinColumn(name = "flight_number", foreignKey = @ForeignKey(name = "flight_costs_f1"), nullable = false)
     private FlightSchedule flightSchedule;
+
     @ManyToOne
     @MapsId("validFromDate")
     @JoinColumn(name = "valid_from_date", foreignKey = @ForeignKey(name = "flight_costs_f2"), nullable = false)
     private RefCalendar validFromRefCalendar;
 
-    @Column(name = "valid_to_date")
+    @Column(name = "valid_to_date", nullable = false)
     private LocalDate validToDate;
     @ManyToOne
     @JoinColumn(name = "valid_to_date", foreignKey = @ForeignKey(name = "flight_costs_f3"), nullable = false, insertable = false, updatable = false)
     private RefCalendar validToRefCalendar;
 
-    @Column
+    @Column(nullable = false)
     private Long flightCost;
 
 
