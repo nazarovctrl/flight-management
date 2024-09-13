@@ -1,6 +1,5 @@
 package uz.ccrew.flightmanagement.controller;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
