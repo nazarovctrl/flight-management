@@ -2,6 +2,8 @@ package uz.ccrew.flightmanagement.entity;
 
 import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 
+import lombok.Builder;
+import lombok.Getter;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,10 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "flight_costs")
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FlightCost {
     @EmbeddedId
     private FlightCostsId id;
@@ -23,17 +29,20 @@ public class FlightCost {
     @ManyToOne
     @MapsId("validFromDate")
     @JoinColumn(name = "valid_from_date", foreignKey = @ForeignKey(name = "flight_costs_f2"), nullable = false)
-    private RefCalendar validRefCalendar;
+    private RefCalendar validFromRefCalendar;
 
+    @Column(name = "valid_to_date")
+    private LocalDate validToDate;
     @ManyToOne
-    @JoinColumn(name = "valid_to_date", foreignKey = @ForeignKey(name = "flight_costs_f3"), nullable = false)
-    private RefCalendar validToDate;
+    @JoinColumn(name = "valid_to_date", foreignKey = @ForeignKey(name = "flight_costs_f3"), nullable = false, insertable = false, updatable = false)
+    private RefCalendar validToRefCalendar;
 
     @Column
     private Long flightCost;
 
 
     @Embeddable
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class FlightCostsId implements Serializable {

@@ -72,7 +72,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/auth/refresh", "/api/v1/user/*").hasAnyAuthority(UserRole.all())
-                        .requestMatchers("/api/v1/user/**", "/api/v1/airport/**", "/api/v1/ref-calendar/**").hasAuthority(UserRole.ADMINISTRATOR.name())
+                        .requestMatchers("/api/v1/user/**", "/api/v1/airport/**",
+                                "/api/v1/ref-calendar/**", "/api/v1/flight-cost/**").hasAuthority(UserRole.ADMINISTRATOR.name())
                         .anyRequest().authenticated());
         return httpSecurity.build();
     }
