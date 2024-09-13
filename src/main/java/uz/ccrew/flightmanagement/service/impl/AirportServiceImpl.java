@@ -7,7 +7,6 @@ import uz.ccrew.flightmanagement.exp.AlreadyExistException;
 import uz.ccrew.flightmanagement.mapper.AirportMapper;
 import uz.ccrew.flightmanagement.repository.AirportRepository;
 import uz.ccrew.flightmanagement.service.AirportService;
-import uz.ccrew.flightmanagement.util.AuthUtil;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AirportServiceImpl implements AirportService {
     private final AirportRepository airportRepository;
-    private final AuthUtil authUtil;
     private final AirportMapper airportMapper;
 
     @Override
