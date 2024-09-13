@@ -1,12 +1,13 @@
 package uz.ccrew.flightmanagement.controller;
 
-import jakarta.validation.Valid;
+
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
 import uz.ccrew.flightmanagement.dto.Response;
 
+import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class FlightScheduleController {
     private final FlightScheduleService flightScheduleService;
 
     @PostMapping("/add")
-    public ResponseEntity<FlightScheduleDTO> addFlightSchedule(@RequestBody @Valid FlightScheduleCreateDTO flightScheduleCreateDTO) {
+    public ResponseEntity<FlightScheduleDTO> add(@RequestBody @Valid FlightScheduleCreateDTO flightScheduleCreateDTO) {
         FlightScheduleDTO result = flightScheduleService.addFlightSchedule(flightScheduleCreateDTO);
         return ResponseEntity.ok(result);
     }

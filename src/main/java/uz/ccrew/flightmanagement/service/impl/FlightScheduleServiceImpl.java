@@ -23,13 +23,11 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
     @Override
     public FlightScheduleDTO addFlightSchedule(FlightScheduleCreateDTO flightScheduleCreateDTO) {
-        // Находим аэропорты по кодам
         Airport originAirport = airportRepository.findById(flightScheduleCreateDTO.originAirportCode())
                 .orElseThrow(() -> new NotFoundException("Origin airport not found"));
         Airport destinationAirport = airportRepository.findById(flightScheduleCreateDTO.destinationAirportCode())
                 .orElseThrow(() -> new NotFoundException("Destination airport not found"));
 
-        // Проверяем, доступен ли самолет
         boolean isAircraftAvailable = flightScheduleRepository
                 .existsByUsualAircraftTypeCodeAndDepartureDateTimeBeforeAndArrivalDateTimeAfter(
                         flightScheduleCreateDTO.usualAircraftTypeCode(),
@@ -40,7 +38,6 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
             throw new AircraftAlreadyBookedException("Airplane is already booked");
         }
 
-        // Создаем объект FlightSchedule
         FlightSchedule flightSchedule = FlightSchedule.builder()
                 .airlineCode(flightScheduleCreateDTO.airlineCode())
                 .usualAircraftTypeCode(flightScheduleCreateDTO.usualAircraftTypeCode())
@@ -50,7 +47,6 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                 .arrivalDateTime(flightScheduleCreateDTO.arrivalDateTime())
                 .build();
 
-        // Сохраняем расписание
         flightScheduleRepository.save(flightSchedule);
 
         return FlightScheduleDTO.builder()

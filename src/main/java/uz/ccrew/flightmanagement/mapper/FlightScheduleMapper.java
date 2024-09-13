@@ -1,14 +1,16 @@
 package uz.ccrew.flightmanagement.mapper;
 
-import lombok.RequiredArgsConstructor;
+
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.entity.Airport;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
-
-import org.springframework.stereotype.Component;
 import uz.ccrew.flightmanagement.exp.NotFoundException;
 import uz.ccrew.flightmanagement.repository.AirportRepository;
+
+import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+
 
 @Component
 @RequiredArgsConstructor
