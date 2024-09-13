@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Airport {
     @Id
-    @Column(nullable = false)
     private String airportCode;
     @Column(nullable = false)
     private String airportName;
