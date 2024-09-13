@@ -28,43 +28,18 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
         Airport destinationAirport = airportRepository.findById(flightScheduleCreateDTO.destinationAirportCode())
                 .orElseThrow(() -> new NotFoundException("Destination airport not found"));
 
-        boolean isAircraftAvailable = flightScheduleRepository
-                .existsByUsualAircraftTypeCodeAndDepartureDateTimeBeforeAndArrivalDateTimeAfter(
-                        flightScheduleCreateDTO.usualAircraftTypeCode(),
-                        flightScheduleCreateDTO.arrivalDateTime(),
-                        flightScheduleCreateDTO.departureDateTime());
-
-        if (isAircraftAvailable) {
-            throw new AircraftAlreadyBookedException("Airplane is already booked");
-        }
-
-        FlightSchedule flightSchedule = FlightSchedule.builder()
-                .airlineCode(flightScheduleCreateDTO.airlineCode())
-                .usualAircraftTypeCode(flightScheduleCreateDTO.usualAircraftTypeCode())
-                .originAirport(originAirport)
-                .destinationAirport(destinationAirport)
-                .departureDateTime(flightScheduleCreateDTO.departureDateTime())
-                .arrivalDateTime(flightScheduleCreateDTO.arrivalDateTime())
-                .build();
+        FlightSchedule flightSchedule = flightScheduleMapper.toEntity(flightScheduleCreateDTO);
+        flightSchedule.setOriginAirport(originAirport);
+        flightSchedule.setDestinationAirport(destinationAirport);
 
         flightScheduleRepository.save(flightSchedule);
-
-        return FlightScheduleDTO.builder()
-                .flightNumber(flightSchedule.getFlightNumber())
-                .airlineCode(flightSchedule.getAirlineCode())
-                .usualAircraftTypeCode(flightSchedule.getUsualAircraftTypeCode())
-                .originAirportCode(originAirport.getAirportCode())
-                .destinationAirportCode(destinationAirport.getAirportCode())
-                .departureDateTime(flightSchedule.getDepartureDateTime())
-                .arrivalDateTime(flightSchedule.getArrivalDateTime())
-                .build();
+        return flightScheduleMapper.toDTO(flightSchedule);
     }
 
 
     @Override
     public void delete(Long flightNumber) {
-        FlightSchedule flightSchedule = flightScheduleRepository.findById(flightNumber)
-                .orElseThrow(() -> new NotFoundException("Flight Schedule not found"));
+        FlightSchedule flightSchedule = flightScheduleRepository.loadById(flightNumber);
         flightScheduleRepository.delete(flightSchedule);
     }
 }
