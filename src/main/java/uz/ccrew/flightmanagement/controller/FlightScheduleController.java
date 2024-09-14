@@ -35,4 +35,11 @@ public class FlightScheduleController {
         flightScheduleService.delete(id);
         return ResponseMaker.okMessage("FlightSchedule deleted");
     }
+
+    @GetMapping("/get/{id}")
+    @Operation(summary = "Get flightSchedule")
+    public ResponseEntity<FlightScheduleDTO> get(@PathVariable("id") Long id) {
+        FlightScheduleDTO result = flightScheduleService.getFlightSchedule(id);
+        return ResponseEntity.ok(result);
+    }
 }

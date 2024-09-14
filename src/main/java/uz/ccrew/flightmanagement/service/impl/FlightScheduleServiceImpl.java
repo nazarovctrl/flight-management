@@ -46,4 +46,10 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
         FlightSchedule flightSchedule = flightScheduleRepository.loadById(flightNumber);
         flightScheduleRepository.delete(flightSchedule);
     }
+
+    @Override
+    public FlightScheduleDTO getFlightSchedule(Long flightNumber) {
+        FlightSchedule flightSchedule = flightScheduleRepository.loadById(flightNumber);
+        return flightScheduleMapper.toDTO(flightSchedule);
+    }
 }
