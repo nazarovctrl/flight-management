@@ -13,5 +13,5 @@ public interface FlightScheduleService {
 
     FlightScheduleDTO getFlightSchedule(Long flightNumber);
 
-    Page<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode,int page,int size);
+    Page<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode, int page, int size);
 }

@@ -47,9 +47,9 @@ public class FlightScheduleController {
     @GetMapping("/get-by-airport/{code}")
     @Operation(summary = "Get all flights for a given airport.")
     public ResponseEntity<Response<Page<FlightScheduleDTO>>> getFlightsByAirport(@PathVariable("code") String code,
-                                                                       @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-        Page<FlightScheduleDTO> result = flightScheduleService.getAllFlightSchedulesByAirportCode(code,size,page);
+                                                                                 @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                                 @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleDTO> result = flightScheduleService.getAllFlightSchedulesByAirportCode(code, size, page);
         return ResponseMaker.ok(result);
     }
 }

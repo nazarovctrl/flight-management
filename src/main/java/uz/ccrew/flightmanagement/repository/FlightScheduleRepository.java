@@ -8,5 +8,5 @@ import uz.ccrew.flightmanagement.entity.FlightSchedule;
 
 @Repository
 public interface FlightScheduleRepository extends BasicRepository<FlightSchedule, Long> {
-    Page<FlightSchedule> findByOriginAirport_AirportCode(String airportCode,Pageable pageable);
+    Page<FlightSchedule> findByOriginAirport_AirportCode(String airportCode, Pageable pageable);
 }
