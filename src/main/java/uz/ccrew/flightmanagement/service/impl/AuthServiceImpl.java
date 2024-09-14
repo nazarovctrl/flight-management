@@ -54,9 +54,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDTO login(final LoginDTO loginRequest) {
-        //TODO login to lowercase
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.login(), loginRequest.password()));
+                new UsernamePasswordAuthenticationToken(loginRequest.login().toLowerCase(), loginRequest.password()));
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 

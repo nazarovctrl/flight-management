@@ -59,7 +59,7 @@ public class UserController {
         return ResponseMaker.okMessage("User deleted");
     }
 
-    @GetMapping("get/list")
+    @GetMapping("/get/list")
     @Operation(summary = "User list for Administrator")
     public ResponseEntity<Response<Page<UserDTO>>> getList(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
                                                            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {

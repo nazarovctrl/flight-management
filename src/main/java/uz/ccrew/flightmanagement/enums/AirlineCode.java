@@ -1,5 +1,5 @@
 package uz.ccrew.flightmanagement.enums;
 
 public enum AirlineCode {
-    TYPE1, TYPE2
+    DL,LH,EK,SQ,AF;
 }
