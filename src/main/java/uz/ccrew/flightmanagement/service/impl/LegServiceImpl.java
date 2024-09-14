@@ -54,5 +54,4 @@ public class LegServiceImpl implements LegService {
 
         return legMapper.toDTO(entity);
     }
-
 }
