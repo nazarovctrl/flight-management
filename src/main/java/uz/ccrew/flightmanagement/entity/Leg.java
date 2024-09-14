@@ -1,11 +1,17 @@
 package uz.ccrew.flightmanagement.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "legs")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Leg {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
