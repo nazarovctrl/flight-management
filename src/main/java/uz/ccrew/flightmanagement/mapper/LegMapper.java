@@ -14,7 +14,7 @@ public class LegMapper implements Mapper<LegCreateDTO, LegDTO, Leg> {
                 .originAirport(dto.originAirport())
                 .destinationAirport(dto.destinationAirport())
                 .actualDepartureTime(dto.actualDepartureTime())
-                .actualArrivalTime(dto.actualDepartureTime())
+                .actualArrivalTime(dto.actualArrivalTime())
                 .build();
     }
 

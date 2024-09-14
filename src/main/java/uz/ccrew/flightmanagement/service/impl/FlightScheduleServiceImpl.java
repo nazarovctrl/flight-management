@@ -26,6 +26,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                 .orElseThrow(() -> new NotFoundException("Origin airport not found"));
         Airport destinationAirport = airportRepository.findById(flightScheduleCreateDTO.destinationAirportCode())
                 .orElseThrow(() -> new NotFoundException("Destination airport not found"));
+        //TODO add check to originAirport != destinationAirport
 
         FlightSchedule flightSchedule = flightScheduleMapper.toEntity(flightScheduleCreateDTO);
 

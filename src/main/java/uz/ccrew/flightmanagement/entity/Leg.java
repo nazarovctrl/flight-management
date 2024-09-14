@@ -6,7 +6,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "legs")
+@Table(name = "legs", uniqueConstraints = {
+        @UniqueConstraint(name = "legs_u1", columnNames = {"flight_number", "originAirport", "destinationAirport"})})
 @Getter
 @Setter
 @Builder
