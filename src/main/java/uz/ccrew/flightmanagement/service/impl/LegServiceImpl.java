@@ -30,9 +30,9 @@ public class LegServiceImpl implements LegService {
         if (legRepository.existsByFlightSchedule_FlightNumberAndOriginAirportAndDestinationAirport(dto.flightNumber(), entity.getOriginAirport(), entity.getDestinationAirport())) {
             throw new AlreadyExistException("Leg with this details already exists");
         }
+        //TODO check the connecting time must be between 1 and 2 hours
 
         FlightSchedule flightSchedule = flightScheduleRepository.loadById(dto.flightNumber());
-
         entity.setFlightSchedule(flightSchedule);
         legRepository.save(entity);
 
