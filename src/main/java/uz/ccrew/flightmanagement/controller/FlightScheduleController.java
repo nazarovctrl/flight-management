@@ -49,7 +49,7 @@ public class FlightScheduleController {
     public ResponseEntity<Response<Page<FlightScheduleDTO>>> getFlightsByAirport(@PathVariable("code") String code,
                                                                                  @RequestParam(value = "page", defaultValue = "0", required = false) int page,
                                                                                  @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-        Page<FlightScheduleDTO> result = flightScheduleService.getAllFlightSchedulesByAirportCode(code, size, page);
+        Page<FlightScheduleDTO> result = flightScheduleService.getAllFlightSchedulesByAirportCode(code, page, size);
         return ResponseMaker.ok(result);
     }
 }
