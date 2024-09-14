@@ -1,12 +1,12 @@
 package uz.ccrew.flightmanagement.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
 import uz.ccrew.flightmanagement.dto.Response;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,5 +34,12 @@ public class FlightScheduleController {
     public ResponseEntity<Response<?>> delete(@PathVariable("id") Long id) {
         flightScheduleService.delete(id);
         return ResponseMaker.okMessage("FlightSchedule deleted");
+    }
+
+    @GetMapping("/get/{id}")
+    @Operation(summary = "Get flightSchedule")
+    public ResponseEntity<FlightScheduleDTO> get(@PathVariable("id") Long id) {
+        FlightScheduleDTO result = flightScheduleService.getFlightSchedule(id);
+        return ResponseEntity.ok(result);
     }
 }

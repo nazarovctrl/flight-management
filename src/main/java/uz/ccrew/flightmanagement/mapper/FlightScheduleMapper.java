@@ -2,10 +2,13 @@ package uz.ccrew.flightmanagement.mapper;
 
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
+import uz.ccrew.flightmanagement.dto.leg.LegDTO;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
 
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -23,6 +26,10 @@ public class FlightScheduleMapper implements Mapper<FlightScheduleCreateDTO, Fli
 
     @Override
     public FlightScheduleDTO toDTO(FlightSchedule flightSchedule) {
+        return toDTO(flightSchedule, null);
+    }
+
+    public FlightScheduleDTO toDTO(FlightSchedule flightSchedule, List<LegDTO> legDTOList) {
         return FlightScheduleDTO.builder()
                 .flightNumber(flightSchedule.getFlightNumber())
                 .airlineCode(flightSchedule.getAirlineCode())
@@ -31,7 +38,7 @@ public class FlightScheduleMapper implements Mapper<FlightScheduleCreateDTO, Fli
                 .destinationAirportCode(flightSchedule.getDestinationAirport().getAirportCode())
                 .departureDateTime(flightSchedule.getDepartureDateTime())
                 .arrivalDateTime(flightSchedule.getArrivalDateTime())
+                .legDTOList(legDTOList)
                 .build();
     }
 }
-

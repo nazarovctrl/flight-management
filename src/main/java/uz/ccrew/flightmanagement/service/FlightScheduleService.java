@@ -5,5 +5,8 @@ import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 
 public interface FlightScheduleService {
     FlightScheduleDTO addFlightSchedule(FlightScheduleCreateDTO flightScheduleCreateDTO);
+
     void delete(Long flightNumber);
+
+    FlightScheduleDTO getFlightSchedule(Long flightNumber);
 }
