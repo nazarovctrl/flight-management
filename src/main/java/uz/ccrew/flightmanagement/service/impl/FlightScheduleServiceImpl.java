@@ -4,6 +4,7 @@ import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.entity.Airport;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
+import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.exp.NotFoundException;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
 import uz.ccrew.flightmanagement.repository.AirportRepository;
@@ -26,7 +27,10 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                 .orElseThrow(() -> new NotFoundException("Origin airport not found"));
         Airport destinationAirport = airportRepository.findById(flightScheduleCreateDTO.destinationAirportCode())
                 .orElseThrow(() -> new NotFoundException("Destination airport not found"));
-        //TODO add check to originAirport != destinationAirport
+
+        if (originAirport.getAirportCode().equals(destinationAirport.getAirportCode())) {
+            throw new BadRequestException("Origin airport and destination airport should not be the same");
+        }
 
         FlightSchedule flightSchedule = flightScheduleMapper.toEntity(flightScheduleCreateDTO);
 
