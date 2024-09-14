@@ -28,7 +28,6 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     private final FlightScheduleMapper flightScheduleMapper;
     private final LegMapper legMapper;
 
-
     @Override
     public FlightScheduleDTO addFlightSchedule(FlightScheduleCreateDTO dto) {
         Airport originAirport = airportRepository.loadById(dto.originAirportCode());
@@ -69,9 +68,6 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     @Override
     public List<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode) {
         List<FlightSchedule> flightSchedules = flightScheduleRepository.findByOriginAirport_AirportCode(airportCode);
-        if (flightSchedules.isEmpty()) {
-            throw new BadRequestException("No flight schedule found for airport code " + airportCode);
-        }
         return flightScheduleMapper.toDTOList(flightSchedules);
     }
 }

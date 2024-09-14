@@ -45,7 +45,7 @@ public class FlightScheduleController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/getFlightsByAirport/{code}")
+    @GetMapping("/get-by-airport/{code}")
     @Operation(summary = "Get all flights for a given airport.")
     public ResponseEntity<List<FlightScheduleDTO>> getFlightsByAirport(@PathVariable("code") String code) {
         List<FlightScheduleDTO> result = flightScheduleService.getAllFlightSchedulesByAirportCode(code);
