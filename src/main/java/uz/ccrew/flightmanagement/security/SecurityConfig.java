@@ -72,7 +72,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/auth/refresh", "/api/v1/user/*").hasAnyAuthority(UserRole.all())
-                        .requestMatchers("/api/v1/flight-schedule/get/*","/api/v1/flight-schedule/list/**").hasAnyAuthority(UserRole.all())
+                        .requestMatchers("/api/v1/flight-schedule/get/*", "/api/v1/flight-schedule/get-by-airport/*", "/api/v1/flight-schedule/list/**").hasAnyAuthority(UserRole.all())
                         .requestMatchers("/api/v1/user/**", "/api/v1/airport/**", "/api/v1/ref-calendar/**",
                                 "/api/v1/flight-cost/**", "/api/v1/flight-schedule/**", "/api/v1/leg/**")
                         .hasAuthority(UserRole.ADMINISTRATOR.name())

@@ -1,7 +1,5 @@
 package uz.ccrew.flightmanagement.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
@@ -11,10 +9,12 @@ import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.time.LocalDate;
@@ -46,6 +46,15 @@ public class FlightScheduleController {
     public ResponseEntity<FlightScheduleDTO> get(@PathVariable("id") Long id) {
         FlightScheduleDTO result = flightScheduleService.getFlightSchedule(id);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/get-by-airport/{code}")
+    @Operation(summary = "Get all flights for a given airport.")
+    public ResponseEntity<Response<Page<FlightScheduleDTO>>> getFlightsByAirport(@PathVariable("code") String code,
+                                                                                 @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                                 @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleDTO> result = flightScheduleService.getAllFlightSchedulesByAirportCode(code, page, size);
+        return ResponseMaker.ok(result);
     }
 
     @GetMapping("/list/one-way")
