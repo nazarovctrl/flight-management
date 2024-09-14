@@ -93,7 +93,7 @@ Then, execute the commands in the specified order.
    To run the application, make sure you have Java 21 installed
 
     ```sh
-    java -jar target/flight-management-0.0.1-SNAPSHOT.jar
+    java -jar target/flight-management-0.0.1.jar
     ```
 5. **Link for the application**
 
