@@ -4,7 +4,7 @@ import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.entity.Airport;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
-import uz.ccrew.flightmanagement.exp.NotFoundException;
+import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
 import uz.ccrew.flightmanagement.repository.AirportRepository;
 import uz.ccrew.flightmanagement.repository.FlightScheduleRepository;
@@ -21,14 +21,18 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     private final AirportRepository airportRepository;
 
     @Override
-    public FlightScheduleDTO addFlightSchedule(FlightScheduleCreateDTO flightScheduleCreateDTO) {
-        Airport originAirport = airportRepository.findById(flightScheduleCreateDTO.originAirportCode())
-                .orElseThrow(() -> new NotFoundException("Origin airport not found"));
-        Airport destinationAirport = airportRepository.findById(flightScheduleCreateDTO.destinationAirportCode())
-                .orElseThrow(() -> new NotFoundException("Destination airport not found"));
-        //TODO add check to originAirport != destinationAirport
+    public FlightScheduleDTO addFlightSchedule(FlightScheduleCreateDTO dto) {
+        Airport originAirport = airportRepository.loadById(dto.originAirportCode());
+        Airport destinationAirport = airportRepository.loadById(dto.destinationAirportCode());
 
-        FlightSchedule flightSchedule = flightScheduleMapper.toEntity(flightScheduleCreateDTO);
+        if (originAirport.getAirportCode().equals(destinationAirport.getAirportCode())) {
+            throw new BadRequestException("Origin airport and destination airport can not be same");
+        }
+        if (dto.arrivalDateTime().isBefore(dto.departureDateTime())) {
+            throw new BadRequestException("Arrival time must be after departure time");
+        }
+
+        FlightSchedule flightSchedule = flightScheduleMapper.toEntity(dto);
 
         flightSchedule.setOriginAirport(originAirport);
         flightSchedule.setDestinationAirport(destinationAirport);

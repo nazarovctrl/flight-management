@@ -28,6 +28,9 @@ public class LegServiceImpl implements LegService {
         if (entity.getOriginAirport().equals(entity.getDestinationAirport())) {
             throw new BadRequestException("Origin airport and destination airport can not be same");
         }
+        if (dto.actualArrivalTime().isBefore(dto.actualDepartureTime())) {
+            throw new BadRequestException("Arrival time must be after departure time");
+        }
         if (legRepository.existsByFlightSchedule_FlightNumberAndOriginAirportAndDestinationAirport(dto.flightNumber(), entity.getOriginAirport(), entity.getDestinationAirport())) {
             throw new AlreadyExistException("Leg with this details already exists");
         }
