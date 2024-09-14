@@ -26,12 +26,12 @@ public class FlightCostServiceImpl implements FlightCostService {
     public FlightCostDTO save(FlightCostDTO dto) {
         FlightSchedule flightSchedule = flightScheduleRepository.loadById(dto.flightNumber());
         RefCalendar validFromRefCalender = refCalendarRepository.loadById(dto.validFromDate());
+        refCalendarRepository.loadById(dto.validToDate());
 
         FlightCost entity = fLightCostMapper.toEntity(dto);
         entity.setFlightSchedule(flightSchedule);
         entity.setValidFromRefCalendar(validFromRefCalender);
 
-        //TODO check flightNumber validFromDate validToDate to exist
         flightCostRepository.save(entity);
         return fLightCostMapper.toDTO(entity);
     }
