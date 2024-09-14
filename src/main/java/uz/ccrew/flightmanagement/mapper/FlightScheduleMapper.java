@@ -14,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FlightScheduleMapper implements Mapper<FlightScheduleCreateDTO, FlightScheduleDTO, FlightSchedule> {
 
-
     @Override
     public FlightSchedule toEntity(FlightScheduleCreateDTO flightScheduleCreateDTO) {
         return FlightSchedule.builder()

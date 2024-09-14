@@ -1,6 +1,5 @@
 package uz.ccrew.flightmanagement.repository;
 
-
 import uz.ccrew.flightmanagement.entity.Leg;
 
 import java.util.List;

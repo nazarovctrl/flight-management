@@ -19,4 +19,4 @@ public record FlightScheduleDTO(Long flightNumber,
                                 String destinationAirportCode,
                                 LocalDateTime departureDateTime,
                                 LocalDateTime arrivalDateTime,
-                                List<LegDTO> legDTOList) {}
+                                List<LegDTO> legDTOList){}
