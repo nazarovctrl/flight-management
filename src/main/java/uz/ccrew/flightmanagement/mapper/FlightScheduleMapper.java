@@ -34,4 +34,3 @@ public class FlightScheduleMapper implements Mapper<FlightScheduleCreateDTO, Fli
                 .build();
     }
 }
-
