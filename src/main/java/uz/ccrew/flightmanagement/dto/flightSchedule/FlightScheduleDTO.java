@@ -14,4 +14,5 @@ public record FlightScheduleDTO(Long flightNumber,
                                 String originAirportCode,
                                 String destinationAirportCode,
                                 LocalDateTime departureDateTime,
-                                LocalDateTime arrivalDateTime) {}
+                                LocalDateTime arrivalDateTime) {
+}
