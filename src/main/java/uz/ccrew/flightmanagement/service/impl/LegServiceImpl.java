@@ -23,16 +23,16 @@ public class LegServiceImpl implements LegService {
 
     @Override
     public LegDTO add(LegCreateDTO dto) {
-        if (dto.originAirport().equals(dto.destinationAirport())) {
+        Leg entity = legMapper.toEntity(dto);
+        if (entity.getOriginAirport().equals(entity.getDestinationAirport())) {
             throw new BadRequestException("Origin airport and destination airport can not be same");
         }
-        if (legRepository.existsByFlightSchedule_FlightNumberAndOriginAirportAndDestinationAirport(dto.flightNumber(), dto.originAirport(), dto.destinationAirport())) {
+        if (legRepository.existsByFlightSchedule_FlightNumberAndOriginAirportAndDestinationAirport(dto.flightNumber(), entity.getOriginAirport(), entity.getDestinationAirport())) {
             throw new AlreadyExistException("Leg with this details already exists");
         }
 
         FlightSchedule flightSchedule = flightScheduleRepository.loadById(dto.flightNumber());
 
-        Leg entity = legMapper.toEntity(dto);
         entity.setFlightSchedule(flightSchedule);
         legRepository.save(entity);
 

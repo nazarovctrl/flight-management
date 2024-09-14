@@ -11,8 +11,8 @@ public class LegMapper implements Mapper<LegCreateDTO, LegDTO, Leg> {
     @Override
     public Leg toEntity(LegCreateDTO dto) {
         return Leg.builder()
-                .originAirport(dto.originAirport())
-                .destinationAirport(dto.destinationAirport())
+                .originAirport(dto.originAirport().toUpperCase())
+                .destinationAirport(dto.destinationAirport().toUpperCase())
                 .actualDepartureTime(dto.actualDepartureTime())
                 .actualArrivalTime(dto.actualArrivalTime())
                 .build();
