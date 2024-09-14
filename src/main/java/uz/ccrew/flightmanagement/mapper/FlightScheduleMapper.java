@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FlightScheduleMapper implements Mapper<FlightScheduleCreateDTO, FlightScheduleDTO, FlightSchedule> {
 
+
     @Override
     public FlightSchedule toEntity(FlightScheduleCreateDTO flightScheduleCreateDTO) {
         return FlightSchedule.builder()
@@ -24,17 +25,8 @@ public class FlightScheduleMapper implements Mapper<FlightScheduleCreateDTO, Fli
                 .build();
     }
 
-    @Override
     public FlightScheduleDTO toDTO(FlightSchedule flightSchedule) {
-        return FlightScheduleDTO.builder()
-                .flightNumber(flightSchedule.getFlightNumber())
-                .airlineCode(flightSchedule.getAirlineCode())
-                .usualAircraftTypeCode(flightSchedule.getUsualAircraftTypeCode())
-                .originAirportCode(flightSchedule.getOriginAirport().getAirportCode())
-                .destinationAirportCode(flightSchedule.getDestinationAirport().getAirportCode())
-                .departureDateTime(flightSchedule.getDepartureDateTime())
-                .arrivalDateTime(flightSchedule.getArrivalDateTime())
-                .build();
+        return toDTO(flightSchedule, null);
     }
 
     public FlightScheduleDTO toDTO(FlightSchedule flightSchedule, List<LegDTO> legDTOList) {
