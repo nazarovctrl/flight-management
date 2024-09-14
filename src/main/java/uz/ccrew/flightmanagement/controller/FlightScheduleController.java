@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/flight-schedule")
 @RequiredArgsConstructor
@@ -40,6 +42,13 @@ public class FlightScheduleController {
     @Operation(summary = "Get flightSchedule")
     public ResponseEntity<FlightScheduleDTO> get(@PathVariable("id") Long id) {
         FlightScheduleDTO result = flightScheduleService.getFlightSchedule(id);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/getFlightsByAirport/{code}")
+    @Operation(summary = "Get all flights for a given airport.")
+    public ResponseEntity<List<FlightScheduleDTO>> getFlightsByAirport(@PathVariable("code") String code) {
+        List<FlightScheduleDTO> result = flightScheduleService.getAllFlightSchedulesByAirportCode(code);
         return ResponseEntity.ok(result);
     }
 }

@@ -63,6 +63,15 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
         List<LegDTO> legDTOs = legMapper.toDTOList(legs);
 
-        return flightScheduleMapper.toDTO(flightSchedule,legDTOs);
+        return flightScheduleMapper.toDTO(flightSchedule, legDTOs);
+    }
+
+    @Override
+    public List<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode) {
+        List<FlightSchedule> flightSchedules = flightScheduleRepository.findByOriginAirport_AirportCode(airportCode);
+        if (flightSchedules.isEmpty()) {
+            throw new BadRequestException("No flight schedule found for airport code " + airportCode);
+        }
+        return flightScheduleMapper.toDTOList(flightSchedules);
     }
 }
