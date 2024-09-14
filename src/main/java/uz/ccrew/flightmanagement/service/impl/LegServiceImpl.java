@@ -1,5 +1,6 @@
 package uz.ccrew.flightmanagement.service.impl;
 
+import uz.ccrew.flightmanagement.dto.leg.LegUpdateDTO;
 import uz.ccrew.flightmanagement.entity.Leg;
 import uz.ccrew.flightmanagement.dto.leg.LegDTO;
 import uz.ccrew.flightmanagement.mapper.LegMapper;
@@ -34,6 +35,20 @@ public class LegServiceImpl implements LegService {
         FlightSchedule flightSchedule = flightScheduleRepository.loadById(dto.flightNumber());
 
         entity.setFlightSchedule(flightSchedule);
+        legRepository.save(entity);
+
+        return legMapper.toDTO(entity);
+    }
+
+    @Override
+    public LegDTO update(Long legId, LegUpdateDTO dto) {
+        Leg entity = legRepository.loadById(legId);
+        if (dto.actualArrivalTime().isBefore(dto.actualDepartureTime())) {
+            throw new BadRequestException("Arrival time must be after departure time.");
+        }
+
+        entity.setActualDepartureTime(dto.actualDepartureTime());
+        entity.setActualArrivalTime(dto.actualArrivalTime());
         legRepository.save(entity);
 
         return legMapper.toDTO(entity);
