@@ -1,6 +1,5 @@
 package uz.ccrew.flightmanagement.controller;
 
-
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.leg.LegDTO;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
@@ -37,5 +36,4 @@ public class LegController {
         LegDTO result = legService.update(id,dto);
         return ResponseMaker.ok(result);
     }
-
 }
