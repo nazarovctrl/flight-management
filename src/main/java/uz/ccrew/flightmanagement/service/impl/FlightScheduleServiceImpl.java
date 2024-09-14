@@ -3,6 +3,7 @@ package uz.ccrew.flightmanagement.service.impl;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.leg.LegDTO;
+import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
 import uz.ccrew.flightmanagement.entity.Airport;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
 import uz.ccrew.flightmanagement.entity.Leg;
@@ -63,6 +64,11 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
         List<LegDTO> legDTOs = legMapper.toDTOList(legs);
 
-        return flightScheduleMapper.toDTO(flightSchedule,legDTOs);
+        return flightScheduleMapper.toDTO(flightSchedule, legDTOs);
+    }
+
+    @Override
+    public List<FlightScheduleDTO> getOneWayList(ReservationRequestDTO dto, int page, int size) {
+        return null;
     }
 }
