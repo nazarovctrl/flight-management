@@ -59,21 +59,10 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     @Override
     public FlightScheduleDTO getFlightSchedule(Long flightNumber) {
         FlightSchedule flightSchedule = flightScheduleRepository.loadById(flightNumber);
-        List<Leg> legs = legRepository.findAllByFlightNumber(flightNumber);
+        List<Leg> legs = legRepository.findAllByFlightSchedule_FlightNumber(flightNumber);
 
         List<LegDTO> legDTOs = legMapper.toDTOList(legs);
 
-        FlightScheduleDTO flightScheduleDTO = FlightScheduleDTO.builder()
-                .flightNumber(flightSchedule.getFlightNumber())
-                .airlineCode(flightSchedule.getAirlineCode())
-                .usualAircraftTypeCode(flightSchedule.getUsualAircraftTypeCode())
-                .originAirportCode(flightSchedule.getOriginAirport().getAirportCode())
-                .destinationAirportCode(flightSchedule.getDestinationAirport().getAirportCode())
-                .departureDateTime(flightSchedule.getDepartureDateTime())
-                .arrivalDateTime(flightSchedule.getArrivalDateTime())
-                .legDTOList(legDTOs)
-                .build();
-
-        return flightScheduleDTO;
+        return flightScheduleMapper.toDTO(flightSchedule,legDTOs);
     }
 }
