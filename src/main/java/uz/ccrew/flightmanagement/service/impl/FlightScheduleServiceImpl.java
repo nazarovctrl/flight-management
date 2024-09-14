@@ -68,7 +68,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
     @Override
     public Page<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("airportCode").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("departureDateTime").descending());
 
         Page<FlightSchedule> pageObj = flightScheduleRepository.findByOriginAirport_AirportCode(airportCode, pageable);
         List<FlightScheduleDTO> dtoList = flightScheduleMapper.toDTOList(pageObj.getContent());
