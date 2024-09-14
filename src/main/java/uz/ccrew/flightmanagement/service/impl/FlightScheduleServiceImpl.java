@@ -14,6 +14,7 @@ import uz.ccrew.flightmanagement.repository.FlightScheduleRepository;
 import uz.ccrew.flightmanagement.repository.LegRepository;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
 
+import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,6 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     private final AirportRepository airportRepository;
     private final FlightScheduleMapper flightScheduleMapper;
     private final LegMapper legMapper;
-
 
     @Override
     public FlightScheduleDTO addFlightSchedule(FlightScheduleCreateDTO dto) {
@@ -63,6 +63,16 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
         List<LegDTO> legDTOs = legMapper.toDTOList(legs);
 
-        return flightScheduleMapper.toDTO(flightSchedule,legDTOs);
+        return flightScheduleMapper.toDTO(flightSchedule, legDTOs);
+    }
+
+    @Override
+    public Page<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("airportCode").descending());
+
+        Page<FlightSchedule> pageObj = flightScheduleRepository.findByOriginAirport_AirportCode(airportCode, pageable);
+        List<FlightScheduleDTO> dtoList = flightScheduleMapper.toDTOList(pageObj.getContent());
+
+        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
 }
