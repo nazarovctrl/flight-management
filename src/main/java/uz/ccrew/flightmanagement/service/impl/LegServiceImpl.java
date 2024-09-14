@@ -41,11 +41,16 @@ public class LegServiceImpl implements LegService {
     }
 
     @Override
-    public LegDTO update(Long legId,LegUpdateDTO dto) {
+    public LegDTO update(Long legId, LegUpdateDTO dto) {
         Leg entity = legRepository.loadById(legId);
+        if (dto.actualArrivalTime().isBefore(dto.actualDepartureTime())) {
+            throw new BadRequestException("Arrival time must be after departure time.");
+        }
+
         entity.setActualDepartureTime(dto.actualDepartureTime());
         entity.setActualArrivalTime(dto.actualArrivalTime());
         legRepository.save(entity);
+
         return legMapper.toDTO(entity);
     }
 }

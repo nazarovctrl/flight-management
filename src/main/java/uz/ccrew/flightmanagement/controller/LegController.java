@@ -32,8 +32,8 @@ public class LegController {
 
     @PatchMapping("/update/{id}")
     @Operation(summary = "Update flight leg")
-    public ResponseEntity<Response<LegDTO>> update(@PathVariable("id") Long id,@RequestBody @Valid LegUpdateDTO dto) {
-        LegDTO result = legService.update(id,dto);
+    public ResponseEntity<Response<LegDTO>> update(@PathVariable("id") Long id, @RequestBody @Valid LegUpdateDTO dto) {
+        LegDTO result = legService.update(id, dto);
         return ResponseMaker.ok(result);
     }
 }
