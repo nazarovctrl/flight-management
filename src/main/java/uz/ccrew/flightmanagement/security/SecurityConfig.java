@@ -75,6 +75,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/user/**", "/api/v1/airport/**", "/api/v1/ref-calendar/**",
                                 "/api/v1/flight-cost/**", "/api/v1/flight-schedule/**", "/api/v1/leg/**")
                         .hasAuthority(UserRole.ADMINISTRATOR.name())
+                        .requestMatchers("/api/v1/passenger/add").hasAuthority(UserRole.CUSTOMER.name())
                         .anyRequest().authenticated());
         return httpSecurity.build();
     }

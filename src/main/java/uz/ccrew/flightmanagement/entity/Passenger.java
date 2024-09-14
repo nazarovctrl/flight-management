@@ -1,31 +1,43 @@
 package uz.ccrew.flightmanagement.entity;
 
+import lombok.*;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "passengers")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Passenger {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long passengerId;
-    @Column
+    @Column(nullable = false)
     private String firstName;
     @Column
     private String secondName;
-    @Column
+    @Column(nullable = false)
     private String lastName;
-    @Column
+    @Column(nullable = false)
     private String phoneNumber;
     @Column
     private String emailAddress;
-    @Column
+    @Column(nullable = false)
     private String addressLines;
-    @Column
+    @Column(nullable = false)
     private String city;
     @Column
     private String stateProvinceCountry;
-    @Column
+    @Column(nullable = false)
     private String country;
     @Column
     private String otherPassengerDetails;
+
+    @Column(name = "customer_id", nullable = false)
+    private Long customerId;
+    @OneToOne
+    @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "passengers_f1"), nullable = false, insertable = false, updatable = false)
+    private User customer;
 }
