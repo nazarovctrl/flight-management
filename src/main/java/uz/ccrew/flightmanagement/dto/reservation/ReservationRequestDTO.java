@@ -1,9 +1,11 @@
 package uz.ccrew.flightmanagement.dto.reservation;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
+
+import lombok.Builder;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
@@ -13,7 +15,7 @@ public record ReservationRequestDTO(@NotBlank(message = "Invalid departure city"
                                     String departureCity,
                                     @NotBlank(message = "Invalid arrival city")
                                     String arrivalCity,
-                                    @NotBlank(message = "Invalid departure date")
+                                    @NotNull(message = "Invalid departure date")
                                     LocalDate departureDate,
                                     LocalDate returnDate,
                                     TravelClassCode travelClassCode) {

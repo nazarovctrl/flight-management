@@ -1,5 +1,7 @@
 package uz.ccrew.flightmanagement.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
@@ -15,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/flight-schedule")
@@ -48,10 +50,17 @@ public class FlightScheduleController {
 
     @GetMapping("/list/one-way")
     @Operation(summary = "Get list flights for one-way")
-    public ResponseEntity<Response<List<FlightScheduleDTO>>> getOneWayList(@RequestBody @Valid ReservationRequestDTO dto,
-                                                                           @RequestParam(value = "size", defaultValue = "10") int size,
-                                                                           @RequestParam(value = "page", defaultValue = "0") int page) {
-        List<FlightScheduleDTO> result = flightScheduleService.getOneWayList(dto, page, size);
+    public ResponseEntity<Response<Page<FlightScheduleDTO>>> getOneWayList(@RequestParam("departureCity") String departureCity,
+                                                                           @RequestParam("arrivalCity") String arrivalCity,
+                                                                           @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+                                                                           @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                           @RequestParam(value = "page", defaultValue = "0", required = false) int page) {
+        ReservationRequestDTO reservationRequestDTO = ReservationRequestDTO.builder()
+                .departureCity(departureCity)
+                .arrivalCity(arrivalCity)
+                .departureDate(departureDate).build();
+
+        Page<FlightScheduleDTO> result = flightScheduleService.getOneWayList(reservationRequestDTO, page, size);
         return ResponseMaker.ok(result);
     }
 }

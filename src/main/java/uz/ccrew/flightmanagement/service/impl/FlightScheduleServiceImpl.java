@@ -16,7 +16,11 @@ import uz.ccrew.flightmanagement.repository.LegRepository;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -68,7 +72,13 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public List<FlightScheduleDTO> getOneWayList(ReservationRequestDTO dto, int page, int size) {
-        return null;
+    public Page<FlightScheduleDTO> getOneWayList(ReservationRequestDTO dto, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FlightSchedule> pageObj = flightScheduleRepository.findAll(pageable);
+
+        List<FlightSchedule> flightList = pageObj.getContent();
+        List<FlightScheduleDTO> dtoList = flightScheduleMapper.toDTOList(flightList);
+
+        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
 }

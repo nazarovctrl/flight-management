@@ -6,4 +6,6 @@ import lombok.Builder;
 public record AirportDTO(String airportCode,
                          String airportName,
                          String airportLocation,
-                         String otherDetails) {}
+                         String otherDetails,
+                         String city) {
+}

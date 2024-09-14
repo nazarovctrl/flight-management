@@ -4,7 +4,7 @@ import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface FlightScheduleService {
     FlightScheduleDTO addFlightSchedule(FlightScheduleCreateDTO flightScheduleCreateDTO);
@@ -13,5 +13,5 @@ public interface FlightScheduleService {
 
     FlightScheduleDTO getFlightSchedule(Long flightNumber);
 
-    List<FlightScheduleDTO> getOneWayList(ReservationRequestDTO dto, int page, int size);
+    Page<FlightScheduleDTO> getOneWayList(ReservationRequestDTO dto, int page, int size);
 }

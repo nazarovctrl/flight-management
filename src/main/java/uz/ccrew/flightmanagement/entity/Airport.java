@@ -18,10 +18,12 @@ import jakarta.persistence.Entity;
 public class Airport {
     @Id
     private String airportCode;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String airportName;
     @Column(nullable = false)
     private String airportLocation;
     @Column
     private String otherDetails;
+    @Column(nullable = false)
+    private String city;
 }
