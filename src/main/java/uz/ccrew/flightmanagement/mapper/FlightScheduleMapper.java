@@ -24,6 +24,7 @@ public class FlightScheduleMapper implements Mapper<FlightScheduleCreateDTO, Fli
                 .build();
     }
 
+    @Override
     public FlightScheduleDTO toDTO(FlightSchedule flightSchedule) {
         return toDTO(flightSchedule, null);
     }
