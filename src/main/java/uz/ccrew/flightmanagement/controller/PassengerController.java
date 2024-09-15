@@ -1,15 +1,14 @@
 package uz.ccrew.flightmanagement.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.Getter;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.service.PassengerService;
 import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.dto.passenger.PassengerCreateDTO;
 
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;

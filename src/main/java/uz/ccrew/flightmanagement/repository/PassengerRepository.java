@@ -1,12 +1,14 @@
 package uz.ccrew.flightmanagement.repository;
 
-import uz.ccrew.flightmanagement.entity.Passenger;
-
+import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import uz.ccrew.flightmanagement.entity.Passenger;
+
+@Repository
 public interface PassengerRepository extends BasicRepository<Passenger, Long> {
     boolean existsByCustomerId(Long customerId);
 
