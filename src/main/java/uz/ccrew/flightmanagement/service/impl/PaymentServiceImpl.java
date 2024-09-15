@@ -1,16 +1,17 @@
 package uz.ccrew.flightmanagement.service.impl;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
 import uz.ccrew.flightmanagement.entity.Payment;
+import uz.ccrew.flightmanagement.mapper.PaymentMapper;
+import uz.ccrew.flightmanagement.service.PaymentService;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
-import uz.ccrew.flightmanagement.mapper.PaymentMapper;
 import uz.ccrew.flightmanagement.repository.PaymentRepository;
-import uz.ccrew.flightmanagement.service.PaymentService;
+import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
 import uz.ccrew.flightmanagement.service.ReservationPaymentService;
+
+import lombok.RequiredArgsConstructor;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

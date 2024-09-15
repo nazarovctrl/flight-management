@@ -1,8 +1,9 @@
 package uz.ccrew.flightmanagement.mapper;
 
-import org.springframework.stereotype.Component;
-import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
 import uz.ccrew.flightmanagement.entity.Payment;
+import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class PaymentMapper implements Mapper<Object, PaymentDTO, Payment>{

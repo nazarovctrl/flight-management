@@ -1,9 +1,10 @@
 package uz.ccrew.flightmanagement.repository;
 
-import org.springframework.data.jpa.repository.Query;
-import uz.ccrew.flightmanagement.entity.ItineraryReservation;
 import uz.ccrew.flightmanagement.entity.Payment;
 import uz.ccrew.flightmanagement.entity.ReservationPayment;
+import uz.ccrew.flightmanagement.entity.ItineraryReservation;
+
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.UUID;
