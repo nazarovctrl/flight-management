@@ -2,6 +2,7 @@ package uz.ccrew.flightmanagement.controller;
 
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
@@ -69,9 +70,9 @@ public class FlightScheduleController {
 
     @GetMapping("/list/delayed")
     @Operation(summary = "Get all flights delayed")
-    public ResponseEntity<Response<Page<FlightScheduleDTO>>> getDelayedFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                                                               @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-        Page<FlightScheduleDTO> result = flightScheduleService.getDelayedFlights(page, size);
+    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getDelayedFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleReportDTO> result = flightScheduleService.getDelayedFlights(page, size);
         return ResponseMaker.ok(result);
     }
 

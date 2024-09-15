@@ -1,5 +1,6 @@
 package uz.ccrew.flightmanagement.service.impl;
 
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
 import uz.ccrew.flightmanagement.dto.reservation.TravelClassCostDTO;
 import uz.ccrew.flightmanagement.entity.*;
@@ -94,13 +95,11 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public Page<FlightScheduleDTO> getDelayedFlights(int page, int size) {
+    public Page<FlightScheduleReportDTO> getDelayedFlights(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("departureDateTime").descending());
+        Page<FlightScheduleReportDTO> pageObjDelayed = flightScheduleRepository.findDelayedFlights(pageable);
 
-        Page<FlightSchedule> pageObjDelayed = flightScheduleRepository.findDelayedFlights(pageable);
-        List<FlightScheduleDTO> dtoListDelayed = flightScheduleMapper.toDTOList(pageObjDelayed.getContent());
-
-        return new PageImpl<>(dtoListDelayed, pageable, pageObjDelayed.getTotalElements());
+        return new PageImpl<>(pageObjDelayed.getContent(), pageable, pageObjDelayed.getTotalElements());
     }
 
     public List<FlightReservationDTO> getOneWayList(ReservationRequestDTO dto) {

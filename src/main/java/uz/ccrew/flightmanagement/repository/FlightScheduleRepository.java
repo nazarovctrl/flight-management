@@ -1,5 +1,6 @@
 package uz.ccrew.flightmanagement.repository;
 
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
 
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
             "where l.originAirport = fs.originAirport.airportCode " +
             "and ((l.actualDepartureTime is not null and fs.departureDateTime < l.actualDepartureTime) " +
             "or  (l.actualArrivalTime is not null and fs.arrivalDateTime < l.actualArrivalTime))")
-    Page<FlightSchedule> findDelayedFlights(Pageable pageable);
+    Page<FlightScheduleReportDTO> findDelayedFlights(Pageable pageable);
 
     @Query(value = """ 
             select * from flight_schedules as w 
