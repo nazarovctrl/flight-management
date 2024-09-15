@@ -10,8 +10,14 @@ import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.repository.PassengerRepository;
 import uz.ccrew.flightmanagement.dto.passenger.PassengerCreateDTO;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +38,15 @@ public class PassengerServiceImpl implements PassengerService {
         passengerRepository.save(entity);
 
         return passengerMapper.toDTO(entity);
+    }
+
+    @Override
+    public Page<PassengerDTO> findPassengersWithReservedSeatsOnFlight(String flightNumber, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Passenger> pageObj = passengerRepository.findPassengersWithReservedSeatsOnFlight(flightNumber, pageable);
+        List<PassengerDTO> dtoList = passengerMapper.toDTOList(pageObj.getContent());
+
+        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
 }
