@@ -2,6 +2,7 @@ package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightStatusReport;
 import uz.ccrew.flightmanagement.dto.leg.LegDTO;
 import uz.ccrew.flightmanagement.entity.Airport;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -75,4 +77,24 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
         return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
+
+    @Override
+    public Page<FlightScheduleDTO> findSchedulesOnTimeAndDelayed(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("flightNumber").descending());
+
+        Page<FlightSchedule> pageObjOnTime = flightScheduleRepository.findOnTimeFlights(pageable);
+        Page<FlightSchedule> pageObjDelayed = flightScheduleRepository.findDelayedFlights(pageable);
+
+        List<FlightScheduleDTO> dtoListOnTime = flightScheduleMapper.toDTOList(pageObjOnTime.getContent());
+        List<FlightScheduleDTO> dtoListDelayed = flightScheduleMapper.toDTOList(pageObjDelayed.getContent());
+
+        List<FlightScheduleDTO> combinedDtoList = new ArrayList<>();
+        combinedDtoList.addAll(dtoListOnTime);
+        combinedDtoList.addAll(dtoListDelayed);
+
+        long totalElements = pageObjOnTime.getTotalElements() + pageObjDelayed.getTotalElements();
+
+        return new PageImpl<>(combinedDtoList, pageable, totalElements);
+    }
+
 }

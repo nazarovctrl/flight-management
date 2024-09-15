@@ -52,4 +52,12 @@ public class FlightScheduleController {
         Page<FlightScheduleDTO> result = flightScheduleService.getAllFlightSchedulesByAirportCode(code, page, size);
         return ResponseMaker.ok(result);
     }
+
+    @GetMapping("get-schedules-delayed-and-on-time")
+    @Operation(summary = "Get all flights on time and delayed")
+    public ResponseEntity<Response<Page<FlightScheduleDTO>>> getFlightsOnTimeAndDelayed(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                                        @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleDTO> result = flightScheduleService.findSchedulesOnTimeAndDelayed(page, size);
+        return ResponseMaker.ok(result);
+    }
 }
