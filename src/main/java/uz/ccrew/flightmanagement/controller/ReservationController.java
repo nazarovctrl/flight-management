@@ -1,6 +1,5 @@
 package uz.ccrew.flightmanagement.controller;
 
-import org.springframework.data.domain.Page;
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.service.ReservationService;
@@ -9,6 +8,7 @@ import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;

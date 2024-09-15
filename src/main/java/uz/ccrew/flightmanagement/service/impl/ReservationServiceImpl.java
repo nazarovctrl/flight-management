@@ -1,6 +1,5 @@
 package uz.ccrew.flightmanagement.service.impl;
 
-import org.springframework.data.domain.*;
 import uz.ccrew.flightmanagement.entity.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
@@ -15,6 +14,7 @@ import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
 import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
