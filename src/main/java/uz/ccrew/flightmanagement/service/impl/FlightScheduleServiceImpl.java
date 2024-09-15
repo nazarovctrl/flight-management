@@ -1,16 +1,16 @@
 package uz.ccrew.flightmanagement.service.impl;
 
-import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
-import uz.ccrew.flightmanagement.dto.reservation.TravelClassCostDTO;
-import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
 import uz.ccrew.flightmanagement.entity.*;
-import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.dto.leg.LegDTO;
 import uz.ccrew.flightmanagement.mapper.LegMapper;
+import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
+import uz.ccrew.flightmanagement.dto.reservation.TravelClassCostDTO;
+import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
+import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;

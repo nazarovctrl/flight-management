@@ -1,9 +1,10 @@
 package uz.ccrew.flightmanagement.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
+
+import lombok.*;
+import jakarta.persistence.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

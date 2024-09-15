@@ -1,12 +1,10 @@
 package uz.ccrew.flightmanagement.repository;
 
-import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
 import uz.ccrew.flightmanagement.entity.ItineraryLeg;
-import uz.ccrew.flightmanagement.enums.TravelClassCode;
+import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
 
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface ItineraryLegRepository extends BasicRepository<ItineraryLeg, Long> {
