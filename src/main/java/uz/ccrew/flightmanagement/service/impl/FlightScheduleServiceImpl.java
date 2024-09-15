@@ -156,6 +156,5 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
         }
 
         return flightReservationDTOList;
-
     }
 }
