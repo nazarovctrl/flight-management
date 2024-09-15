@@ -130,9 +130,14 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                 int total = entry.getValue();
                 int reserved = reservedSeats.getOrDefault(travelClassCode, 0);
                 int available = total - reserved;
+                if (available < 1) {
+                    continue;
+                }
                 availableSeats.put(travelClassCode, available);
             }
-
+            if (availableSeats.isEmpty()) {
+                continue;
+            }
             // Create FlightReservationDTO and add to the list
             FlightReservationDTO flightReservationDTO = new FlightReservationDTO(
                     flightScheduleMapper.toDTO(flight), travelClassCostDTOs, availableSeats);

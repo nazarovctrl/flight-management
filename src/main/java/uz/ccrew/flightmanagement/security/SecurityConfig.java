@@ -52,7 +52,10 @@ public class SecurityConfig {
     private static final String[] CUSTOMER_REQUEST_PATTERNS = {
             "/api/v1/passenger/add",
             "/api/v1/airport/city/list",
-            "/api/v1/flight-schedule/list/**"
+            "/api/v1/flight-schedule/list/**",
+            "/api/v1/reservation/**",
+            "/api/v1/reservation-payment/**",
+            "/api/v1/payment/**"
     };
 
     @Bean

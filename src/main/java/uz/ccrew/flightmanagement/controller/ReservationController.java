@@ -1,5 +1,6 @@
 package uz.ccrew.flightmanagement.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.service.ReservationService;
@@ -22,6 +23,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping("/make/one-way")
+    @Operation(summary = "Make one way reservation")
     public ResponseEntity<Response<ReservationDTO>> makeOneWay(@RequestBody @Valid OneWayReservationCreateDTO dto) {
         ReservationDTO result = reservationService.makeOneWay(dto);
         return ResponseMaker.ok(result);

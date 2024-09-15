@@ -33,6 +33,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final FlightCostRepository flightCostRepository;
     private final TravelClassCapacityRepository travelClassCapacityRepository;
     private final PaymentRepository paymentRepository;
+    private final ReservationPaymentRepository reservationPaymentRepository;
     private final AuthUtil authUtil;
     private final ReservationMapper reservationMapper;
 
@@ -73,10 +74,39 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
         paymentRepository.save(payment);
 
+        ReservationPayment reservationPayment = ReservationPayment.builder()
+                .id(new ReservationPayment.ReservationPaymentId(reservation.getReservationId(), payment.getPaymentId()))
+                .payment(payment)
+                .reservation(reservation)
+                .build();
+        reservationPaymentRepository.save(reservationPayment);
+
         return reservationMapper.toDTO(reservation);
     }
 
-    public Long getCost(Long flightNumber, TravelClassCode classCode) {
+    @Override
+    public void checkToAvailabilityWithReservationId(Long reservationId, TravelClassCode travelClassCode) {
+        Optional<FlightSchedule> flight = itineraryLegRepository.findFlightByReservationId(reservationId);
+        if (flight.isEmpty()) {
+            throw new BadRequestException("Reservation flight is invalid");
+        }
+        checkToAvailability(flight.get().getFlightNumber(), travelClassCode);
+    }
+
+    @Override
+    public void reverseReservation(Long reservationId) {
+        Optional<FlightSchedule> optionalFlight = itineraryLegRepository.findFlightByReservationId(reservationId);
+        if (optionalFlight.isEmpty()) {
+            return;
+        }
+        FlightSchedule flight = optionalFlight.get();
+        if (flight.getDepartureDateTime().isBefore(LocalDateTime.now().plusHours(1))) {
+            throw new BadRequestException("Reservation can be reverse before 1 hour departure time");
+        }
+        itineraryLegRepository.deleteByReservation_ReservationId(reservationId);
+    }
+
+    private Long getCost(Long flightNumber, TravelClassCode classCode) {
         List<FlightCost> flightCosts = flightCostRepository.findByFlightSchedule_FlightNumberAndId_ValidFromDateLessThanEqualAndValidToDateGreaterThanEqual(
                 flightNumber, LocalDate.now(), LocalDate.now());
 
@@ -99,7 +129,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<TravelClassSeatDTO> travelClassSeatList = itineraryLegRepository.getTravelClassReservedSeatsByFlight(flightNumber, legCount);
         Map<TravelClassCode, Integer> reservedSeats = travelClassSeatList.stream().collect(Collectors.toMap(TravelClassSeatDTO::getTravelClassCode, TravelClassSeatDTO::getReservedSeats));
 
-        int reservedSeatCount = reservedSeats.get(travelClassCode);
+        int reservedSeatCount = reservedSeats.getOrDefault(travelClassCode, 0);
 
         List<FlightCost> flightCosts = flightCostRepository.findByFlightSchedule_FlightNumberAndId_ValidFromDateLessThanEqualAndValidToDateGreaterThanEqual(
                 flightNumber, LocalDate.now(), LocalDate.now());

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface FlightScheduleRepository extends BasicRepository<FlightSchedule, Long> {

@@ -1,11 +1,13 @@
 package uz.ccrew.flightmanagement.repository;
 
+import uz.ccrew.flightmanagement.entity.FlightSchedule;
 import uz.ccrew.flightmanagement.entity.ItineraryLeg;
 import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
 
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ItineraryLegRepository extends BasicRepository<ItineraryLeg, Long> {
     @Query("""
@@ -16,4 +18,12 @@ public interface ItineraryLegRepository extends BasicRepository<ItineraryLeg, Lo
              group by w.reservation.travelClassCode
             """)
     List<TravelClassSeatDTO> getTravelClassReservedSeatsByFlight(Long flightNumber, int legCount);
+
+    @Query("""
+            select w.leg.flightSchedule from ItineraryLeg w
+            where w.reservation.reservationId = ?1
+            """)
+    Optional<FlightSchedule> findFlightByReservationId(Long reservationId);
+
+    void deleteByReservation_ReservationId(Long reservationId);
 }
