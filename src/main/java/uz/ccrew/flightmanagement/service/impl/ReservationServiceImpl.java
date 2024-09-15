@@ -1,5 +1,6 @@
 package uz.ccrew.flightmanagement.service.impl;
 
+import org.springframework.data.domain.*;
 import uz.ccrew.flightmanagement.entity.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
@@ -104,6 +105,29 @@ public class ReservationServiceImpl implements ReservationService {
             throw new BadRequestException("Reservation can be reverse before 1 hour departure time");
         }
         itineraryLegRepository.deleteByReservation_ReservationId(reservationId);
+    }
+
+    @Transactional
+    @Override
+    public ReservationDTO cancel(Long reservationId) {
+        ItineraryReservation reservation = reservationRepository.loadById(reservationId);
+        if (!reservation.getReservationStatusCode().equals(ReservationStatusCode.CREATED)) {
+            throw new BadRequestException("Reservation status must be CREATED to cancel");
+        }
+        reservation.setReservationStatusCode(ReservationStatusCode.CANCELED);
+        reservationRepository.save(reservation);
+        itineraryLegRepository.deleteByReservation_ReservationId(reservationId);
+        return reservationMapper.toDTO(reservation);
+    }
+
+    @Override
+    public Page<ReservationDTO> getList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("dateReservationMade").descending());
+
+        Page<ItineraryReservation> pageObj = reservationRepository.findByPassenger_CustomerId(authUtil.loadLoggedUser().getId(), pageable);
+        List<ReservationDTO> dtoList = reservationMapper.toDTOList(pageObj.getContent());
+
+        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
 
     private Long getCost(Long flightNumber, TravelClassCode classCode) {
