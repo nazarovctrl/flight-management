@@ -6,8 +6,6 @@ import uz.ccrew.flightmanagement.service.PassengerService;
 import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.dto.passenger.PassengerCreateDTO;
 
-import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,15 +24,6 @@ public class PassengerController {
     @PostMapping("/add")
     public ResponseEntity<Response<PassengerDTO>> add(@RequestBody @Valid PassengerCreateDTO dto) {
         PassengerDTO result = passengerService.add(dto);
-        return ResponseMaker.ok(result);
-    }
-
-    @GetMapping("/find-reserved/seats/{number}")
-    @Operation(summary = "Get all customers who have seats reserved on a given flight.")
-    public ResponseEntity<Response<Page<PassengerDTO>>> findReservedSeats(@PathVariable("number") String flightNumber,
-                                                                          @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-        Page<PassengerDTO> result = passengerService.findPassengersWithReservedSeatsOnFlight(flightNumber, page, size);
         return ResponseMaker.ok(result);
     }
 }
