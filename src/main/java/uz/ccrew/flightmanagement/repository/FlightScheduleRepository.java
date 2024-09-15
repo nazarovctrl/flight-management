@@ -13,17 +13,17 @@ import java.time.LocalDate;
 @Repository
 public interface FlightScheduleRepository extends BasicRepository<FlightSchedule, Long> {
 
-    @Query("SELECT DISTINCT fs FROM FlightSchedule fs " +
-            "JOIN Leg l ON fs.flightNumber = l.flightSchedule.flightNumber "+
-            "WHERE fs.departureDateTime = l.actualDepartureTime " +
-            "AND fs.arrivalDateTime = l.actualArrivalTime " +
-            "AND l.originAirport = fs.originAirport.airportCode")
+    @Query("select distinct fs from FlightSchedule fs " +
+            "join Leg l on fs.flightNumber = l.flightSchedule.flightNumber " +
+            "where fs.departureDateTime = l.actualDepartureTime " +
+            "and fs.arrivalDateTime = l.actualArrivalTime " +
+            "and l.originAirport = fs.originAirport.airportCode")
     Page<FlightSchedule> findOnTimeFlights(Pageable pageable);
 
-    @Query("SELECT DISTINCT fs FROM FlightSchedule fs " +
-            "JOIN Leg l ON fs.flightNumber = l.flightSchedule.flightNumber " +
-            "WHERE fs.departureDateTime != l.actualDepartureTime " +
-            "OR fs.arrivalDateTime != l.actualArrivalTime")
+    @Query("select distinct fs from FlightSchedule fs " +
+            "join Leg l on fs.flightNumber = l.flightSchedule.flightNumber " +
+            "where (l.actualDepartureTime is not null and fs.departureDateTime < l.actualDepartureTime) " +
+            "or  (l.actualArrivalTime is not null and fs.arrivalDateTime < l.actualArrivalTime)")
     Page<FlightSchedule> findDelayedFlights(Pageable pageable);
 
     @Query(value = """ 
