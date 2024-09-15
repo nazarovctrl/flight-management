@@ -18,7 +18,6 @@ import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -78,22 +77,22 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public Page<FlightScheduleDTO> findSchedulesOnTimeAndDelayed(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("flightNumber").descending());
+    public Page<FlightScheduleDTO> findSchedulesOnTime(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("departureDateTime").descending());
 
         Page<FlightSchedule> pageObjOnTime = flightScheduleRepository.findOnTimeFlights(pageable);
-        Page<FlightSchedule> pageObjDelayed = flightScheduleRepository.findDelayedFlights(pageable);
-
         List<FlightScheduleDTO> dtoListOnTime = flightScheduleMapper.toDTOList(pageObjOnTime.getContent());
-        List<FlightScheduleDTO> dtoListDelayed = flightScheduleMapper.toDTOList(pageObjDelayed.getContent());
 
-        List<FlightScheduleDTO> combinedDtoList = new ArrayList<>();
-        combinedDtoList.addAll(dtoListOnTime);
-        combinedDtoList.addAll(dtoListDelayed);
-
-        long totalElements = pageObjOnTime.getTotalElements() + pageObjDelayed.getTotalElements();
-
-        return new PageImpl<>(combinedDtoList, pageable, totalElements);
+        return new PageImpl<>(dtoListOnTime, pageable, pageObjOnTime.getTotalElements());
     }
 
+    @Override
+    public Page<FlightScheduleDTO> findSchedulesDelayed(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("departureDateTime").descending());
+
+        Page<FlightSchedule> pageObjDelayed = flightScheduleRepository.findDelayedFlights(pageable);
+        List<FlightScheduleDTO> dtoListDelayed = flightScheduleMapper.toDTOList(pageObjDelayed.getContent());
+
+        return new PageImpl<>(dtoListDelayed, pageable, pageObjDelayed.getTotalElements());
+    }
 }

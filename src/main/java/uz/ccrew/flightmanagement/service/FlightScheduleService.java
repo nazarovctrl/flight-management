@@ -14,5 +14,7 @@ public interface FlightScheduleService {
 
     Page<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode, int page, int size);
 
-    Page<FlightScheduleDTO> findSchedulesOnTimeAndDelayed(int page, int size);
+    Page<FlightScheduleDTO> findSchedulesOnTime(int page, int size);
+
+    Page<FlightScheduleDTO> findSchedulesDelayed(int page, int size);
 }

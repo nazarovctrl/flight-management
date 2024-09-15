@@ -14,7 +14,8 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
     @Query("SELECT DISTINCT fs FROM FlightSchedule fs " +
             "JOIN Leg l ON fs.flightNumber = l.flightSchedule.flightNumber " +
             "WHERE fs.departureDateTime = l.actualDepartureTime " +
-            "AND fs.arrivalDateTime = l.actualArrivalTime")
+            "AND fs.arrivalDateTime = l.actualArrivalTime " +
+            "AND l.originAirport = fs.originAirport")
     Page<FlightSchedule> findOnTimeFlights(Pageable pageable);
 
     @Query("SELECT DISTINCT fs FROM FlightSchedule fs " +

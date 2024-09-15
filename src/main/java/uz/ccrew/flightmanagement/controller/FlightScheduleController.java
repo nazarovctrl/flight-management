@@ -53,11 +53,19 @@ public class FlightScheduleController {
         return ResponseMaker.ok(result);
     }
 
-    @GetMapping("get-schedules-delayed-and-on-time")
+    @GetMapping("/list/on-time")
     @Operation(summary = "Get all flights on time and delayed")
-    public ResponseEntity<Response<Page<FlightScheduleDTO>>> getFlightsOnTimeAndDelayed(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                                                                        @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-        Page<FlightScheduleDTO> result = flightScheduleService.findSchedulesOnTimeAndDelayed(page, size);
+    public ResponseEntity<Response<Page<FlightScheduleDTO>>> getFlightsOnTime(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                              @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleDTO> result = flightScheduleService.findSchedulesOnTime(page, size);
+        return ResponseMaker.ok(result);
+    }
+
+    @GetMapping("/list/delayed")
+    @Operation(summary = "Get all flights on time and delayed")
+    public ResponseEntity<Response<Page<FlightScheduleDTO>>> getFlightsDelayed(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                               @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleDTO> result = flightScheduleService.findSchedulesDelayed(page, size);
         return ResponseMaker.ok(result);
     }
 }
