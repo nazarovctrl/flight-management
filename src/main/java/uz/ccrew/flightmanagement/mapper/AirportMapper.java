@@ -1,21 +1,22 @@
 package uz.ccrew.flightmanagement.mapper;
 
-import uz.ccrew.flightmanagement.dto.airport.AirportCreateDTO;
-import uz.ccrew.flightmanagement.dto.airport.AirportDTO;
 import uz.ccrew.flightmanagement.entity.Airport;
+import uz.ccrew.flightmanagement.dto.airport.AirportDTO;
+import uz.ccrew.flightmanagement.dto.airport.AirportCreateDTO;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class AirportMapper implements Mapper<AirportCreateDTO, AirportDTO, Airport>{
+public class AirportMapper implements Mapper<AirportCreateDTO, AirportDTO, Airport> {
 
     @Override
-    public Airport toEntity(AirportCreateDTO airportCreateDTO) {
+    public Airport toEntity(AirportCreateDTO dto) {
         return Airport.builder()
-                .airportCode(airportCreateDTO.airportCode())
-                .airportName(airportCreateDTO.airportName())
-                .airportLocation(airportCreateDTO.airportLocation())
-                .otherDetails(airportCreateDTO.otherDetails())
+                .airportCode(dto.airportCode())
+                .airportName(dto.airportName())
+                .airportLocation(dto.airportLocation())
+                .otherDetails(dto.otherDetails())
+                .city(dto.city().toUpperCase())
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class AirportMapper implements Mapper<AirportCreateDTO, AirportDTO, Airpo
                 .airportName(airport.getAirportName())
                 .airportLocation(airport.getAirportLocation())
                 .otherDetails(airport.getOtherDetails())
+                .city(airport.getCity())
                 .build();
     }
 }
