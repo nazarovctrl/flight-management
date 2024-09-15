@@ -85,13 +85,11 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public Page<FlightScheduleDTO> getOnTimeFlights(int page, int size) {
+    public Page<FlightScheduleReportDTO> getOnTimeFlights(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("departureDateTime").descending());
+        Page<FlightScheduleReportDTO> pageObjOnTime = flightScheduleRepository.findOnTimeFlights(pageable);
 
-        Page<FlightSchedule> pageObjOnTime = flightScheduleRepository.findOnTimeFlights(pageable);
-        List<FlightScheduleDTO> dtoListOnTime = flightScheduleMapper.toDTOList(pageObjOnTime.getContent());
-
-        return new PageImpl<>(dtoListOnTime, pageable, pageObjOnTime.getTotalElements());
+        return new PageImpl<>(pageObjOnTime.getContent(), pageable, pageObjOnTime.getTotalElements());
     }
 
     @Override

@@ -19,7 +19,7 @@ public interface FlightScheduleService {
 
     Page<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode, int page, int size);
 
-    Page<FlightScheduleDTO> getOnTimeFlights(int page, int size);
+    Page<FlightScheduleReportDTO> getOnTimeFlights(int page, int size);
 
     Page<FlightScheduleReportDTO> getDelayedFlights(int page, int size);
 
