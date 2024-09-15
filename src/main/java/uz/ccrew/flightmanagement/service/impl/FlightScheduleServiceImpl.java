@@ -84,7 +84,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public Page<FlightScheduleDTO> findSchedulesOnTime(int page, int size) {
+    public Page<FlightScheduleDTO> getOnTimeFlights(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("departureDateTime").descending());
 
         Page<FlightSchedule> pageObjOnTime = flightScheduleRepository.findOnTimeFlights(pageable);
@@ -94,7 +94,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public Page<FlightScheduleDTO> findSchedulesDelayed(int page, int size) {
+    public Page<FlightScheduleDTO> getDelayedFlights(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("departureDateTime").descending());
 
         Page<FlightSchedule> pageObjDelayed = flightScheduleRepository.findDelayedFlights(pageable);

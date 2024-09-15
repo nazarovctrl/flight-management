@@ -14,10 +14,10 @@ import java.time.LocalDate;
 public interface FlightScheduleRepository extends BasicRepository<FlightSchedule, Long> {
 
     @Query("SELECT DISTINCT fs FROM FlightSchedule fs " +
-            "JOIN Leg l ON fs.flightNumber = l.flightSchedule.flightNumber " +
+            "JOIN Leg l ON fs.flightNumber = l.flightSchedule.flightNumber "+
             "WHERE fs.departureDateTime = l.actualDepartureTime " +
             "AND fs.arrivalDateTime = l.actualArrivalTime " +
-            "AND l.originAirport = fs.originAirport")
+            "AND l.originAirport = fs.originAirport.airportCode")
     Page<FlightSchedule> findOnTimeFlights(Pageable pageable);
 
     @Query("SELECT DISTINCT fs FROM FlightSchedule fs " +

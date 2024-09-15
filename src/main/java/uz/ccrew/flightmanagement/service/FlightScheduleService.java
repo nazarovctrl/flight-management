@@ -18,9 +18,9 @@ public interface FlightScheduleService {
 
     Page<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode, int page, int size);
 
-    Page<FlightScheduleDTO> findSchedulesOnTime(int page, int size);
+    Page<FlightScheduleDTO> getOnTimeFlights(int page, int size);
 
-    Page<FlightScheduleDTO> findSchedulesDelayed(int page, int size);
+    Page<FlightScheduleDTO> getDelayedFlights(int page, int size);
 
     List<FlightReservationDTO> getOneWayList(ReservationRequestDTO dto);
 }
