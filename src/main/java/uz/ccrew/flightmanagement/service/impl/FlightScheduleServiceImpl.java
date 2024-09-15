@@ -2,7 +2,6 @@ package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightStatusReport;
 import uz.ccrew.flightmanagement.dto.leg.LegDTO;
 import uz.ccrew.flightmanagement.entity.Airport;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
