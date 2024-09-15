@@ -2,9 +2,11 @@ package uz.ccrew.flightmanagement.dto.flightSchedule;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 
+@Builder
 public record FlightScheduleReportDTO (@NotNull(message = "flight number code must not be blank.")
                                        @Schema(description = "flight number", example = "DL")
                                        Long flightNumber,
