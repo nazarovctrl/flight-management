@@ -40,6 +40,20 @@ public class SecurityConfig {
             "/swagger-resources",
             "/swagger-resources/**"
     };
+    private static final String[] ADMIN_REQUEST_PATTERNS = {
+            "/api/v1/user/**",
+            "/api/v1/airport/add",
+            "/api/v1/ref-calendar/**",
+            "/api/v1/flight-cost/**",
+            "/api/v1/flight-schedule/add",
+            "/api/v1/flight-schedule/delete/*",
+            "/api/v1/leg/**"
+    };
+    private static final String[] CUSTOMER_REQUEST_PATTERNS = {
+            "/api/v1/passenger/add",
+            "/api/v1/airport/city/list",
+            "/api/v1/flight-schedule/list/**"
+    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -72,11 +86,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/auth/refresh", "/api/v1/user/*").hasAnyAuthority(UserRole.all())
-                        .requestMatchers("/api/v1/flight-schedule/get/*","/api/v1/flight-schedule/get-by-airport/*").hasAnyAuthority(UserRole.all())
-                        .requestMatchers("/api/v1/user/**", "/api/v1/airport/**", "/api/v1/ref-calendar/**",
-                                "/api/v1/flight-cost/**", "/api/v1/flight-schedule/**", "/api/v1/leg/**")
-                        .hasAuthority(UserRole.ADMINISTRATOR.name())
-                        .requestMatchers("/api/v1/passenger/add").hasAuthority(UserRole.CUSTOMER.name())
+                        .requestMatchers("/api/v1/flight-schedule/get/*", "/api/v1/flight-schedule/get-by-airport/*").hasAnyAuthority(UserRole.all())
+                        .requestMatchers(ADMIN_REQUEST_PATTERNS).hasAuthority(UserRole.ADMINISTRATOR.name())
+                        .requestMatchers(CUSTOMER_REQUEST_PATTERNS).hasAuthority(UserRole.CUSTOMER.name())
                         .anyRequest().authenticated());
         return httpSecurity.build();
     }
