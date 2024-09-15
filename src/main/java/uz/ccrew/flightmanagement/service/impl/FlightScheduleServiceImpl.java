@@ -2,6 +2,7 @@ package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
 import uz.ccrew.flightmanagement.dto.reservation.TravelClassCostDTO;
+import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
 import uz.ccrew.flightmanagement.entity.*;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.repository.*;
@@ -21,11 +22,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.time.LocalDate;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -100,10 +102,8 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
             int legCount = legRepository.countByFlightSchedule_FlightNumber(flight.getFlightNumber());
 
             // Retrieve reserved seats for each travel class
-            HashMap<TravelClassCode, Integer> reservedSeats = itineraryLegRepository.getTravelClassReservedSeatsByFlight(flight.getFlightNumber(), legCount);
-            if (reservedSeats == null) {
-                reservedSeats = new HashMap<>(); // Initialize to empty map if null
-            }
+            List<TravelClassSeatDTO> travelClassSeatList = itineraryLegRepository.getTravelClassReservedSeatsByFlight(flight.getFlightNumber(), legCount);
+            Map<TravelClassCode, Integer> reservedSeats = travelClassSeatList.stream().collect(Collectors.toMap(TravelClassSeatDTO::getTravelClassCode, TravelClassSeatDTO::getReservedSeats));
 
             // Retrieve flight costs and initialize total seats map
             List<FlightCost> flightCosts = flightCostRepository.findByFlightSchedule_FlightNumberAndId_ValidFromDateLessThanEqualAndValidToDateGreaterThanEqual(

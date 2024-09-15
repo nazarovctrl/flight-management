@@ -1,14 +1,18 @@
 package uz.ccrew.flightmanagement.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "itinerary_legs")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItineraryLeg {
     @EmbeddedId
     private ItineraryLegId id;
