@@ -16,12 +16,12 @@ public class AirportMapper implements Mapper<AirportCreateDTO, AirportDTO, Airpo
                 .airportName(dto.airportName())
                 .airportLocation(dto.airportLocation())
                 .otherDetails(dto.otherDetails())
-                .city(dto.city())
+                .city(dto.city().toUpperCase())
                 .build();
     }
 
     @Override
-    public AirportDTO toDTO (Airport airport) {
+    public AirportDTO toDTO(Airport airport) {
         return AirportDTO.builder()
                 .airportCode(airport.getAirportCode())
                 .airportName(airport.getAirportName())
