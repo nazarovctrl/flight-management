@@ -1,6 +1,5 @@
 package uz.ccrew.flightmanagement.service.impl;
 
-import org.springframework.data.domain.*;
 import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
 import uz.ccrew.flightmanagement.dto.reservation.TravelClassCostDTO;
 import uz.ccrew.flightmanagement.entity.*;
@@ -15,6 +14,7 @@ import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 
+import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
