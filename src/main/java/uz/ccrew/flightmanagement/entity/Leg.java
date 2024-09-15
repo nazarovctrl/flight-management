@@ -1,7 +1,7 @@
 package uz.ccrew.flightmanagement.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -20,9 +20,9 @@ public class Leg {
     @ManyToOne
     @JoinColumn(name = "flight_number", foreignKey = @ForeignKey(name = "legs_f1"), nullable = false)
     private FlightSchedule flightSchedule;
-    @Column
+    @Column(nullable = false)
     private String originAirport;
-    @Column
+    @Column(nullable = false)
     private String destinationAirport;
     @Column
     private LocalDateTime actualDepartureTime;

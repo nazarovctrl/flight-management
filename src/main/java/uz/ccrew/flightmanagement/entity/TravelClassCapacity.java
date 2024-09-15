@@ -1,5 +1,6 @@
 package uz.ccrew.flightmanagement.entity;
 
+import lombok.Getter;
 import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 
@@ -12,6 +13,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "travel_class_capacity")
+@Getter
 public class TravelClassCapacity {
     @EmbeddedId
     private TravelClassCapacityId id;
@@ -20,10 +22,13 @@ public class TravelClassCapacity {
 
 
     @Embeddable
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class TravelClassCapacityId implements Serializable {
+        @Enumerated(EnumType.STRING)
         private AircraftTypeCode aircraftTypeCode;
+        @Enumerated(EnumType.STRING)
         private TravelClassCode travelClassCode;
 
         @Override

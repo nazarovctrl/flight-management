@@ -13,8 +13,6 @@ public class LegMapper implements Mapper<LegCreateDTO, LegDTO, Leg> {
         return Leg.builder()
                 .originAirport(dto.originAirport().toUpperCase())
                 .destinationAirport(dto.destinationAirport().toUpperCase())
-                .actualDepartureTime(dto.actualDepartureTime())
-                .actualArrivalTime(dto.actualArrivalTime())
                 .build();
     }
 
