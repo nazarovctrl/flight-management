@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public interface FlightScheduleRepository extends BasicRepository<FlightSchedule, Long> {
 
     @Query("select distinct new uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO(fs.flightNumber," +
-            "fs.departureDateTime,fs.arrivalDateTime,l.actualDepartureTime,l.actualDepartureTime) from FlightSchedule fs " +
+            "fs.departureDateTime,fs.arrivalDateTime,l.actualDepartureTime,l.actualArrivalTime) from FlightSchedule fs " +
             "join Leg l on fs.flightNumber = l.flightSchedule.flightNumber " +
             "where fs.departureDateTime = l.actualDepartureTime " +
             "and fs.arrivalDateTime = l.actualArrivalTime " +
@@ -23,7 +23,7 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
     Page<FlightScheduleReportDTO> findOnTimeFlights(Pageable pageable);
 
     @Query("select distinct new uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO(fs.flightNumber," +
-            "fs.departureDateTime,fs.arrivalDateTime,l.actualDepartureTime,l.actualDepartureTime) from FlightSchedule fs " +
+            "fs.departureDateTime,fs.arrivalDateTime,l.actualDepartureTime,l.actualArrivalTime) from FlightSchedule fs " +
             "join Leg l on fs.flightNumber = l.flightSchedule.flightNumber " +
             "where l.originAirport = fs.originAirport.airportCode " +
             "and ((l.actualDepartureTime is not null and fs.departureDateTime < l.actualDepartureTime) " +
