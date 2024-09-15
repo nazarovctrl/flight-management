@@ -23,8 +23,8 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
     @Query("select distinct fs from FlightSchedule fs " +
             "join Leg l on fs.flightNumber = l.flightSchedule.flightNumber " +
             "where l.originAirport = fs.originAirport.airportCode " +
-            "and (l.actualDepartureTime is not null and fs.departureDateTime < l.actualDepartureTime) " +
-            "or  (l.actualArrivalTime is not null and fs.arrivalDateTime < l.actualArrivalTime)")
+            "and ((l.actualDepartureTime is not null and fs.departureDateTime < l.actualDepartureTime) " +
+            "or  (l.actualArrivalTime is not null and fs.arrivalDateTime < l.actualArrivalTime))")
     Page<FlightSchedule> findDelayedFlights(Pageable pageable);
 
     @Query(value = """ 
