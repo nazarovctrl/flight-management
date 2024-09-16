@@ -1,4 +1,4 @@
-package uz.ccrew.flightmanagement.dto.reservation;
+package uz.ccrew.flightmanagement.dto.flightSchedule;
 
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
 

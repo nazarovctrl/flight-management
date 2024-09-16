@@ -1,10 +1,11 @@
 package uz.ccrew.flightmanagement.service;
 
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTripFlightDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightListRequestDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
-import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
-import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
 
 import org.springframework.data.domain.Page;
 
@@ -23,7 +24,7 @@ public interface FlightScheduleService {
 
     Page<FlightScheduleReportDTO> getDelayedFlights(int page, int size);
 
-    List<FlightReservationDTO> getOneWayList(ReservationRequestDTO dto);
+    List<OneWayFlightDTO> getOneWayList(FlightListRequestDTO dto);
 
-    List<FlightReservationDTO> getRoundTripList(ReservationRequestDTO reservationRequestDTO);
+    List<RoundTripFlightDTO> getRoundTripList(FlightListRequestDTO flightListRequestDTO);
 }
