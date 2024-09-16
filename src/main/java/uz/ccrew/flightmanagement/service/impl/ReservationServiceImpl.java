@@ -1,6 +1,8 @@
 package uz.ccrew.flightmanagement.service.impl;
 
+import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.entity.*;
+import uz.ccrew.flightmanagement.mapper.PassengerMapper;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
@@ -37,6 +39,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationPaymentRepository reservationPaymentRepository;
     private final AuthUtil authUtil;
     private final ReservationMapper reservationMapper;
+    private final PassengerMapper passengerMapper;
 
     @Transactional
     @Override
@@ -126,6 +129,16 @@ public class ReservationServiceImpl implements ReservationService {
 
         Page<ItineraryReservation> pageObj = reservationRepository.findByPassenger_CustomerId(authUtil.loadLoggedUser().getId(), pageable);
         List<ReservationDTO> dtoList = reservationMapper.toDTOList(pageObj.getContent());
+
+        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
+    }
+
+    @Override
+    public Page<PassengerDTO> findPassengersWithReservedSeatsOnFlight(String flightNumber, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("passengerId").descending());
+
+        Page<Passenger> pageObj = reservationRepository.findPassengersWithReservedSeatsOnFlight(flightNumber, pageable);
+        List<PassengerDTO> dtoList = passengerMapper.toDTOList(pageObj.getContent());
 
         return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
