@@ -15,7 +15,7 @@ public interface ReservationRepository extends BasicRepository<ItineraryReservat
     @Query("""
             select distinct l.leg.flightSchedule
               from ItineraryLeg l
-            where l.reservation.reservationId = ?1
+             where l.reservation.reservationId = ?1
             """)
     List<FlightSchedule> getFlightListByReservationId(Long reservationId);
 }

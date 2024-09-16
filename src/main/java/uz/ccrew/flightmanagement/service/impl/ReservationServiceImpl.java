@@ -81,7 +81,6 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<FlightScheduleDTO> getFlightList(Long reservationId) {
         List<FlightSchedule> flightList = reservationRepository.getFlightListByReservationId(reservationId);
-
         return flightScheduleMapper.toDTOList(flightList);
     }
 
