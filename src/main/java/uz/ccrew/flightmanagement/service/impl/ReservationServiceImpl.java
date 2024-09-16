@@ -183,7 +183,8 @@ public class ReservationServiceImpl implements ReservationService {
 
         itineraryLegService.addItineraryLegs(reservation, flightNumbers);
 
-        if (mainDTO.useCashback()) {
+        User user = authUtil.loadLoggedUser();
+        if (mainDTO.useCashback() || user.getCashbackAmount() < 0) {
             paymentAmount = useCashback(paymentAmount);
         }
 
@@ -193,8 +194,6 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private long useCashback(long paymentAmount) {
-        long originPaymentAmount = paymentAmount;
-
         User user = authUtil.loadLoggedUser();
         if (paymentAmount >= user.getCashbackAmount()) {
             paymentAmount = paymentAmount - user.getCashbackAmount();
@@ -203,8 +202,6 @@ public class ReservationServiceImpl implements ReservationService {
             paymentAmount = 0L;
             user.setCashbackAmount(user.getCashbackAmount() - paymentAmount);
         }
-
-        user.setCashbackAmount(originPaymentAmount / 100 + user.getCashbackAmount());
         userRepository.save(user);
 
         return paymentAmount;

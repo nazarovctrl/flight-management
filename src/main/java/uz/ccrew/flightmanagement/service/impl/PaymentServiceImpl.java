@@ -1,10 +1,13 @@
 package uz.ccrew.flightmanagement.service.impl;
 
+import uz.ccrew.flightmanagement.entity.User;
+import uz.ccrew.flightmanagement.util.AuthUtil;
 import uz.ccrew.flightmanagement.entity.Payment;
 import uz.ccrew.flightmanagement.mapper.PaymentMapper;
 import uz.ccrew.flightmanagement.service.PaymentService;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
+import uz.ccrew.flightmanagement.repository.UserRepository;
 import uz.ccrew.flightmanagement.repository.PaymentRepository;
 import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
 import uz.ccrew.flightmanagement.service.ReservationPaymentService;
@@ -19,8 +22,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-    private final PaymentRepository paymentRepository;
+    private final AuthUtil authUtil;
     private final PaymentMapper paymentMapper;
+    private final UserRepository userRepository;
+    private final PaymentRepository paymentRepository;
     private final ReservationPaymentService reservationPaymentService;
 
     @Transactional
@@ -33,6 +38,10 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentDate(LocalDateTime.now());
         payment.setPaymentStatusCode(PaymentStatusCode.PAYED);
         paymentRepository.save(payment);
+
+        User user = authUtil.loadLoggedUser();
+        user.setCashbackAmount(payment.getPaymentAmount() / 100 + user.getCashbackAmount());
+        userRepository.save(user);
 
         reservationPaymentService.confirmReservation(paymentId);
 
@@ -50,6 +59,13 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.save(payment);
 
         reservationPaymentService.reverseReservation(paymentId);
+
+        User user = authUtil.loadLoggedUser();
+        // cashbackAmount minus ham boladi,
+        // cashbacni ishlatgandan song reverse qilsa cashbackAmount<0 bo'ladi
+        // yani keyingi sabar reservation qilgandan paymentAmount koproq bo'ladi
+        user.setCashbackAmount(user.getCashbackAmount() - payment.getPaymentAmount() / 100);
+        userRepository.save(user);
 
         return paymentMapper.toDTO(payment);
     }
