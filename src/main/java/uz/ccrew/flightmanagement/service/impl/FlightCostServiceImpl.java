@@ -35,4 +35,10 @@ public class FlightCostServiceImpl implements FlightCostService {
         flightCostRepository.save(entity);
         return fLightCostMapper.toDTO(entity);
     }
+
+    @Override
+    public Long calculateTotalSalesByFlightNumber(Long flightNumber) {
+        Long totalSales = flightCostRepository.calculateTotalSalesByFlightNumber(flightNumber);
+        return totalSales;
+    }
 }

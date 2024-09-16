@@ -57,7 +57,8 @@ public class SecurityConfig {
             "/api/v1/flight-schedule/list/**",
             "/api/v1/reservation/**",
             "/api/v1/reservation-payment/**",
-            "/api/v1/payment/**"
+            "/api/v1/payment/**",
+            "/api/v1/flight-cost/**"
     };
 
     @Bean
