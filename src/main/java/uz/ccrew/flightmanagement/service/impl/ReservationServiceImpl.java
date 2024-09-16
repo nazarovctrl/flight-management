@@ -166,7 +166,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Page<PassengerDTO> findPassengersWithReservedSeatsOnFlight(String flightNumber, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("reservation.dateReservationMade").descending());
+        Pageable pageable = PageRequest.of(page, size);
 
         Page<Passenger> pageObj = reservationRepository.findPassengersWithReservedSeatsOnFlight(flightNumber, pageable);
         List<PassengerDTO> dtoList = passengerMapper.toDTOList(pageObj.getContent());
