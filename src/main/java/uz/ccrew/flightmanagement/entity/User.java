@@ -29,4 +29,7 @@ public class User extends Auditable {
 
     @Column(nullable = false, columnDefinition = "timestamp default CURRENT_TIMESTAMP")
     private LocalDateTime credentialsModifiedDate;
+
+    @Column(nullable = false)
+    private Long cashbackAmount;
 }

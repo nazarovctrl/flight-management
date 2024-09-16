@@ -5,8 +5,8 @@ import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
 import uz.ccrew.flightmanagement.util.RandomUtil;
-import uz.ccrew.flightmanagement.enums.TicketTypeCode;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
+import uz.ccrew.flightmanagement.dto.reservation.MainDTO;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.ReservationMapper;
@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 public class ReservationServiceImpl implements ReservationService {
     private final AuthUtil authUtil;
     private final RandomUtil randomUtil;
+    private final UserRepository userRepository;
     private final PassengerService passengerService;
     private final ReservationMapper reservationMapper;
     private final PaymentRepository paymentRepository;
@@ -48,19 +49,20 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     @Override
     public ReservationDTO makeOneWay(OneWayReservationCreateDTO dto) {
+        MainDTO mainDTO = dto.main();
         FlightSchedule flight = flightScheduleRepository.loadById(dto.flightNumber());
 
-        BookingAgent bookingAgent = bookingAgentRepository.loadById(dto.bookingAgentId());
+        BookingAgent bookingAgent = bookingAgentRepository.loadById(mainDTO.bookingAgentId());
 
         OneWayFlightDTO oneWayFlight = flightScheduleService.getOneWayFlight(flight)
                 .orElseThrow(() -> new BadRequestException("Invalid one way flight"));
         //check
-        checkToAvailability(oneWayFlight.travelClassAvailableSeats(), oneWayFlight.travelClassCostList(), dto.travelClassCode());
+        checkToAvailability(oneWayFlight.travelClassAvailableSeats(), oneWayFlight.travelClassCostList(), mainDTO.travelClassCode());
 
-        Long paymentAmount = oneWayFlight.travelClassCostList().get(dto.travelClassCode());
-        Passenger passenger = passengerService.getPassenger(dto.passenger());
+        Long paymentAmount = oneWayFlight.travelClassCostList().get(mainDTO.travelClassCode());
+        Passenger passenger = passengerService.getPassenger(mainDTO.passenger());
 
-        ItineraryReservation reservation = makeReservation(bookingAgent, passenger, paymentAmount, dto.ticketTypeCode(), dto.travelClassCode(), flight.getFlightNumber());
+        ItineraryReservation reservation = makeReservation(bookingAgent, passenger, paymentAmount, mainDTO, flight.getFlightNumber());
 
         return reservationMapper.toDTO(reservation);
     }
@@ -68,7 +70,8 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     @Override
     public ReservationDTO makeRoundTrip(RoundTripReservationCreate dto) {
-        BookingAgent bookingAgent = bookingAgentRepository.loadById(dto.bookingAgentId());
+        MainDTO mainDTO = dto.main();
+        BookingAgent bookingAgent = bookingAgentRepository.loadById(mainDTO.bookingAgentId());
 
         FlightSchedule flight = flightScheduleRepository.loadById(dto.flightNumber());
         FlightSchedule returnFlight = flightScheduleRepository.loadById(dto.returnFlightNumber());
@@ -76,12 +79,12 @@ public class ReservationServiceImpl implements ReservationService {
         RoundTripFlightDTO roundTrip = flightScheduleService.getRoundTripDTO(new RoundTrip(flight, returnFlight))
                 .orElseThrow(() -> new BadRequestException("Invalid round trip flight"));
         //check
-        checkToAvailability(roundTrip.travelClassAvailableSeats(), roundTrip.travelClassCostList(), dto.travelClassCode());
+        checkToAvailability(roundTrip.travelClassAvailableSeats(), roundTrip.travelClassCostList(), mainDTO.travelClassCode());
 
-        Long paymentAmount = roundTrip.travelClassCostList().get(dto.travelClassCode());
-        Passenger passenger = passengerService.getPassenger(dto.passenger());
+        Long paymentAmount = roundTrip.travelClassCostList().get(mainDTO.travelClassCode());
+        Passenger passenger = passengerService.getPassenger(mainDTO.passenger());
 
-        ItineraryReservation reservation = makeReservation(bookingAgent, passenger, paymentAmount, dto.ticketTypeCode(), dto.travelClassCode(), flight.getFlightNumber(), returnFlight.getFlightNumber());
+        ItineraryReservation reservation = makeReservation(bookingAgent, passenger, paymentAmount, mainDTO, flight.getFlightNumber(), returnFlight.getFlightNumber());
 
         return reservationMapper.toDTO(reservation);
     }
@@ -166,23 +169,45 @@ public class ReservationServiceImpl implements ReservationService {
         }
     }
 
-    private ItineraryReservation makeReservation(BookingAgent bookingAgent, Passenger passenger, Long paymentAmount, TicketTypeCode ticketTypeCode, TravelClassCode travelClassCode, Long... flightNumbers) {
+    private ItineraryReservation makeReservation(BookingAgent bookingAgent, Passenger passenger, Long paymentAmount, MainDTO mainDTO, Long... flightNumbers) {
         ItineraryReservation reservation = ItineraryReservation.builder()
                 .agent(bookingAgent)
                 .passenger(passenger)
                 .reservationStatusCode(ReservationStatusCode.CREATED)
                 .dateReservationMade(LocalDateTime.now())
-                .ticketTypeCode(ticketTypeCode)
-                .travelClassCode(travelClassCode)
+                .ticketTypeCode(mainDTO.ticketTypeCode())
+                .travelClassCode(mainDTO.travelClassCode())
                 .numberInParty(randomUtil.getRandomSeatNumber())
                 .build();
         reservationRepository.save(reservation);
 
         itineraryLegService.addItineraryLegs(reservation, flightNumbers);
 
+        if (mainDTO.useCashback()) {
+            paymentAmount = useCashback(paymentAmount);
+        }
+
         addPayment(reservation, paymentAmount);
 
         return reservation;
+    }
+
+    private long useCashback(long paymentAmount) {
+        long originPaymentAmount = paymentAmount;
+
+        User user = authUtil.loadLoggedUser();
+        if (paymentAmount >= user.getCashbackAmount()) {
+            paymentAmount = paymentAmount - user.getCashbackAmount();
+            user.setCashbackAmount(0L);
+        } else {
+            paymentAmount = 0L;
+            user.setCashbackAmount(user.getCashbackAmount() - paymentAmount);
+        }
+
+        user.setCashbackAmount(originPaymentAmount / 100 + user.getCashbackAmount());
+        userRepository.save(user);
+
+        return paymentAmount;
     }
 
     private void addPayment(ItineraryReservation reservation, Long paymentAmount) {
