@@ -1,9 +1,10 @@
 package uz.ccrew.flightmanagement.entity;
 
-import lombok.Getter;
 import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 
+import lombok.Getter;
+import lombok.Builder;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,9 @@ import java.io.Serializable;
 @Entity
 @Table(name = "travel_class_capacity")
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TravelClassCapacity {
     @EmbeddedId
     private TravelClassCapacityId id;

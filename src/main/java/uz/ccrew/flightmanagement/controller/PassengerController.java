@@ -9,6 +9,7 @@ import uz.ccrew.flightmanagement.dto.passenger.PassengerCreateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ public class PassengerController {
     private final PassengerService passengerService;
 
     @PostMapping("/add")
+    @Operation(summary = "Add passenger")
     public ResponseEntity<Response<PassengerDTO>> add(@RequestBody @Valid PassengerCreateDTO dto) {
         PassengerDTO result = passengerService.add(dto);
         return ResponseMaker.ok(result);

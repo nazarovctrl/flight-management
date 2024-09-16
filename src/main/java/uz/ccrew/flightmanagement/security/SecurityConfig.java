@@ -43,6 +43,7 @@ public class SecurityConfig {
     private static final String[] ADMIN_REQUEST_PATTERNS = {
             "/api/v1/user/**",
             "/api/v1/booking-agent/**",
+            "/api/v1/travel-class-capacity/**",
             "/api/v1/airport/add",
             "/api/v1/ref-calendar/**",
             "/api/v1/flight-cost/**",
