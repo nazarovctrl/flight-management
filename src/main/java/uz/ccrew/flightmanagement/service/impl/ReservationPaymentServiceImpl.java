@@ -5,7 +5,6 @@ import uz.ccrew.flightmanagement.mapper.PaymentMapper;
 import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
 import uz.ccrew.flightmanagement.entity.ItineraryReservation;
-import uz.ccrew.flightmanagement.repository.PaymentRepository;
 import uz.ccrew.flightmanagement.repository.ReservationRepository;
 import uz.ccrew.flightmanagement.service.ReservationPaymentService;
 import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
@@ -23,7 +22,6 @@ import java.util.UUID;
 public class ReservationPaymentServiceImpl implements ReservationPaymentService {
     private final ReservationPaymentRepository reservationPaymentRepository;
     private final ReservationRepository reservationRepository;
-    private final PaymentRepository paymentRepository;
     private final ReservationService reservationService;
     private final PaymentMapper paymentMapper;
 
@@ -36,12 +34,13 @@ public class ReservationPaymentServiceImpl implements ReservationPaymentService 
     @Override
     public void confirmReservation(UUID paymentId) {
         List<ItineraryReservation> reservationList = reservationPaymentRepository.findByPaymentId(paymentId);
-        for (ItineraryReservation reservation : reservationList) {
-            reservationService.checkToAvailabilityWithReservationId(reservation.getReservationId(), reservation.getTravelClassCode());
 
+        reservationList.parallelStream().forEach(reservation -> {
+            reservationService.checkToConfirmation(reservation.getReservationId(), reservation.getTravelClassCode());
             reservation.setReservationStatusCode(ReservationStatusCode.CONFIRMED);
-            reservationRepository.save(reservation);
-        }
+        });
+
+        reservationRepository.saveAll(reservationList);
     }
 
     @Transactional
@@ -49,11 +48,11 @@ public class ReservationPaymentServiceImpl implements ReservationPaymentService 
     public void reverseReservation(UUID paymentId) {
         List<ItineraryReservation> reservationList = reservationPaymentRepository.findByPaymentId(paymentId);
 
-        for (ItineraryReservation reservation : reservationList) {
+        reservationList.parallelStream().forEach(reservation -> {
             reservationService.reverseReservation(reservation.getReservationId());
-
             reservation.setReservationStatusCode(ReservationStatusCode.CANCELED);
-            reservationRepository.save(reservation);
-        }
+        });
+
+        reservationRepository.saveAll(reservationList);
     }
 }

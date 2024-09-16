@@ -2,12 +2,13 @@ package uz.ccrew.flightmanagement.controller;
 
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
+import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
-import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
-import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTripFlightDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightListRequestDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -78,15 +79,31 @@ public class FlightScheduleController {
 
     @GetMapping("/list/one-way")
     @Operation(summary = "Get list flights for one-way")
-    public ResponseEntity<Response<List<FlightReservationDTO>>> getOneWayList(@RequestParam("departureCity") String departureCity,
-                                                                              @RequestParam("arrivalCity") String arrivalCity,
-                                                                              @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate) {
-        ReservationRequestDTO reservationRequestDTO = ReservationRequestDTO.builder()
+    public ResponseEntity<Response<List<OneWayFlightDTO>>> getOneWayList(@RequestParam("departureCity") String departureCity,
+                                                                         @RequestParam("arrivalCity") String arrivalCity,
+                                                                         @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate) {
+        FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
                 .departureCity(departureCity)
                 .arrivalCity(arrivalCity)
                 .departureDate(departureDate).build();
 
-        List<FlightReservationDTO> result = flightScheduleService.getOneWayList(reservationRequestDTO);
+        List<OneWayFlightDTO> result = flightScheduleService.getOneWayList(flightListRequestDTO);
+        return ResponseMaker.ok(result);
+    }
+
+    @GetMapping("/list/round-trip")
+    @Operation(summary = "Get list flights for round trip")
+    public ResponseEntity<Response<List<RoundTripFlightDTO>>> getRoundTripList(@RequestParam("departureCity") String departureCity,
+                                                                               @RequestParam("arrivalCity") String arrivalCity,
+                                                                               @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+                                                                               @RequestParam("returnDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate) {
+        FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
+                .departureCity(departureCity)
+                .arrivalCity(arrivalCity)
+                .departureDate(departureDate)
+                .returnDate(returnDate).build();
+
+        List<RoundTripFlightDTO> result = flightScheduleService.getRoundTripList(flightListRequestDTO);
         return ResponseMaker.ok(result);
     }
 }

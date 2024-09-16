@@ -31,7 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BadRequestException("Invalid payment status");
         }
         payment.setPaymentDate(LocalDateTime.now());
-        payment.setPaymentStatusCode(PaymentStatusCode.CONFIRMED);
+        payment.setPaymentStatusCode(PaymentStatusCode.PAYED);
         paymentRepository.save(payment);
 
         reservationPaymentService.confirmReservation(paymentId);
@@ -39,10 +39,11 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentMapper.toDTO(payment);
     }
 
+    @Transactional
     @Override
     public PaymentDTO reverse(UUID paymentId) {
         Payment payment = paymentRepository.loadById(paymentId);
-        if (!payment.getPaymentStatusCode().equals(PaymentStatusCode.REVERSED)) {
+        if (!payment.getPaymentStatusCode().equals(PaymentStatusCode.PAYED)) {
             throw new BadRequestException("Invalid payment status");
         }
         payment.setPaymentStatusCode(PaymentStatusCode.REVERSED);
