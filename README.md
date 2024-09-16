@@ -20,7 +20,7 @@ Then, execute the commands in the specified order.
 
 1. **Create flight-management folder in your machine**
 
-2. **Create and copy the .env file, and get docker-compose.yml from GitHub link below and put them into the match-making folder**
+2. **Create and copy the .env file, and get docker-compose.yml from GitHub link below and put them into the flight-management folder**
 
    .env file content
 
@@ -35,7 +35,7 @@ Then, execute the commands in the specified order.
     ```
    docker-compose.yml link
 
-   https://github.com/nazarovctrl/match-making/blob/master/docker-compose.yml
+   https://github.com/nazarovctrl/flight-management/blob/master/docker-compose.yml
 
 3. **Pull the Docker Image**
 
@@ -65,7 +65,7 @@ Then, execute the commands in the specified order.
 
     ```sh
     git clone https://github.com/nazarovctrl/flight-management.git
-    cd match-making
+    cd flight-management
     ```
 2. **Paste the .env file into flight-management folder**
 

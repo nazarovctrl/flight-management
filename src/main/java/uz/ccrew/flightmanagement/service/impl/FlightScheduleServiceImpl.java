@@ -13,14 +13,12 @@ import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
 import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 
+import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.Map;
 import java.util.List;
@@ -89,6 +87,21 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
+    public Page<FlightScheduleReportDTO> getOnTimeFlights(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("departureDateTime").descending());
+        Page<FlightScheduleReportDTO> pageObjDelayed = flightScheduleRepository.findOnTimeFlights(pageable);
+
+        return new PageImpl<>(pageObjDelayed.getContent(), pageable, pageObjDelayed.getTotalElements());
+    }
+
+    @Override
+    public Page<FlightScheduleReportDTO> getDelayedFlights(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("departureDateTime").descending());
+        Page<FlightScheduleReportDTO> pageObjDelayed = flightScheduleRepository.findDelayedFlights(pageable);
+
+        return new PageImpl<>(pageObjDelayed.getContent(), pageable, pageObjDelayed.getTotalElements());
+    }
+
     public List<FlightReservationDTO> getOneWayList(ReservationRequestDTO dto) {
         // Retrieve flight schedules based on the request DTO
         List<FlightSchedule> flightSchedules = flightScheduleRepository.findOneWay(dto.departureCity(), dto.arrivalCity(), dto.departureDate());
