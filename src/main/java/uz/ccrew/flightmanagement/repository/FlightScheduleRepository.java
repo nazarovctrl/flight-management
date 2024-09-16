@@ -1,6 +1,7 @@
 package uz.ccrew.flightmanagement.repository;
 
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
+import uz.ccrew.flightmanagement.dto.reservation.RoundTrip;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
 
 import org.springframework.data.domain.Page;
@@ -57,4 +58,29 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
              order by w.departureDateTime asc
              """)
     List<FlightSchedule> findOneWay(String departureCity, String arrivalCity, LocalDate departureDate);
+
+    @Query(value = """
+            select new uz.ccrew.flightmanagement.dto.reservation.RoundTrip(w,f) from FlightSchedule w
+             join FlightSchedule f on f.airlineCode = w.airlineCode
+             where date(w.departureDateTime) = ?3
+               and w.originAirport.city = ?1
+               and w.destinationAirport.city = ?2
+               and f.originAirport.city = ?1
+               and f.destinationAirport.city = ?2
+               and f.departureDateTime = ?4
+               and exists (select 1 from Leg l
+                            where l.flightSchedule = w
+                              and l.destinationAirport = w.destinationAirport.airportCode)
+               and exists (select 1 from FlightCost c
+                            where c.flightSchedule.flightNumber= w.flightNumber
+                              and CURRENT_TIMESTAMP between c.id.validFromDate and c.validToDate)
+               and exists (select 1 from Leg l
+                            where l.flightSchedule = w
+                              and l.destinationAirport = f.destinationAirport.airportCode)
+               and exists (select 1 from FlightCost c
+                            where c.flightSchedule.flightNumber= f.flightNumber
+                              and CURRENT_TIMESTAMP between c.id.validFromDate and c.validToDate)
+             order by w.departureDateTime asc
+             """)
+    List<RoundTrip> findRoundTrip(String departureCity, String s1, LocalDate localDate, LocalDate localDate1);
 }

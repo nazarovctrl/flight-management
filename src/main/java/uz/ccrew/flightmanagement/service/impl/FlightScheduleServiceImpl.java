@@ -1,5 +1,6 @@
 package uz.ccrew.flightmanagement.service.impl;
 
+import uz.ccrew.flightmanagement.dto.reservation.*;
 import uz.ccrew.flightmanagement.entity.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.dto.leg.LegDTO;
@@ -8,11 +9,7 @@ import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
-import uz.ccrew.flightmanagement.dto.reservation.TravelClassCostDTO;
-import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
-import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
-import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 
@@ -103,55 +100,21 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     public List<FlightReservationDTO> getOneWayList(ReservationRequestDTO dto) {
-        // Retrieve flight schedules based on the request DTO
-        List<FlightSchedule> flightSchedules = flightScheduleRepository.findOneWay(dto.departureCity(), dto.arrivalCity(), dto.departureDate());
-
-        // Prepare a list to store the flight reservation DTOs
         List<FlightReservationDTO> flightReservationList = new ArrayList<>();
 
-        // Iterate over each flight schedule
+        List<FlightSchedule> flightSchedules = flightScheduleRepository.findOneWay(dto.departureCity(), dto.arrivalCity(), dto.departureDate());
         for (FlightSchedule flight : flightSchedules) {
-            // Get the count of legs for the flight
-            int legCount = legRepository.countByFlightSchedule_FlightNumber(flight.getFlightNumber());
-
-            // Retrieve reserved seats for each travel class
-            List<TravelClassSeatDTO> travelClassSeatList = itineraryLegRepository.getTravelClassReservedSeatsByFlight(flight.getFlightNumber(), legCount);
-            Map<TravelClassCode, Integer> reservedSeats = travelClassSeatList.stream().collect(Collectors.toMap(TravelClassSeatDTO::getTravelClassCode, TravelClassSeatDTO::getReservedSeats));
-
-            // Retrieve flight costs and initialize total seats map
-            List<FlightCost> flightCosts = flightCostRepository.findByFlightSchedule_FlightNumberAndId_ValidFromDateLessThanEqualAndValidToDateGreaterThanEqual(
-                    flight.getFlightNumber(), LocalDate.now(), LocalDate.now());
-
             HashMap<TravelClassCode, Integer> totalSeats = new HashMap<>();
             List<TravelClassCostDTO> costList = new ArrayList<>();
+            Map<TravelClassCode, Integer> reservedSeats = getReservedSeats(flight.getFlightNumber());
 
-            // Process flight costs to accumulate total seats and cost DTOs
-            for (FlightCost flightCost : flightCosts) {
-                List<TravelClassCapacity> travelClassCapacities = travelClassCapacityRepository.findById_AircraftTypeCode(flightCost.getId().getAircraftTypeCode());
+            initializeCostAndTotalSeats(flight.getFlightNumber(), costList, totalSeats);
 
-                for (TravelClassCapacity capacity : travelClassCapacities) {
-                    TravelClassCode travelClassCode = capacity.getId().getTravelClassCode();
-                    totalSeats.merge(travelClassCode, capacity.getSeatCapacity(), Integer::sum);
-                    costList.add(new TravelClassCostDTO(travelClassCode, flightCost.getFlightCost()));
-                }
-            }
-
-            // Compute available seats
-            HashMap<TravelClassCode, Integer> availableSeats = new HashMap<>();
-            for (Map.Entry<TravelClassCode, Integer> entry : totalSeats.entrySet()) {
-                TravelClassCode travelClassCode = entry.getKey();
-                int total = entry.getValue();
-                int reserved = reservedSeats.getOrDefault(travelClassCode, 0);
-                int available = total - reserved;
-                if (available < 1) {
-                    continue;
-                }
-                availableSeats.put(travelClassCode, available);
-            }
+            HashMap<TravelClassCode, Integer> availableSeats = computeAvailableSeats(totalSeats, reservedSeats);
             if (availableSeats.isEmpty()) {
                 continue;
             }
-            // Create FlightReservationDTO and add to the list
+
             FlightReservationDTO flightReservationDTO = FlightReservationDTO.builder()
                     .flightDTO(flightScheduleMapper.toDTO(flight))
                     .travelClassCostList(costList)
@@ -165,10 +128,55 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public List<FlightReservationDTO> getRoundTripList(ReservationRequestDTO reservationRequestDTO) {
+    public List<FlightReservationDTO> getRoundTripList(ReservationRequestDTO dto) {
         List<FlightReservationDTO> flightReservationList = new ArrayList<>();
 
-        //logic round trip
+        if (dto.returnDate().isBefore(dto.departureDate())) {
+            throw new BadRequestException("Return date must be after departure date");
+        }
+
+        List<RoundTrip> roundTrips = flightScheduleRepository.findRoundTrip(dto.departureCity(), dto.arrivalCity(), dto.departureDate(), dto.returnDate());
+
         return flightReservationList;
+    }
+
+
+    private void initializeCostAndTotalSeats(Long flightNumber, List<TravelClassCostDTO> costList, HashMap<TravelClassCode, Integer> totalSeats) {
+        LocalDate now = LocalDate.now();
+        List<FlightCost> flightCosts = flightCostRepository.findByFlightSchedule_FlightNumberAndId_ValidFromDateLessThanEqualAndValidToDateGreaterThanEqual(
+                flightNumber, now, now);
+
+        // Process flight costs to accumulate total seats and cost DTOs
+        for (FlightCost flightCost : flightCosts) {
+            List<TravelClassCapacity> travelClassCapacities = travelClassCapacityRepository.findById_AircraftTypeCode(flightCost.getId().getAircraftTypeCode());
+
+            for (TravelClassCapacity capacity : travelClassCapacities) {
+                TravelClassCode travelClassCode = capacity.getId().getTravelClassCode();
+                totalSeats.merge(travelClassCode, capacity.getSeatCapacity(), Integer::sum);
+                costList.add(new TravelClassCostDTO(travelClassCode, flightCost.getFlightCost()));
+            }
+        }
+    }
+
+    private Map<TravelClassCode, Integer> getReservedSeats(Long flightNumber) {
+        int legCount = legRepository.countByFlightSchedule_FlightNumber(flightNumber);
+
+        List<TravelClassSeatDTO> travelClassSeatList = itineraryLegRepository.getTravelClassReservedSeatsByFlight(flightNumber, legCount);
+        return travelClassSeatList.stream().collect(Collectors.toMap(TravelClassSeatDTO::getTravelClassCode, TravelClassSeatDTO::getReservedSeats));
+    }
+
+    private HashMap<TravelClassCode, Integer> computeAvailableSeats(HashMap<TravelClassCode, Integer> totalSeats, Map<TravelClassCode, Integer> reservedSeats) {
+        HashMap<TravelClassCode, Integer> availableSeats = new HashMap<>();
+        for (Map.Entry<TravelClassCode, Integer> entry : totalSeats.entrySet()) {
+            TravelClassCode travelClassCode = entry.getKey();
+            int total = entry.getValue();
+            int reserved = reservedSeats.getOrDefault(travelClassCode, 0);
+            int available = total - reserved;
+            if (available < 1) {
+                continue;
+            }
+            availableSeats.put(travelClassCode, available);
+        }
+        return availableSeats;
     }
 }
