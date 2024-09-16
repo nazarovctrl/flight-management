@@ -20,5 +20,7 @@ public record RoundTripReservationCreate(@NotNull(message = "Invalid flight numb
                                          @NotNull(message = "Invalid travel class code")
                                          TravelClassCode travelClassCode,
                                          @Valid
-                                         PassengerCreateDTO passenger) {
+                                         PassengerCreateDTO passenger,
+                                         @NotNull(message = "Invalid booking agent id")
+                                         Integer bookingAgentId) {
 }

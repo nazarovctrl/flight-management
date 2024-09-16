@@ -21,7 +21,7 @@ public class ItineraryReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
     @ManyToOne
-    @JoinColumn(name = "agent_id", foreignKey = @ForeignKey(name = "itinerary_reservations_f1"), nullable = true)
+    @JoinColumn(name = "agent_id", foreignKey = @ForeignKey(name = "itinerary_reservations_f1"), nullable = false)
     private BookingAgent agent;
     @ManyToOne
     @JoinColumn(name = "passenger_id", foreignKey = @ForeignKey(name = "itinerary_reservations_f2"), nullable = false)

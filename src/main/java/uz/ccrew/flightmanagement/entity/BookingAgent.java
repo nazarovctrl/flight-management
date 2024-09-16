@@ -14,7 +14,7 @@ public class BookingAgent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer agentId;
-    @Column
+    @Column(nullable = false, unique = true)
     private String agentName;
     @Column
     private String agentDetails;

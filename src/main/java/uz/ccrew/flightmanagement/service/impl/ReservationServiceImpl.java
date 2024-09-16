@@ -4,6 +4,7 @@ import uz.ccrew.flightmanagement.entity.*;
 import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
+import uz.ccrew.flightmanagement.util.RandomUtil;
 import uz.ccrew.flightmanagement.enums.TicketTypeCode;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
@@ -31,6 +32,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
     private final AuthUtil authUtil;
+    private final RandomUtil randomUtil;
     private final PassengerService passengerService;
     private final ReservationMapper reservationMapper;
     private final PaymentRepository paymentRepository;
@@ -39,6 +41,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final FlightScheduleService flightScheduleService;
     private final ReservationRepository reservationRepository;
     private final ItineraryLegRepository itineraryLegRepository;
+    private final BookingAgentRepository bookingAgentRepository;
     private final FlightScheduleRepository flightScheduleRepository;
     private final ReservationPaymentRepository reservationPaymentRepository;
 
@@ -46,6 +49,9 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationDTO makeOneWay(OneWayReservationCreateDTO dto) {
         FlightSchedule flight = flightScheduleRepository.loadById(dto.flightNumber());
+
+        BookingAgent bookingAgent = bookingAgentRepository.loadById(dto.bookingAgentId());
+
         OneWayFlightDTO oneWayFlight = flightScheduleService.getOneWayFlight(flight)
                 .orElseThrow(() -> new BadRequestException("Invalid one way flight"));
         //check
@@ -54,7 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
         Long paymentAmount = oneWayFlight.travelClassCostList().get(dto.travelClassCode());
         Passenger passenger = passengerService.getPassenger(dto.passenger());
 
-        ItineraryReservation reservation = makeReservation(passenger, paymentAmount, dto.ticketTypeCode(), dto.travelClassCode(), flight.getFlightNumber());
+        ItineraryReservation reservation = makeReservation(bookingAgent, passenger, paymentAmount, dto.ticketTypeCode(), dto.travelClassCode(), flight.getFlightNumber());
 
         return reservationMapper.toDTO(reservation);
     }
@@ -62,6 +68,8 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     @Override
     public ReservationDTO makeRoundTrip(RoundTripReservationCreate dto) {
+        BookingAgent bookingAgent = bookingAgentRepository.loadById(dto.bookingAgentId());
+
         FlightSchedule flight = flightScheduleRepository.loadById(dto.flightNumber());
         FlightSchedule returnFlight = flightScheduleRepository.loadById(dto.returnFlightNumber());
 
@@ -73,7 +81,7 @@ public class ReservationServiceImpl implements ReservationService {
         Long paymentAmount = roundTrip.travelClassCostList().get(dto.travelClassCode());
         Passenger passenger = passengerService.getPassenger(dto.passenger());
 
-        ItineraryReservation reservation = makeReservation(passenger, paymentAmount, dto.ticketTypeCode(), dto.travelClassCode(), flight.getFlightNumber(), returnFlight.getFlightNumber());
+        ItineraryReservation reservation = makeReservation(bookingAgent, passenger, paymentAmount, dto.ticketTypeCode(), dto.travelClassCode(), flight.getFlightNumber(), returnFlight.getFlightNumber());
 
         return reservationMapper.toDTO(reservation);
     }
@@ -158,13 +166,15 @@ public class ReservationServiceImpl implements ReservationService {
         }
     }
 
-    private ItineraryReservation makeReservation(Passenger passenger, Long paymentAmount, TicketTypeCode ticketTypeCode, TravelClassCode travelClassCode, Long... flightNumbers) {
+    private ItineraryReservation makeReservation(BookingAgent bookingAgent, Passenger passenger, Long paymentAmount, TicketTypeCode ticketTypeCode, TravelClassCode travelClassCode, Long... flightNumbers) {
         ItineraryReservation reservation = ItineraryReservation.builder()
+                .agent(bookingAgent)
                 .passenger(passenger)
                 .reservationStatusCode(ReservationStatusCode.CREATED)
                 .dateReservationMade(LocalDateTime.now())
                 .ticketTypeCode(ticketTypeCode)
                 .travelClassCode(travelClassCode)
+                .numberInParty(randomUtil.getRandomSeatNumber())
                 .build();
         reservationRepository.save(reservation);
 
