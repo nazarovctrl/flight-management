@@ -1,9 +1,9 @@
 package uz.ccrew.flightmanagement.service;
 
 import uz.ccrew.flightmanagement.dto.flightSchedule.*;
+import uz.ccrew.flightmanagement.entity.FlightSchedule;
 
 import org.springframework.data.domain.Page;
-import uz.ccrew.flightmanagement.entity.FlightSchedule;
 
 import java.util.List;
 import java.util.Optional;
