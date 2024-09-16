@@ -1,13 +1,11 @@
 package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.entity.Payment;
-import uz.ccrew.flightmanagement.entity.ReservationPayment;
-import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.mapper.PaymentMapper;
-import uz.ccrew.flightmanagement.repository.PaymentRepository;
 import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
 import uz.ccrew.flightmanagement.entity.ItineraryReservation;
+import uz.ccrew.flightmanagement.repository.PaymentRepository;
 import uz.ccrew.flightmanagement.repository.ReservationRepository;
 import uz.ccrew.flightmanagement.service.ReservationPaymentService;
 import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
@@ -57,21 +55,5 @@ public class ReservationPaymentServiceImpl implements ReservationPaymentService 
             reservation.setReservationStatusCode(ReservationStatusCode.CANCELED);
             reservationRepository.save(reservation);
         }
-    }
-
-    @Override
-    public void add(ItineraryReservation reservation, Long amount) {
-        Payment payment = Payment.builder()
-                .paymentAmount(amount)
-                .paymentStatusCode(PaymentStatusCode.CREATED)
-                .build();
-        paymentRepository.save(payment);
-
-        ReservationPayment reservationPayment = ReservationPayment.builder()
-                .id(new ReservationPayment.ReservationPaymentId(reservation.getReservationId(), payment.getPaymentId()))
-                .payment(payment)
-                .reservation(reservation)
-                .build();
-        reservationPaymentRepository.save(reservationPayment);
     }
 }

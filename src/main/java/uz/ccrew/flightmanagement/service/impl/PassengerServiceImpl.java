@@ -1,10 +1,10 @@
 package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.entity.User;
-import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.util.AuthUtil;
 import uz.ccrew.flightmanagement.entity.Passenger;
 import uz.ccrew.flightmanagement.mapper.PassengerMapper;
+import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.service.PassengerService;
 import uz.ccrew.flightmanagement.exp.AlreadyExistException;
 import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;

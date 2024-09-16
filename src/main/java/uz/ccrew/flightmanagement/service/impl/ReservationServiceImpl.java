@@ -5,6 +5,7 @@ import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
+import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.ReservationMapper;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
@@ -29,12 +30,13 @@ public class ReservationServiceImpl implements ReservationService {
     private final LegRepository legRepository;
     private final PassengerService passengerService;
     private final ReservationMapper reservationMapper;
+    private final PaymentRepository paymentRepository;
     private final ItineraryLegService itineraryLegService;
     private final FlightCostRepository flightCostRepository;
     private final ReservationRepository reservationRepository;
     private final ItineraryLegRepository itineraryLegRepository;
     private final FlightScheduleRepository flightScheduleRepository;
-    private final ReservationPaymentService reservationPaymentService;
+    private final ReservationPaymentRepository reservationPaymentRepository;
     private final TravelClassCapacityRepository travelClassCapacityRepository;
 
     @Transactional
@@ -58,7 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
         itineraryLegService.addItineraryLegs(reservation, flight.getFlightNumber());
 
         Long paymentAmount = getCost(dto.travelClassCode(), flight.getFlightNumber());
-        reservationPaymentService.add(reservation, paymentAmount);
+        addPayment(reservation, paymentAmount);
 
         return reservationMapper.toDTO(reservation);
     }
@@ -152,5 +154,20 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservedSeatCount >= totalSeatCount) {
             throw new BadRequestException("There is no available seat for this travel class code");
         }
+    }
+
+    private void addPayment(ItineraryReservation reservation, Long paymentAmount) {
+        Payment payment = Payment.builder()
+                .paymentAmount(paymentAmount)
+                .paymentStatusCode(PaymentStatusCode.CREATED)
+                .build();
+        paymentRepository.save(payment);
+
+        ReservationPayment reservationPayment = ReservationPayment.builder()
+                .id(new ReservationPayment.ReservationPaymentId(reservation.getReservationId(), payment.getPaymentId()))
+                .payment(payment)
+                .reservation(reservation)
+                .build();
+        reservationPaymentRepository.save(reservationPayment);
     }
 }
