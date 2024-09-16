@@ -1,17 +1,39 @@
 package uz.ccrew.flightmanagement.repository;
 
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.time.LocalDate;
 
 @Repository
 public interface FlightScheduleRepository extends BasicRepository<FlightSchedule, Long> {
+
+    @Query(value = """
+            select distinct new uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO(fs.flightNumber,
+            fs.departureDateTime,fs.arrivalDateTime,l.actualDepartureTime,l.actualArrivalTime)
+            from FlightSchedule fs
+            join Leg l on fs.flightNumber = l.flightSchedule.flightNumber
+            where fs.departureDateTime = l.actualDepartureTime
+            and fs.arrivalDateTime = l.actualArrivalTime
+            and l.originAirport = fs.originAirport.airportCode
+            """)
+    Page<FlightScheduleReportDTO> findOnTimeFlights(Pageable pageable);
+
+    @Query(value = """
+            select distinct new uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO(fs.flightNumber,
+            fs.departureDateTime,fs.arrivalDateTime,l.actualDepartureTime,l.actualArrivalTime) from FlightSchedule fs
+            join Leg l on fs.flightNumber = l.flightSchedule.flightNumber
+            where l.originAirport = fs.originAirport.airportCode
+            and ((l.actualDepartureTime is not null and fs.departureDateTime < l.actualDepartureTime)
+            or  (l.actualArrivalTime is not null and fs.arrivalDateTime < l.actualArrivalTime))
+            """)
+    Page<FlightScheduleReportDTO> findDelayedFlights(Pageable pageable);
 
     @Query(value = """ 
             select * from flight_schedules as w 

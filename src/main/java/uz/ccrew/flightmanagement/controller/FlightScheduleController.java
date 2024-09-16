@@ -2,6 +2,7 @@ package uz.ccrew.flightmanagement.controller;
 
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
@@ -59,11 +60,27 @@ public class FlightScheduleController {
         return ResponseMaker.ok(result);
     }
 
+    @GetMapping("/list/on-time")
+    @Operation(summary = "Get all flights on time")
+    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getOnTimeFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleReportDTO> result = flightScheduleService.getOnTimeFlights(page, size);
+        return ResponseMaker.ok(result);
+    }
+
+    @GetMapping("/list/delayed")
+    @Operation(summary = "Get all flights delayed")
+    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getDelayedFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleReportDTO> result = flightScheduleService.getDelayedFlights(page, size);
+        return ResponseMaker.ok(result);
+    }
+
     @GetMapping("/list/one-way")
     @Operation(summary = "Get list flights for one-way")
     public ResponseEntity<Response<List<FlightReservationDTO>>> getOneWayList(@RequestParam("departureCity") String departureCity,
-                                                                           @RequestParam("arrivalCity") String arrivalCity,
-                                                                           @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate) {
+                                                                              @RequestParam("arrivalCity") String arrivalCity,
+                                                                              @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate) {
         ReservationRequestDTO reservationRequestDTO = ReservationRequestDTO.builder()
                 .departureCity(departureCity)
                 .arrivalCity(arrivalCity)
