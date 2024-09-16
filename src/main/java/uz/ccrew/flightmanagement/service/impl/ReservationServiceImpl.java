@@ -9,10 +9,12 @@ import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.ReservationMapper;
+import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
 import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTrip;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTripFlightDTO;
 import uz.ccrew.flightmanagement.dto.reservation.RoundTripReservationCreate;
 import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
@@ -33,6 +35,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationMapper reservationMapper;
     private final PaymentRepository paymentRepository;
     private final ItineraryLegService itineraryLegService;
+    private final FlightScheduleMapper flightScheduleMapper;
     private final FlightScheduleService flightScheduleService;
     private final ReservationRepository reservationRepository;
     private final ItineraryLegRepository itineraryLegRepository;
@@ -73,6 +76,12 @@ public class ReservationServiceImpl implements ReservationService {
         ItineraryReservation reservation = makeReservation(passenger, paymentAmount, dto.ticketTypeCode(), dto.travelClassCode(), flight.getFlightNumber(), returnFlight.getFlightNumber());
 
         return reservationMapper.toDTO(reservation);
+    }
+
+    @Override
+    public List<FlightScheduleDTO> getFlightList(Long reservationId) {
+        List<FlightSchedule> flightList = reservationRepository.getFlightListByReservationId(reservationId);
+        return flightScheduleMapper.toDTOList(flightList);
     }
 
     @Override
