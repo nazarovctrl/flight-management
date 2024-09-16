@@ -46,7 +46,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         checkToAvailability(dto.travelClassCode(), dto.flightNumber());
 
-        Passenger passenger = passengerService.getPassenger(dto.passengerCreateDTO());
+        Passenger passenger = passengerService.getPassenger(dto.passenger());
 
         ItineraryReservation reservation = ItineraryReservation.builder()
                 .passenger(passenger)
