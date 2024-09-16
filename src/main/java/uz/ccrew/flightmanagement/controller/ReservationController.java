@@ -3,19 +3,17 @@ package uz.ccrew.flightmanagement.controller;
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
-
-import io.swagger.v3.oas.annotations.Operation;
 import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.RoundTripReservationCreate;
 import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

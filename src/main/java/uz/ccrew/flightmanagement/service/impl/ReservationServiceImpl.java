@@ -163,7 +163,6 @@ public class ReservationServiceImpl implements ReservationService {
         return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
 
-
     @Override
     public Page<PassengerDTO> findPassengersWithReservedSeatsOnFlight(String flightNumber, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
