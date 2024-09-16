@@ -5,6 +5,7 @@ import uz.ccrew.flightmanagement.mapper.PaymentMapper;
 import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
 import uz.ccrew.flightmanagement.entity.ItineraryReservation;
+import uz.ccrew.flightmanagement.repository.PaymentRepository;
 import uz.ccrew.flightmanagement.repository.ReservationRepository;
 import uz.ccrew.flightmanagement.service.ReservationPaymentService;
 import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class ReservationPaymentServiceImpl implements ReservationPaymentService {
     private final ReservationPaymentRepository reservationPaymentRepository;
     private final ReservationRepository reservationRepository;
+    private final PaymentRepository paymentRepository;
     private final ReservationService reservationService;
     private final PaymentMapper paymentMapper;
 

@@ -1,13 +1,13 @@
 package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.entity.*;
+import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.ReservationMapper;
-import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
@@ -26,61 +26,41 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
-    private final ReservationRepository reservationRepository;
-    private final PassengerRepository passengerRepository;
-    private final LegRepository legRepository;
-    private final FlightScheduleRepository flightScheduleRepository;
-    private final ItineraryLegRepository itineraryLegRepository;
-    private final FlightCostRepository flightCostRepository;
-    private final TravelClassCapacityRepository travelClassCapacityRepository;
-    private final PaymentRepository paymentRepository;
-    private final ReservationPaymentRepository reservationPaymentRepository;
     private final AuthUtil authUtil;
+    private final LegRepository legRepository;
+    private final PassengerService passengerService;
     private final ReservationMapper reservationMapper;
+    private final PaymentRepository paymentRepository;
+    private final ItineraryLegService itineraryLegService;
+    private final FlightCostRepository flightCostRepository;
+    private final ReservationRepository reservationRepository;
+    private final ItineraryLegRepository itineraryLegRepository;
+    private final FlightScheduleRepository flightScheduleRepository;
+    private final ReservationPaymentRepository reservationPaymentRepository;
+    private final TravelClassCapacityRepository travelClassCapacityRepository;
 
     @Transactional
     @Override
     public ReservationDTO makeOneWay(OneWayReservationCreateDTO dto) {
         FlightSchedule flight = flightScheduleRepository.loadById(dto.flightNumber());
 
-        checkToAvailability(dto.flightNumber(), dto.travelClassCode());
+        checkToAvailability(dto.travelClassCode(), dto.flightNumber());
 
-        Optional<Passenger> passenger = passengerRepository.findByCustomer_Id(authUtil.loadLoggedUser().getId());
-        if (passenger.isEmpty()) {
-            throw new BadRequestException("Create passenger before making reservation");
-        }
+        Passenger passenger = passengerService.getPassenger(dto.passenger());
+
         ItineraryReservation reservation = ItineraryReservation.builder()
-                .passenger(passenger.get())
+                .passenger(passenger)
                 .reservationStatusCode(ReservationStatusCode.CREATED)
                 .dateReservationMade(LocalDateTime.now())
                 .ticketTypeCode(dto.ticketTypeCode())
                 .travelClassCode(dto.travelClassCode())
                 .build();
-
         reservationRepository.save(reservation);
 
-        List<Leg> legs = legRepository.findAllByFlightSchedule_FlightNumber(flight.getFlightNumber());
-        for (Leg leg : legs) {
-            ItineraryLeg itineraryLeg = ItineraryLeg.builder()
-                    .id(new ItineraryLeg.ItineraryLegId(reservation.getReservationId(), leg.getLegId()))
-                    .leg(leg)
-                    .reservation(reservation)
-                    .build();
-            itineraryLegRepository.save(itineraryLeg);
-        }
+        itineraryLegService.addItineraryLegs(reservation, flight.getFlightNumber());
 
-        Payment payment = Payment.builder()
-                .paymentAmount(getCost(flight.getFlightNumber(), dto.travelClassCode()))
-                .paymentStatusCode(PaymentStatusCode.CREATED)
-                .build();
-        paymentRepository.save(payment);
-
-        ReservationPayment reservationPayment = ReservationPayment.builder()
-                .id(new ReservationPayment.ReservationPaymentId(reservation.getReservationId(), payment.getPaymentId()))
-                .payment(payment)
-                .reservation(reservation)
-                .build();
-        reservationPaymentRepository.save(reservationPayment);
+        Long paymentAmount = getCost(dto.travelClassCode(), flight.getFlightNumber());
+        addPayment(reservation, paymentAmount);
 
         return reservationMapper.toDTO(reservation);
     }
@@ -91,7 +71,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (flight.isEmpty()) {
             throw new BadRequestException("Reservation flight is invalid");
         }
-        checkToAvailability(flight.get().getFlightNumber(), travelClassCode);
+        checkToAvailability(travelClassCode, flight.get().getFlightNumber());
     }
 
     @Override
@@ -130,7 +110,7 @@ public class ReservationServiceImpl implements ReservationService {
         return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
 
-    private Long getCost(Long flightNumber, TravelClassCode classCode) {
+    private Long getCost(TravelClassCode classCode, Long flightNumber) {
         List<FlightCost> flightCosts = flightCostRepository.findByFlightSchedule_FlightNumberAndId_ValidFromDateLessThanEqualAndValidToDateGreaterThanEqual(
                 flightNumber, LocalDate.now(), LocalDate.now());
 
@@ -146,7 +126,7 @@ public class ReservationServiceImpl implements ReservationService {
         throw new BadRequestException("FLight cost for given travel class not found");
     }
 
-    private void checkToAvailability(Long flightNumber, TravelClassCode travelClassCode) {
+    private void checkToAvailability(TravelClassCode travelClassCode, Long flightNumber) {
         int legCount = legRepository.countByFlightSchedule_FlightNumber(flightNumber);
 
         // Retrieve reserved seats for each travel class
@@ -174,5 +154,20 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservedSeatCount >= totalSeatCount) {
             throw new BadRequestException("There is no available seat for this travel class code");
         }
+    }
+
+    private void addPayment(ItineraryReservation reservation, Long paymentAmount) {
+        Payment payment = Payment.builder()
+                .paymentAmount(paymentAmount)
+                .paymentStatusCode(PaymentStatusCode.CREATED)
+                .build();
+        paymentRepository.save(payment);
+
+        ReservationPayment reservationPayment = ReservationPayment.builder()
+                .id(new ReservationPayment.ReservationPaymentId(reservation.getReservationId(), payment.getPaymentId()))
+                .payment(payment)
+                .reservation(reservation)
+                .build();
+        reservationPaymentRepository.save(reservationPayment);
     }
 }
