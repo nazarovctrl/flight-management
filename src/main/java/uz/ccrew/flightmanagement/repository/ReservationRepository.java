@@ -11,7 +11,7 @@ public interface ReservationRepository extends BasicRepository<ItineraryReservat
     Page<ItineraryReservation> findByPassenger_CustomerId(Long customerId, Pageable pageable);
 
     @Query(value = """
-            select distinct l.reservation.passenger
+            select l.reservation.passenger
             from ItineraryLeg l
             where l.leg.flightSchedule.flightNumber = ?1
             and l.reservation.reservationStatusCode = 'CONFIRMED'
