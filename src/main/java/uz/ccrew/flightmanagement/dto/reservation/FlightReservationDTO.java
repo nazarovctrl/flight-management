@@ -3,9 +3,12 @@ package uz.ccrew.flightmanagement.dto.reservation;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 
+import lombok.Builder;
+
 import java.util.HashMap;
 import java.util.List;
 
+@Builder
 public record FlightReservationDTO(FlightScheduleDTO flightDTO,
                                    FlightScheduleDTO returnFlightDTO,
                                    List<TravelClassCostDTO> travelClassCostList,

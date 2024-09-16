@@ -16,8 +16,8 @@ import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 
-import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -30,14 +30,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FlightScheduleServiceImpl implements FlightScheduleService {
-    private final FlightScheduleRepository flightScheduleRepository;
+    private final LegMapper legMapper;
     private final LegRepository legRepository;
+    private final AirportRepository airportRepository;
+    private final FlightScheduleMapper flightScheduleMapper;
     private final FlightCostRepository flightCostRepository;
     private final ItineraryLegRepository itineraryLegRepository;
-    private final AirportRepository airportRepository;
+    private final FlightScheduleRepository flightScheduleRepository;
     private final TravelClassCapacityRepository travelClassCapacityRepository;
-    private final FlightScheduleMapper flightScheduleMapper;
-    private final LegMapper legMapper;
 
     @Override
     public FlightScheduleDTO addFlightSchedule(FlightScheduleCreateDTO dto) {
@@ -123,7 +123,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                     flight.getFlightNumber(), LocalDate.now(), LocalDate.now());
 
             HashMap<TravelClassCode, Integer> totalSeats = new HashMap<>();
-            List<TravelClassCostDTO> travelClassCostDTOs = new ArrayList<>();
+            List<TravelClassCostDTO> costList = new ArrayList<>();
 
             // Process flight costs to accumulate total seats and cost DTOs
             for (FlightCost flightCost : flightCosts) {
@@ -132,7 +132,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                 for (TravelClassCapacity capacity : travelClassCapacities) {
                     TravelClassCode travelClassCode = capacity.getId().getTravelClassCode();
                     totalSeats.merge(travelClassCode, capacity.getSeatCapacity(), Integer::sum);
-                    travelClassCostDTOs.add(new TravelClassCostDTO(travelClassCode, flightCost.getFlightCost()));
+                    costList.add(new TravelClassCostDTO(travelClassCode, flightCost.getFlightCost()));
                 }
             }
 
@@ -152,8 +152,12 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                 continue;
             }
             // Create FlightReservationDTO and add to the list
-            FlightReservationDTO flightReservationDTO = new FlightReservationDTO(
-                    flightScheduleMapper.toDTO(flight), null, travelClassCostDTOs, availableSeats);
+            FlightReservationDTO flightReservationDTO = FlightReservationDTO.builder()
+                    .flightDTO(flightScheduleMapper.toDTO(flight))
+                    .travelClassCostList(costList)
+                    .travelClassAvailableSeats(availableSeats)
+                    .build();
+
             flightReservationList.add(flightReservationDTO);
         }
 
