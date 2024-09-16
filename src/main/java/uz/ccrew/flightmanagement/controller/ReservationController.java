@@ -27,9 +27,9 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    @GetMapping("/find-reserved/seats/{number}")
+    @GetMapping("/flight-passengers/{flightNumber}")
     @Operation(summary = "Get all customers who have seats reserved on a given flight.")
-    public ResponseEntity<Response<Page<PassengerDTO>>> findReservedSeats(@PathVariable("number") String flightNumber,
+    public ResponseEntity<Response<Page<PassengerDTO>>> findReservedSeats(@PathVariable("flightNumber") String flightNumber,
                                                                           @RequestParam(value = "page", defaultValue = "0", required = false) int page,
                                                                           @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
         Page<PassengerDTO> result = reservationService.findPassengersWithReservedSeatsOnFlight(flightNumber, page, size);
