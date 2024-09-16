@@ -4,6 +4,7 @@ import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.RoundTripReservationCreate;
 import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
 
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/reservation")
@@ -45,11 +48,18 @@ public class ReservationController {
         return ResponseMaker.ok(result);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/my/list")
     @Operation(summary = "Get reservation list")
     public ResponseEntity<Response<Page<ReservationDTO>>> getList(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
                                                                   @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
         Page<ReservationDTO> result = reservationService.getList(page, size);
+        return ResponseMaker.ok(result);
+    }
+
+    @GetMapping("/flight-list/{reservationId}")
+    @Operation(summary = "Get Reservation flight list")
+    public ResponseEntity<Response<List<FlightScheduleDTO>>> getFlightList(@PathVariable("reservationId") Long reservationId) {
+        List<FlightScheduleDTO> result = reservationService.getFlightList(reservationId);
         return ResponseMaker.ok(result);
     }
 }
