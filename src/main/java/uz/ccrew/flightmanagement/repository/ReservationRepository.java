@@ -15,6 +15,7 @@ public interface ReservationRepository extends BasicRepository<ItineraryReservat
             from ItineraryLeg l
             where l.leg.flightSchedule.flightNumber = ?1
             and l.reservation.reservationStatusCode = 'CONFIRMED'
+            order by l.reservation.dateReservationMade
             """)
     Page<Passenger> findPassengersWithReservedSeatsOnFlight(String flightNumber, Pageable pageable);
 }
