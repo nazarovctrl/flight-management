@@ -24,4 +24,6 @@ public interface FlightScheduleService {
     Page<FlightScheduleReportDTO> getDelayedFlights(int page, int size);
 
     List<FlightReservationDTO> getOneWayList(ReservationRequestDTO dto);
+
+    List<FlightReservationDTO> getRoundTripList(ReservationRequestDTO reservationRequestDTO);
 }

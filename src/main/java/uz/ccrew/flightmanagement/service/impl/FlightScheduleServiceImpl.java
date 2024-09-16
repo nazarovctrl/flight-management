@@ -107,7 +107,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
         List<FlightSchedule> flightSchedules = flightScheduleRepository.findOneWay(dto.departureCity(), dto.arrivalCity(), dto.departureDate());
 
         // Prepare a list to store the flight reservation DTOs
-        List<FlightReservationDTO> flightReservationDTOList = new ArrayList<>();
+        List<FlightReservationDTO> flightReservationList = new ArrayList<>();
 
         // Iterate over each flight schedule
         for (FlightSchedule flight : flightSchedules) {
@@ -153,10 +153,18 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
             }
             // Create FlightReservationDTO and add to the list
             FlightReservationDTO flightReservationDTO = new FlightReservationDTO(
-                    flightScheduleMapper.toDTO(flight), travelClassCostDTOs, availableSeats);
-            flightReservationDTOList.add(flightReservationDTO);
+                    flightScheduleMapper.toDTO(flight), null, travelClassCostDTOs, availableSeats);
+            flightReservationList.add(flightReservationDTO);
         }
 
-        return flightReservationDTOList;
+        return flightReservationList;
+    }
+
+    @Override
+    public List<FlightReservationDTO> getRoundTripList(ReservationRequestDTO reservationRequestDTO) {
+        List<FlightReservationDTO> flightReservationList = new ArrayList<>();
+
+        //logic round trip
+        return flightReservationList;
     }
 }
