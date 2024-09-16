@@ -97,6 +97,9 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     @Override
     public List<OneWayFlightDTO> getOneWayList(FlightListRequestDTO dto) {
         List<OneWayFlightDTO> flightReservationList = new ArrayList<>();
+        if (dto.departureDate().isBefore(LocalDate.now())) {
+            throw new BadRequestException("Departure date can be minimum today");
+        }
 
         List<FlightSchedule> flightSchedules = flightScheduleRepository.findOneWay(dto.departureCity(), dto.arrivalCity(), dto.departureDate());
         flightSchedules.parallelStream()
@@ -112,6 +115,9 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     public List<RoundTripFlightDTO> getRoundTripList(FlightListRequestDTO dto) {
         List<RoundTripFlightDTO> roundTripFlights = new ArrayList<>();
 
+        if (dto.departureDate().isBefore(LocalDate.now())) {
+            throw new BadRequestException("Departure date can be minimum today");
+        }
         if (dto.returnDate().isBefore(dto.departureDate())) {
             throw new BadRequestException("Return date must be after departure date");
         }
@@ -126,7 +132,8 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
         return roundTripFlights;
     }
 
-    private Optional<RoundTripFlightDTO> getRoundTripDTO(RoundTrip roundTrip) {
+    @Override
+    public Optional<RoundTripFlightDTO> getRoundTripDTO(RoundTrip roundTrip) {
         Optional<OneWayFlightDTO> flightOptional = getOneWayFlight(roundTrip.flight());
         if (flightOptional.isEmpty()) {
             return Optional.empty();
@@ -187,7 +194,8 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
         return roundTripCosts;
     }
 
-    private Optional<OneWayFlightDTO> getOneWayFlight(FlightSchedule flight) {
+    @Override
+    public Optional<OneWayFlightDTO> getOneWayFlight(FlightSchedule flight) {
         HashMap<TravelClassCode, Integer> totalSeats = new HashMap<>();
         HashMap<TravelClassCode, Long> costs = new HashMap<>();
         Map<TravelClassCode, Integer> reservedSeats = getReservedSeats(flight.getFlightNumber());

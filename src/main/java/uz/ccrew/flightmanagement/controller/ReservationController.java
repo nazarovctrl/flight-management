@@ -4,6 +4,7 @@ import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
+import uz.ccrew.flightmanagement.dto.reservation.RoundTripReservationCreate;
 import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
 
 import jakarta.validation.Valid;
@@ -27,6 +28,13 @@ public class ReservationController {
     @Operation(summary = "Make one way reservation")
     public ResponseEntity<Response<ReservationDTO>> makeOneWay(@RequestBody @Valid OneWayReservationCreateDTO dto) {
         ReservationDTO result = reservationService.makeOneWay(dto);
+        return ResponseMaker.ok(result);
+    }
+
+    @PostMapping("/make/round-trip")
+    @Operation(summary = "Make one way reservation")
+    public ResponseEntity<Response<ReservationDTO>> makeRoundTrip(@RequestBody @Valid RoundTripReservationCreate dto) {
+        ReservationDTO result = reservationService.makeRoundTrip(dto);
         return ResponseMaker.ok(result);
     }
 
