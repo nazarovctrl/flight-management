@@ -1,18 +1,29 @@
 package uz.ccrew.flightmanagement.repository;
 
+import uz.ccrew.flightmanagement.entity.FlightSchedule;
 import uz.ccrew.flightmanagement.entity.ItineraryLeg;
-import uz.ccrew.flightmanagement.enums.TravelClassCode;
+import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
 
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 public interface ItineraryLegRepository extends BasicRepository<ItineraryLeg, Long> {
     @Query("""
-            select w.reservation.travelClassCode, count(*) / ?2
+            select new uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO(w.reservation.travelClassCode, (count(*) / ?2) )
               from ItineraryLeg w
              where w.leg.flightSchedule.flightNumber = ?1
+             and w.reservation.reservationStatusCode = 'CONFIRMED'
              group by w.reservation.travelClassCode
             """)
-    HashMap<TravelClassCode,Integer> getTravelClassReservedSeatsByFlight(Long flightNumber, int legCount);
+    List<TravelClassSeatDTO> getTravelClassReservedSeatsByFlight(Long flightNumber, int legCount);
+
+    @Query("""
+            select w.leg.flightSchedule from ItineraryLeg w
+            where w.reservation.reservationId = ?1
+            """)
+    Optional<FlightSchedule> findFlightByReservationId(Long reservationId);
+
+    void deleteByReservation_ReservationId(Long reservationId);
 }

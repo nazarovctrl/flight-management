@@ -1,29 +1,31 @@
 package uz.ccrew.flightmanagement.service.impl;
 
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
-import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
-import uz.ccrew.flightmanagement.dto.reservation.TravelClassCostDTO;
 import uz.ccrew.flightmanagement.entity.*;
-import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.dto.leg.LegDTO;
 import uz.ccrew.flightmanagement.mapper.LegMapper;
+import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
+import uz.ccrew.flightmanagement.dto.reservation.TravelClassCostDTO;
+import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
+import uz.ccrew.flightmanagement.dto.reservation.FlightReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationRequestDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 
 import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.time.LocalDate;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -113,10 +115,8 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
             int legCount = legRepository.countByFlightSchedule_FlightNumber(flight.getFlightNumber());
 
             // Retrieve reserved seats for each travel class
-            HashMap<TravelClassCode, Integer> reservedSeats = itineraryLegRepository.getTravelClassReservedSeatsByFlight(flight.getFlightNumber(), legCount);
-            if (reservedSeats == null) {
-                reservedSeats = new HashMap<>(); // Initialize to empty map if null
-            }
+            List<TravelClassSeatDTO> travelClassSeatList = itineraryLegRepository.getTravelClassReservedSeatsByFlight(flight.getFlightNumber(), legCount);
+            Map<TravelClassCode, Integer> reservedSeats = travelClassSeatList.stream().collect(Collectors.toMap(TravelClassSeatDTO::getTravelClassCode, TravelClassSeatDTO::getReservedSeats));
 
             // Retrieve flight costs and initialize total seats map
             List<FlightCost> flightCosts = flightCostRepository.findByFlightSchedule_FlightNumberAndId_ValidFromDateLessThanEqualAndValidToDateGreaterThanEqual(
@@ -143,9 +143,14 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                 int total = entry.getValue();
                 int reserved = reservedSeats.getOrDefault(travelClassCode, 0);
                 int available = total - reserved;
+                if (available < 1) {
+                    continue;
+                }
                 availableSeats.put(travelClassCode, available);
             }
-
+            if (availableSeats.isEmpty()) {
+                continue;
+            }
             // Create FlightReservationDTO and add to the list
             FlightReservationDTO flightReservationDTO = new FlightReservationDTO(
                     flightScheduleMapper.toDTO(flight), travelClassCostDTOs, availableSeats);
