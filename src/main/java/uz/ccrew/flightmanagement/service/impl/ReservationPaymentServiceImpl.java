@@ -34,12 +34,13 @@ public class ReservationPaymentServiceImpl implements ReservationPaymentService 
     @Override
     public void confirmReservation(UUID paymentId) {
         List<ItineraryReservation> reservationList = reservationPaymentRepository.findByPaymentId(paymentId);
-        for (ItineraryReservation reservation : reservationList) {
-            reservationService.checkToAvailabilityWithReservationId(reservation.getReservationId(), reservation.getTravelClassCode());
 
+        reservationList.parallelStream().forEach(reservation -> {
+            reservationService.checkToConfirmation(reservation.getReservationId(), reservation.getTravelClassCode());
             reservation.setReservationStatusCode(ReservationStatusCode.CONFIRMED);
-            reservationRepository.save(reservation);
-        }
+        });
+
+        reservationRepository.saveAll(reservationList);
     }
 
     @Transactional
@@ -47,11 +48,11 @@ public class ReservationPaymentServiceImpl implements ReservationPaymentService 
     public void reverseReservation(UUID paymentId) {
         List<ItineraryReservation> reservationList = reservationPaymentRepository.findByPaymentId(paymentId);
 
-        for (ItineraryReservation reservation : reservationList) {
+        reservationList.parallelStream().forEach(reservation -> {
             reservationService.reverseReservation(reservation.getReservationId());
-
             reservation.setReservationStatusCode(ReservationStatusCode.CANCELED);
-            reservationRepository.save(reservation);
-        }
+        });
+
+        reservationRepository.saveAll(reservationList);
     }
 }
