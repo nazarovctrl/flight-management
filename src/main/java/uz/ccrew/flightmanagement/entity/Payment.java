@@ -1,14 +1,21 @@
 package uz.ccrew.flightmanagement.entity;
 
+import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
+
+import lombok.*;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
-import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "payments")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Payment {
     @Id
     @UuidGenerator
