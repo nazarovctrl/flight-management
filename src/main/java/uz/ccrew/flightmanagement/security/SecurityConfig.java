@@ -1,6 +1,5 @@
 package uz.ccrew.flightmanagement.security;
 
-import uz.ccrew.flightmanagement.enums.UserRole;
 import uz.ccrew.flightmanagement.security.jwt.JWTAuthenticationFilter;
 import uz.ccrew.flightmanagement.security.user.UserAuthenticationEntryPoint;
 
@@ -20,10 +19,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JWTAuthenticationFilter authenticationFilter;
@@ -39,33 +40,6 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/swagger-resources",
             "/swagger-resources/**"
-    };
-    private static final String[] ADMIN_REQUEST_PATTERNS = {
-            "/api/v1/user/**",
-            "/api/v1/flight-schedule/add",
-            "/api/v1/flight-schedule/delete/*",
-            "/api/v1/airport/add",
-            "/api/v1/ref-calendar/**",
-            "/api/v1/flight-cost/**",
-            "/api/v1/leg/**",
-            "/api/v1/booking-agent/**",
-            "/api/v1/travel-class-capacity/**"
-    };
-    private static final String[] EMPLOYEE_REQUEST_PATTERNS = {
-            "/api/v1/report/**",
-            "/api/v1/flight-schedule/get-by-airport/*",
-            "/api/v1/flight-schedule/get/*",
-            "/api/v1/flight-schedule/list/on-time",
-            "/api/v1/flight-schedule/list/delayed"
-    };
-    private static final String[] CUSTOMER_REQUEST_PATTERNS = {
-            "/api/v1/passenger/add",
-            "/api/v1/airport/city/list",
-            "/api/v1/flight-schedule/list/one-way",
-            "/api/v1/flight-schedule/list/round-trip",
-            "/api/v1/reservation/**",
-            "/api/v1/reservation-payment/**",
-            "/api/v1/payment/**"
     };
 
     @Bean
@@ -98,10 +72,6 @@ public class SecurityConfig {
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll()
-                        .requestMatchers("/api/v1/auth/refresh", "/api/v1/user/*").hasAnyAuthority(UserRole.all())
-                        .requestMatchers(EMPLOYEE_REQUEST_PATTERNS).hasAuthority(UserRole.EMPLOYEE.name())
-                        .requestMatchers(ADMIN_REQUEST_PATTERNS).hasAuthority(UserRole.ADMINISTRATOR.name())
-                        .requestMatchers(CUSTOMER_REQUEST_PATTERNS).hasAuthority(UserRole.CUSTOMER.name())
                         .anyRequest().authenticated());
         return httpSecurity.build();
     }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
@@ -26,6 +27,7 @@ public class PassengerController {
     private final PassengerService passengerService;
 
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Add passenger")
     public ResponseEntity<Response<PassengerDTO>> add(@RequestBody @Valid PassengerCreateDTO dto) {
         PassengerDTO result = passengerService.add(dto);

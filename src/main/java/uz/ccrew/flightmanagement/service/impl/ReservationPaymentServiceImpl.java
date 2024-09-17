@@ -27,6 +27,7 @@ public class ReservationPaymentServiceImpl implements ReservationPaymentService 
 
     @Override
     public List<PaymentDTO> getPaymentList(Long reservationId) {
+        //TODO check to owner
         List<Payment> paymentList = reservationPaymentRepository.findByReservationId(reservationId);
         return paymentMapper.toDTOList(paymentList);
     }

@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.time.LocalDate;
@@ -32,6 +33,7 @@ public class FlightScheduleController {
     private final FlightScheduleService flightScheduleService;
 
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
     @Operation(summary = "Add flightSchedule, role admin")
     public ResponseEntity<FlightScheduleDTO> add(@RequestBody @Valid FlightScheduleCreateDTO flightScheduleCreateDTO) {
         FlightScheduleDTO result = flightScheduleService.addFlightSchedule(flightScheduleCreateDTO);
@@ -39,6 +41,7 @@ public class FlightScheduleController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
     @Operation(summary = "Delete flightSchedule, role admin")
     public ResponseEntity<Response<?>> delete(@PathVariable("id") Long id) {
         flightScheduleService.delete(id);
@@ -46,6 +49,7 @@ public class FlightScheduleController {
     }
 
     @GetMapping("/get/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR','EMPLOYEE','CUSTOMER')")
     @Operation(summary = "Get flightSchedule")
     public ResponseEntity<FlightScheduleDTO> get(@PathVariable("id") Long id) {
         FlightScheduleDTO result = flightScheduleService.getFlightSchedule(id);
@@ -53,6 +57,7 @@ public class FlightScheduleController {
     }
 
     @GetMapping("/get-by-airport/{code}")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR','EMPLOYEE')")
     @Operation(summary = "Get all flights for a given airport.")
     public ResponseEntity<Response<Page<FlightScheduleDTO>>> getFlightsByAirport(@PathVariable("code") String code,
                                                                                  @RequestParam(value = "page", defaultValue = "0", required = false) int page,
@@ -62,6 +67,7 @@ public class FlightScheduleController {
     }
 
     @GetMapping("/list/on-time")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR','EMPLOYEE')")
     @Operation(summary = "Get all flights on time")
     public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getOnTimeFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
                                                                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
@@ -70,6 +76,7 @@ public class FlightScheduleController {
     }
 
     @GetMapping("/list/delayed")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR','EMPLOYEE')")
     @Operation(summary = "Get all flights delayed")
     public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getDelayedFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
                                                                                      @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
@@ -78,13 +85,14 @@ public class FlightScheduleController {
     }
 
     @GetMapping("/list/one-way")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get list flights for one-way")
     public ResponseEntity<Response<List<OneWayFlightDTO>>> getOneWayList(@RequestParam("departureCity") String departureCity,
                                                                          @RequestParam("arrivalCity") String arrivalCity,
                                                                          @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate) {
         FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
-                .departureCity(departureCity)
-                .arrivalCity(arrivalCity)
+                .departureCity(departureCity.toUpperCase())
+                .arrivalCity(arrivalCity.toUpperCase())
                 .departureDate(departureDate).build();
 
         List<OneWayFlightDTO> result = flightScheduleService.getOneWayList(flightListRequestDTO);
@@ -92,14 +100,15 @@ public class FlightScheduleController {
     }
 
     @GetMapping("/list/round-trip")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get list flights for round trip")
     public ResponseEntity<Response<List<RoundTripFlightDTO>>> getRoundTripList(@RequestParam("departureCity") String departureCity,
                                                                                @RequestParam("arrivalCity") String arrivalCity,
                                                                                @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
                                                                                @RequestParam("returnDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate) {
         FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
-                .departureCity(departureCity)
-                .arrivalCity(arrivalCity)
+                .departureCity(departureCity.toUpperCase())
+                .arrivalCity(arrivalCity.toUpperCase())
                 .departureDate(departureDate)
                 .returnDate(returnDate).build();
 

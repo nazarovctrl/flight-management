@@ -11,6 +11,8 @@ import uz.ccrew.flightmanagement.dto.bookingagent.BookingAgentCreateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BookingAgentServiceImpl implements BookingAgentService {
@@ -26,5 +28,11 @@ public class BookingAgentServiceImpl implements BookingAgentService {
         bookingAgentRepository.save(entity);
 
         return bookingAgentMapper.toDTO(entity);
+    }
+
+    @Override
+    public List<BookingAgentDTO> getList() {
+        List<BookingAgent> entityList = bookingAgentRepository.findAll();
+        return bookingAgentMapper.toDTOList(entityList);
     }
 }
