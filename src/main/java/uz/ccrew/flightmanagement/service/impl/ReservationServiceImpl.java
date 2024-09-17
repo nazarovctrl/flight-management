@@ -1,26 +1,24 @@
 package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
+import uz.ccrew.flightmanagement.dto.reservation.*;
 import uz.ccrew.flightmanagement.entity.*;
+import uz.ccrew.flightmanagement.mapper.FlightCostMapper;
 import uz.ccrew.flightmanagement.mapper.PassengerMapper;
 import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
 import uz.ccrew.flightmanagement.util.RandomUtil;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
-import uz.ccrew.flightmanagement.dto.reservation.MainDTO;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.ReservationMapper;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
 import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTrip;
-import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTripFlightDTO;
-import uz.ccrew.flightmanagement.dto.reservation.RoundTripReservationCreate;
-import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -50,6 +48,10 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationPaymentRepository reservationPaymentRepository;
     private final FlightCostRepository flightCostRepository;
     private final TravelClassCapacityRepository travelClassCapacityRepository;
+    private final AirportRepository airportRepository;
+    private final PassengerRepository passengerRepository;
+    private final FlightCostMapper flightCostMapper;
+    private final LegRepository legRepository;
 
     @Transactional
     @Override
@@ -98,6 +100,38 @@ public class ReservationServiceImpl implements ReservationService {
     public List<FlightScheduleDTO> getFlightList(Long reservationId) {
         List<FlightSchedule> flightList = reservationRepository.getFlightListByReservationId(reservationId);
         return flightScheduleMapper.toDTOList(flightList);
+    }
+
+    @Override
+    public ReservationDTO makeFlexible(ReservationFlexibleDTO dto) {
+        MainDTO mainDTO = dto.mainDTO();
+        Optional<Airport> originAirportOptional = airportRepository.findFirstByCity(dto.departureCity());
+        Optional<Airport> destinationAirportOptional = airportRepository.findFirstByCity(dto.arrivalCity());
+        if (originAirportOptional.isEmpty() || destinationAirportOptional.isEmpty()) {
+            throw new BadRequestException("Departure or arrival city are not found");
+        }
+        Airport originAirport = originAirportOptional.get();
+        Airport destinationAirport = destinationAirportOptional.get();
+        // airlineCode,usualAircraftTypeCode,arrivalDateTime
+        FlightSchedule flightSchedule = FlightSchedule.builder()
+                .departureDateTime(dto.departureTime())
+                .originAirport(originAirport)
+                .destinationAirport(destinationAirport)
+                .build();
+        flightScheduleRepository.save(flightSchedule);
+        Leg leg = Leg.builder()
+                .destinationAirport(destinationAirport.getAirportCode())
+                .originAirport(originAirport.getAirportCode())
+                .flightSchedule(flightSchedule)
+                .build();
+        legRepository.save(leg);
+        BookingAgent bookingAgent = bookingAgentRepository.loadById(dto.mainDTO().bookingAgentId());
+        Passenger passenger = passengerService.getPassenger(dto.mainDTO().passenger());
+
+        ItineraryReservation reservation = makeReservation(bookingAgent, passenger, dto.payment(), mainDTO, flightSchedule.getFlightNumber());
+
+
+        return reservationMapper.toDTO(reservation);
     }
 
     @Override

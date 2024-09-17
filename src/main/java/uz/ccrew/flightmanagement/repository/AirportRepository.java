@@ -14,4 +14,6 @@ public interface AirportRepository extends BasicRepository<Airport, String> {
 
     @Query("select distinct w.city from Airport w")
     List<String> getCityList();
+
+    Optional<Airport> findFirstByCity(String city);
 }
