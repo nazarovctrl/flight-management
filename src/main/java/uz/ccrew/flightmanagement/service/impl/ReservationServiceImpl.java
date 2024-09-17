@@ -102,6 +102,7 @@ public class ReservationServiceImpl implements ReservationService {
         return flightScheduleMapper.toDTOList(flightList);
     }
 
+    @Transactional
     @Override
     public ReservationDTO makeFlexible(ReservationFlexibleDTO dto) {
         MainDTO mainDTO = dto.mainDTO();
