@@ -1,7 +1,7 @@
 package uz.ccrew.flightmanagement.dto.reservation;
 
-import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 import uz.ccrew.flightmanagement.enums.AirlineCode;
+import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 
 import java.time.LocalDateTime;
 

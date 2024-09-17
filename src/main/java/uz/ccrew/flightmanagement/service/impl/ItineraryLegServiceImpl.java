@@ -1,10 +1,10 @@
 package uz.ccrew.flightmanagement.service.impl;
 
-import uz.ccrew.flightmanagement.entity.ItineraryLeg;
-import uz.ccrew.flightmanagement.entity.ItineraryReservation;
 import uz.ccrew.flightmanagement.entity.Leg;
+import uz.ccrew.flightmanagement.entity.ItineraryLeg;
 import uz.ccrew.flightmanagement.repository.LegRepository;
 import uz.ccrew.flightmanagement.service.ItineraryLegService;
+import uz.ccrew.flightmanagement.entity.ItineraryReservation;
 import uz.ccrew.flightmanagement.repository.ItineraryLegRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItineraryLegServiceImpl implements ItineraryLegService {
-    private final ItineraryLegRepository itineraryLegRepository;
     private final LegRepository legRepository;
+    private final ItineraryLegRepository itineraryLegRepository;
 
     @Override
     public void addItineraryLegs(ItineraryReservation reservation, Long... flightNumbers) {

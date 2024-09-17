@@ -1,7 +1,7 @@
 package uz.ccrew.flightmanagement.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,7 +13,7 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItineraryLeg {
+public class ItineraryLeg extends Auditable {
     @EmbeddedId
     private ItineraryLegId id;
 

@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +32,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentDTO pay(UUID paymentId) {
         //TODO check to owner
-
         Payment payment = paymentRepository.loadById(paymentId);
         if (!payment.getPaymentStatusCode().equals(PaymentStatusCode.CREATED)) {
             throw new BadRequestException("Invalid payment status");
@@ -54,7 +53,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentDTO reverse(UUID paymentId) {
         //TODO check to owner
-
         Payment payment = paymentRepository.loadById(paymentId);
         if (!payment.getPaymentStatusCode().equals(PaymentStatusCode.PAYED)) {
             throw new BadRequestException("Invalid payment status");

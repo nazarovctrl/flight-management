@@ -1,8 +1,8 @@
 package uz.ccrew.flightmanagement.repository;
 
+import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 import uz.ccrew.flightmanagement.entity.TravelClassCapacity;
-import uz.ccrew.flightmanagement.enums.TravelClassCode;
 
 import java.util.List;
 

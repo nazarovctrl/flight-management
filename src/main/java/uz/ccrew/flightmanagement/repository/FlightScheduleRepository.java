@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Repository
 public interface FlightScheduleRepository extends BasicRepository<FlightSchedule, Long> {
 
-    @Query(value = """
+    @Query("""
             select distinct new uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO(fs.flightNumber,fs.departureDateTime,fs.arrivalDateTime,l.actualDepartureTime,l.actualArrivalTime)
               from FlightSchedule fs
               join Leg l on fs.flightNumber = l.flightSchedule.flightNumber
@@ -25,7 +25,7 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
             """)
     Page<FlightScheduleReportDTO> findOnTimeFlights(Pageable pageable);
 
-    @Query(value = """
+    @Query("""
             select distinct new uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO(fs.flightNumber, fs.departureDateTime,fs.arrivalDateTime,l.actualDepartureTime,l.actualArrivalTime)
               from FlightSchedule fs
               join Leg l on fs.flightNumber = l.flightSchedule.flightNumber
@@ -44,7 +44,7 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
             nativeQuery = true)
     Page<FlightSchedule> findByAirportCode(String airportCode, Pageable pageable);
 
-    @Query(value = """
+    @Query("""
             select w
               from FlightSchedule w
              where date(w.departureDateTime) = ?3
@@ -59,7 +59,7 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
              """)
     List<FlightSchedule> findOneWay(String departureCity, String arrivalCity, LocalDate departureDate);
 
-    @Query(value = """
+    @Query("""
             select new uz.ccrew.flightmanagement.dto.flightSchedule.RoundTrip(w, f)
               from FlightSchedule w
               join FlightSchedule f

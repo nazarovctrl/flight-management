@@ -15,7 +15,7 @@ import jakarta.persistence.Entity;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Airport {
+public class Airport extends Auditable {
     @Id
     private String airportCode;
     @Column(nullable = false, unique = true)

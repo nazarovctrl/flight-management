@@ -21,9 +21,9 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
     private final AuthUtil authUtil;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -95,7 +95,6 @@ public class UserServiceImpl implements UserService {
                 different = true;
             }
         }
-
 
         if (dto.role() != null && !user.getRole().equals(dto.role())) {
             user.setRole(dto.role());

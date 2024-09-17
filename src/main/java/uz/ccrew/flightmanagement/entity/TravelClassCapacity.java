@@ -1,7 +1,7 @@
 package uz.ccrew.flightmanagement.entity;
 
-import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
+import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 
 import lombok.Getter;
 import lombok.Builder;
@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TravelClassCapacity {
+public class TravelClassCapacity extends Auditable {
     @EmbeddedId
     private TravelClassCapacityId id;
     @Column(nullable = false)

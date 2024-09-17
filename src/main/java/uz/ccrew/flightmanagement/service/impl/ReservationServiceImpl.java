@@ -1,18 +1,18 @@
 package uz.ccrew.flightmanagement.service.impl;
 
-import uz.ccrew.flightmanagement.dto.flightcost.FlightCostDTO;
-import uz.ccrew.flightmanagement.dto.reservation.*;
 import uz.ccrew.flightmanagement.entity.*;
 import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
 import uz.ccrew.flightmanagement.util.RandomUtil;
+import uz.ccrew.flightmanagement.dto.reservation.*;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.ReservationMapper;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
+import uz.ccrew.flightmanagement.dto.flightcost.FlightCostDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTrip;
 import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
@@ -23,8 +23,8 @@ import org.springframework.data.domain.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -32,23 +32,23 @@ import java.time.LocalDateTime;
 public class ReservationServiceImpl implements ReservationService {
     private final AuthUtil authUtil;
     private final RandomUtil randomUtil;
+    private final LegRepository legRepository;
     private final UserRepository userRepository;
     private final PassengerService passengerService;
+    private final AirportRepository airportRepository;
     private final ReservationMapper reservationMapper;
     private final PaymentRepository paymentRepository;
+    private final FlightCostService flightCostService;
     private final ItineraryLegService itineraryLegService;
     private final FlightScheduleMapper flightScheduleMapper;
     private final FlightScheduleService flightScheduleService;
     private final ReservationRepository reservationRepository;
+    private final RefCalendarRepository refCalendarRepository;
     private final ItineraryLegRepository itineraryLegRepository;
     private final BookingAgentRepository bookingAgentRepository;
     private final FlightScheduleRepository flightScheduleRepository;
     private final ReservationPaymentRepository reservationPaymentRepository;
     private final TravelClassCapacityRepository travelClassCapacityRepository;
-    private final AirportRepository airportRepository;
-    private final LegRepository legRepository;
-    private final FlightCostService flightCostService;
-    private final RefCalendarRepository refCalendarRepository;
 
     @Transactional
     @Override

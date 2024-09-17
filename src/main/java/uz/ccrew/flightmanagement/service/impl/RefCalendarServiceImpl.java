@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class RefCalendarServiceImpl implements RefCalendarService {
-    private final RefCalendarRepository refCalendarRepository;
     private final RefCalendarMapper refCalendarMapper;
+    private final RefCalendarRepository refCalendarRepository;
 
     @Override
     public RefCalendarDTO save(RefCalendarDTO dto) {

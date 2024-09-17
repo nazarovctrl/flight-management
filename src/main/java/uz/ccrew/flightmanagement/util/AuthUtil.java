@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Component
 public class AuthUtil {
-
     private User getLoggedUser() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -19,9 +19,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PassengerServiceImpl implements PassengerService {
-    private final PassengerRepository passengerRepository;
-    private final PassengerMapper passengerMapper;
     private final AuthUtil authUtil;
+    private final PassengerMapper passengerMapper;
+    private final PassengerRepository passengerRepository;
 
     @Override
     public PassengerDTO add(PassengerCreateDTO dto) {

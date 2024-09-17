@@ -12,14 +12,16 @@ import java.util.UUID;
 public interface ReservationPaymentRepository extends BasicRepository<ReservationPayment, ReservationPayment.ReservationPaymentId> {
 
     @Query(""" 
-            select w.payment from ReservationPayment w
-             where w.reservation.reservationId =?1
+            select w.payment
+              from ReservationPayment w
+             where w.reservation.reservationId = ?1
             """)
     List<Payment> findByReservationId(Long reservationId);
 
     @Query("""
-            select w.reservation from ReservationPayment w
-            where w.payment.paymentId=?1
+            select w.reservation
+              from ReservationPayment w
+             where w.payment.paymentId = ?1
             """)
     List<ItineraryReservation> findByPaymentId(UUID paymentId);
 }

@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class ResponseMaker {
-
     public static ResponseEntity<Response<?>> okMessage(String message) {
         Response<?> response = new Response<>();
         response.setMessage(message);

@@ -11,7 +11,6 @@ import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
 import uz.ccrew.flightmanagement.repository.ReservationPaymentRepository;
 
 import lombok.RequiredArgsConstructor;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +19,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ReservationPaymentServiceImpl implements ReservationPaymentService {
-    private final ReservationPaymentRepository reservationPaymentRepository;
-    private final ReservationRepository reservationRepository;
-    private final ReservationService reservationService;
     private final PaymentMapper paymentMapper;
+    private final ReservationService reservationService;
+    private final ReservationRepository reservationRepository;
+    private final ReservationPaymentRepository reservationPaymentRepository;
 
     @Override
     public List<PaymentDTO> getPaymentList(Long reservationId) {

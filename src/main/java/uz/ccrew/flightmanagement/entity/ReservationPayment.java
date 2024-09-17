@@ -1,7 +1,7 @@
 package uz.ccrew.flightmanagement.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 import java.util.Objects;
@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationPayment {
+public class ReservationPayment extends Auditable {
     @EmbeddedId
     private ReservationPaymentId id;
 

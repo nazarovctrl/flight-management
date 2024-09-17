@@ -1,9 +1,9 @@
 package uz.ccrew.flightmanagement.service;
 
-import uz.ccrew.flightmanagement.dto.reservation.ReservationFlexibleDTO;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
+import uz.ccrew.flightmanagement.dto.reservation.ReservationFlexibleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.RoundTripReservationCreate;
 import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
 

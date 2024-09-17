@@ -1,23 +1,23 @@
 package uz.ccrew.flightmanagement.entity;
 
+import lombok.Getter;
+import lombok.Builder;
 import jakarta.persistence.Id;
+import lombok.NoArgsConstructor;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "ref_calendars")
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-public class RefCalendar {
+public class RefCalendar extends Auditable {
     @Id
     private LocalDate dayDate;
     @Column

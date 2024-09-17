@@ -8,8 +8,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema
 @Builder
+@Schema(description = "Request body for create Travel Class Capacity")
 public record TravelClassCapacityCreateDTO(@NotNull(message = "Air craft type code can not be null")
                                            AircraftTypeCode aircraftTypeCode,
                                            @NotNull(message = "Travel class code capacity can not be null")
