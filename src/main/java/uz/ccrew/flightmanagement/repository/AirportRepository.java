@@ -12,7 +12,10 @@ import java.util.Optional;
 public interface AirportRepository extends BasicRepository<Airport, String> {
     Optional<Airport> findByAirportCode(String airportCode);
 
-    @Query("select distinct w.city from Airport w")
+    @Query(""" 
+            select distinct w.city
+              from Airport w
+            """)
     List<String> getCityList();
 
     Optional<Airport> findFirstByCity(String city);

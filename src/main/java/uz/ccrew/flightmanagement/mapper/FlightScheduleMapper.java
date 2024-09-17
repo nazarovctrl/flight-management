@@ -1,12 +1,12 @@
 package uz.ccrew.flightmanagement.mapper;
 
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.leg.LegDTO;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
 
-import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 

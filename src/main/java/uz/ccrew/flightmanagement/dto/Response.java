@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import java.util.LinkedList;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response<T> {
     private T data;
     private List<String> errors;

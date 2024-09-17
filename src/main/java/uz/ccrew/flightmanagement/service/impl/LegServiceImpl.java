@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LegServiceImpl implements LegService {
+    private final LegMapper legMapper;
     private final LegRepository legRepository;
     private final FlightScheduleRepository flightScheduleRepository;
-    private final LegMapper legMapper;
 
     @Override
     public LegDTO add(LegCreateDTO dto) {

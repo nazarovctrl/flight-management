@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Payment {
+public class Payment extends Auditable {
     @Id
     @UuidGenerator
     private UUID paymentId;

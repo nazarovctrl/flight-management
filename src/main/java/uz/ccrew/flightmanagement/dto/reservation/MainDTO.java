@@ -8,7 +8,6 @@ import lombok.Builder;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-
 @Builder
 public record MainDTO(@NotNull(message = "Invalid ticket type code")
                       TicketTypeCode ticketTypeCode,
