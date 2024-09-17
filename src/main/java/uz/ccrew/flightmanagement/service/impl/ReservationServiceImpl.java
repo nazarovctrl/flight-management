@@ -118,6 +118,14 @@ public class ReservationServiceImpl implements ReservationService {
         Airport originAirport = originAirportOptional.get();
         Airport destinationAirport = destinationAirportOptional.get();
 
+        if (dto.departureTime().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Departure time could not before now");
+        }
+
+        if (dto.arrivalTime().isBefore(dto.departureTime())) {
+            throw new BadRequestException("Arrival time could not before departure time");
+        }
+
         FlightSchedule flightSchedule = FlightSchedule.builder()
                 .departureDateTime(dto.departureTime())
                 .originAirport(originAirport)
