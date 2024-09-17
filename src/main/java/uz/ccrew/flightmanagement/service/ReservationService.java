@@ -1,5 +1,6 @@
 package uz.ccrew.flightmanagement.service;
 
+import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
@@ -20,6 +21,8 @@ public interface ReservationService {
     ReservationDTO cancel(Long reservationId);
 
     Page<ReservationDTO> getList(int page, int size);
+
+    Page<PassengerDTO> findPassengersWithReservedSeatsOnFlight(String flightNumber, int page, int size);
 
     ReservationDTO makeRoundTrip(RoundTripReservationCreate dto);
 

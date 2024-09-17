@@ -1,6 +1,8 @@
 package uz.ccrew.flightmanagement.service.impl;
 
+import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.entity.*;
+import uz.ccrew.flightmanagement.mapper.PassengerMapper;
 import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
@@ -36,6 +38,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
     private final PassengerService passengerService;
     private final ReservationMapper reservationMapper;
+    private final PassengerMapper passengerMapper;
     private final PaymentRepository paymentRepository;
     private final ItineraryLegService itineraryLegService;
     private final FlightScheduleMapper flightScheduleMapper;
@@ -45,6 +48,8 @@ public class ReservationServiceImpl implements ReservationService {
     private final BookingAgentRepository bookingAgentRepository;
     private final FlightScheduleRepository flightScheduleRepository;
     private final ReservationPaymentRepository reservationPaymentRepository;
+    private final FlightCostRepository flightCostRepository;
+    private final TravelClassCapacityRepository travelClassCapacityRepository;
 
     @Transactional
     @Override
@@ -158,6 +163,16 @@ public class ReservationServiceImpl implements ReservationService {
         return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
 
+    @Override
+    public Page<PassengerDTO> findPassengersWithReservedSeatsOnFlight(String flightNumber, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Passenger> pageObj = reservationRepository.findPassengersWithReservedSeatsOnFlight(flightNumber, pageable);
+        List<PassengerDTO> dtoList = passengerMapper.toDTOList(pageObj.getContent());
+
+        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
+    }
+
     private void checkToAvailability(Map<TravelClassCode, Integer> availableSeats, Map<TravelClassCode, Long> travelClassCostList, TravelClassCode travelClassCode) {
         if (availableSeats.getOrDefault(travelClassCode, 0) < 1) {
             throw new BadRequestException("There is no available seat for this one way flight with request travel class code");
@@ -169,7 +184,8 @@ public class ReservationServiceImpl implements ReservationService {
         }
     }
 
-    private ItineraryReservation makeReservation(BookingAgent bookingAgent, Passenger passenger, Long paymentAmount, MainDTO mainDTO, Long... flightNumbers) {
+    private ItineraryReservation makeReservation(BookingAgent bookingAgent, Passenger passenger, Long
+            paymentAmount, MainDTO mainDTO, Long... flightNumbers) {
         ItineraryReservation reservation = ItineraryReservation.builder()
                 .agent(bookingAgent)
                 .passenger(passenger)

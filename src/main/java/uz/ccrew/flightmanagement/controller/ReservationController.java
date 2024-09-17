@@ -2,17 +2,18 @@ package uz.ccrew.flightmanagement.controller;
 
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
+import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
 import uz.ccrew.flightmanagement.dto.reservation.RoundTripReservationCreate;
 import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,7 +26,18 @@ import java.util.List;
 @Tag(name = "Reservation controller", description = "Reservation API")
 @SecurityRequirement(name = "Bearer Authentication")
 public class ReservationController {
+
     private final ReservationService reservationService;
+
+    @GetMapping("/flight-passengers/{flightNumber}")
+    @Operation(summary = "Get all customers who have seats reserved on a given flight.")
+    public ResponseEntity<Response<Page<PassengerDTO>>> findReservedSeats(@PathVariable("flightNumber") String flightNumber,
+                                                                          @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<PassengerDTO> result = reservationService.findPassengersWithReservedSeatsOnFlight(flightNumber, page, size);
+        return ResponseMaker.ok(result);
+    }
+
 
     @PostMapping("/make/one-way")
     @Operation(summary = "Make one way reservation")
