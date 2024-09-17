@@ -3,6 +3,7 @@ package uz.ccrew.flightmanagement.controller;
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
+import uz.ccrew.flightmanagement.dto.reservation.ReservationFlexibleDTO;
 import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
@@ -72,6 +73,13 @@ public class ReservationController {
     @Operation(summary = "Get Reservation flight list")
     public ResponseEntity<Response<List<FlightScheduleDTO>>> getFlightList(@PathVariable("reservationId") Long reservationId) {
         List<FlightScheduleDTO> result = reservationService.getFlightList(reservationId);
+        return ResponseMaker.ok(result);
+    }
+
+    @PostMapping("/make/flexible")
+    @Operation(summary = "Book a flight with flexible time")
+    public ResponseEntity<Response<ReservationDTO>> makeFlexible(@RequestBody @Valid ReservationFlexibleDTO dto) {
+        ReservationDTO result = reservationService.makeFlexible(dto);
         return ResponseMaker.ok(result);
     }
 }

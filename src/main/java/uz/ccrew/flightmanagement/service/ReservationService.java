@@ -1,6 +1,7 @@
 package uz.ccrew.flightmanagement.service;
 
 import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
+import uz.ccrew.flightmanagement.dto.reservation.ReservationFlexibleDTO;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
@@ -27,4 +28,6 @@ public interface ReservationService {
     ReservationDTO makeRoundTrip(RoundTripReservationCreate dto);
 
     List<FlightScheduleDTO> getFlightList(Long reservationId);
+
+    ReservationDTO makeFlexible(ReservationFlexibleDTO dto);
 }
