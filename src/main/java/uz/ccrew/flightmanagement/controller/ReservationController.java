@@ -30,16 +30,6 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    @GetMapping("/flight-passengers/{flightNumber}")
-    @Operation(summary = "Get all customers who have seats reserved on a given flight.")
-    public ResponseEntity<Response<Page<PassengerDTO>>> findReservedSeats(@PathVariable("flightNumber") String flightNumber,
-                                                                          @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-        Page<PassengerDTO> result = reservationService.findPassengersWithReservedSeatsOnFlight(flightNumber, page, size);
-        return ResponseMaker.ok(result);
-    }
-
-
     @PostMapping("/make/one-way")
     @Operation(summary = "Make one way reservation")
     public ResponseEntity<Response<ReservationDTO>> makeOneWay(@RequestBody @Valid OneWayReservationCreateDTO dto) {
@@ -51,6 +41,13 @@ public class ReservationController {
     @Operation(summary = "Make one way reservation")
     public ResponseEntity<Response<ReservationDTO>> makeRoundTrip(@RequestBody @Valid RoundTripReservationCreate dto) {
         ReservationDTO result = reservationService.makeRoundTrip(dto);
+        return ResponseMaker.ok(result);
+    }
+
+    @PostMapping("/make/flexible")
+    @Operation(summary = "Book a flight with flexible time")
+    public ResponseEntity<Response<ReservationDTO>> makeFlexible(@RequestBody @Valid ReservationFlexibleDTO dto) {
+        ReservationDTO result = reservationService.makeFlexible(dto);
         return ResponseMaker.ok(result);
     }
 
@@ -73,13 +70,6 @@ public class ReservationController {
     @Operation(summary = "Get Reservation flight list")
     public ResponseEntity<Response<List<FlightScheduleDTO>>> getFlightList(@PathVariable("reservationId") Long reservationId) {
         List<FlightScheduleDTO> result = reservationService.getFlightList(reservationId);
-        return ResponseMaker.ok(result);
-    }
-
-    @PostMapping("/make/flexible")
-    @Operation(summary = "Book a flight with flexible time")
-    public ResponseEntity<Response<ReservationDTO>> makeFlexible(@RequestBody @Valid ReservationFlexibleDTO dto) {
-        ReservationDTO result = reservationService.makeFlexible(dto);
         return ResponseMaker.ok(result);
     }
 }

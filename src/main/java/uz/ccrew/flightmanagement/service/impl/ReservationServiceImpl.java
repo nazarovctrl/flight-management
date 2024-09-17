@@ -1,12 +1,9 @@
 package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.dto.flightcost.FlightCostDTO;
-import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.dto.reservation.*;
 import uz.ccrew.flightmanagement.dto.travelclasscapacity.TravelClassCapacityCreateDTO;
 import uz.ccrew.flightmanagement.entity.*;
-import uz.ccrew.flightmanagement.mapper.FlightCostMapper;
-import uz.ccrew.flightmanagement.mapper.PassengerMapper;
 import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
@@ -27,7 +24,6 @@ import org.springframework.data.domain.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.sql.Ref;
 import java.time.LocalDate;
 import java.util.*;
 import java.time.LocalDateTime;
@@ -40,7 +36,6 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
     private final PassengerService passengerService;
     private final ReservationMapper reservationMapper;
-    private final PassengerMapper passengerMapper;
     private final PaymentRepository paymentRepository;
     private final ItineraryLegService itineraryLegService;
     private final FlightScheduleMapper flightScheduleMapper;
@@ -241,16 +236,6 @@ public class ReservationServiceImpl implements ReservationService {
 
         Page<ItineraryReservation> pageObj = reservationRepository.findByPassenger_CustomerId(authUtil.loadLoggedUser().getId(), pageable);
         List<ReservationDTO> dtoList = reservationMapper.toDTOList(pageObj.getContent());
-
-        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
-    }
-
-    @Override
-    public Page<PassengerDTO> findPassengersWithReservedSeatsOnFlight(String flightNumber, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Passenger> pageObj = reservationRepository.findPassengersWithReservedSeatsOnFlight(flightNumber, pageable);
-        List<PassengerDTO> dtoList = passengerMapper.toDTOList(pageObj.getContent());
 
         return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
