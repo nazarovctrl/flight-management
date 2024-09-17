@@ -20,10 +20,10 @@ public class FlightSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightNumber;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private AirlineCode airlineCode;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private AircraftTypeCode usualAircraftTypeCode;
     @ManyToOne
     @JoinColumn(name = "origin_airport_code", foreignKey = @ForeignKey(name = "flight_schedules_f1"), nullable = false)
@@ -31,7 +31,7 @@ public class FlightSchedule {
     @ManyToOne
     @JoinColumn(name = "destination_airport_code", foreignKey = @ForeignKey(name = "flight_schedules_f2"), nullable = false)
     private Airport destinationAirport;
-    @Column(nullable = false)
+    @Column
     private LocalDateTime departureDateTime;
     @Column(nullable = true)
     private LocalDateTime arrivalDateTime;
