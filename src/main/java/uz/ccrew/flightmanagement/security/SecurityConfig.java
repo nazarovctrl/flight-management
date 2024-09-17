@@ -93,7 +93,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/refresh", "/api/v1/user/*").hasAnyAuthority(UserRole.all())
                         .requestMatchers("/api/v1/flight-schedule/get/*", "/api/v1/flight-schedule/get-by-airport/*",
                                 "/api/v1/flight-schedule/list/on-time", "/api/v1/flight-schedule/list/delayed").hasAnyAuthority(UserRole.all())
-                        .requestMatchers("/api/v1/report/**").hasAuthority(UserRole.EMPLOYEE.name())
+                        .requestMatchers("/api/v1/report/**", "/api/v1/reservation/flight-passengers/**").hasAuthority(UserRole.EMPLOYEE.name())
                         .requestMatchers(ADMIN_REQUEST_PATTERNS).hasAuthority(UserRole.ADMINISTRATOR.name())
                         .requestMatchers(CUSTOMER_REQUEST_PATTERNS).hasAuthority(UserRole.CUSTOMER.name())
                         .anyRequest().authenticated());

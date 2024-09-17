@@ -43,7 +43,6 @@ public class ReservationPaymentServiceImpl implements ReservationPaymentService 
         reservationRepository.saveAll(reservationList);
     }
 
-    @Transactional
     @Override
     public void reverseReservation(UUID paymentId) {
         List<ItineraryReservation> reservationList = reservationPaymentRepository.findByPaymentId(paymentId);
