@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getById(Integer userId) {
+    public UserDTO getById(Long userId) {
         User user = userRepository.loadById(userId);
         return userMapper.toDTO(user);
     }
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateById(Integer userId, UserUpdateDTO dto) {
+    public UserDTO updateById(Long userId, UserUpdateDTO dto) {
         User user = userRepository.loadById(userId);
 
         update(user, dto);
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Integer userId) {
+    public void deleteById(Long userId) {
         User user = userRepository.loadById(userId);
         userRepository.delete(user);
     }
