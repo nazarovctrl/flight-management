@@ -1,7 +1,9 @@
 package uz.ccrew.flightmanagement.service.impl;
 
+import uz.ccrew.flightmanagement.dto.flightcost.FlightCostDTO;
 import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.dto.reservation.*;
+import uz.ccrew.flightmanagement.dto.travelclasscapacity.TravelClassCapacityCreateDTO;
 import uz.ccrew.flightmanagement.entity.*;
 import uz.ccrew.flightmanagement.mapper.FlightCostMapper;
 import uz.ccrew.flightmanagement.mapper.PassengerMapper;
@@ -25,6 +27,8 @@ import org.springframework.data.domain.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.sql.Ref;
+import java.time.LocalDate;
 import java.util.*;
 import java.time.LocalDateTime;
 
@@ -46,12 +50,12 @@ public class ReservationServiceImpl implements ReservationService {
     private final BookingAgentRepository bookingAgentRepository;
     private final FlightScheduleRepository flightScheduleRepository;
     private final ReservationPaymentRepository reservationPaymentRepository;
-    private final FlightCostRepository flightCostRepository;
     private final TravelClassCapacityRepository travelClassCapacityRepository;
     private final AirportRepository airportRepository;
-    private final PassengerRepository passengerRepository;
-    private final FlightCostMapper flightCostMapper;
     private final LegRepository legRepository;
+    private final FlightCostService flightCostService;
+    private final RefCalendarRepository refCalendarRepository;
+    private final TravelClassCapacityService travelClassCapacityService;
 
     @Transactional
     @Override
@@ -123,11 +127,43 @@ public class ReservationServiceImpl implements ReservationService {
                 .usualAircraftTypeCode(dto.aircraftTypeCode())
                 .build();
         flightScheduleRepository.save(flightSchedule);
+
+        RefCalendar validFrom = RefCalendar.builder()
+                .businessDayYn(false)
+                .dayDate(LocalDate.now())
+                .dayNumber(1)
+                .build();
+
+        RefCalendar validTo = RefCalendar.builder()
+                .businessDayYn(false)
+                .dayDate(dto.departureTime().toLocalDate())
+                .dayNumber(1)
+                .build();
+
+        refCalendarRepository.save(validFrom);
+        refCalendarRepository.save(validTo);
+
+        flightCostService.save(FlightCostDTO.builder()
+                .flightNumber(flightSchedule.getFlightNumber())
+                .aircraftTypeCode(dto.aircraftTypeCode())
+                .flightCost(dto.payment())
+                .validFromDate(validFrom.getDayDate())
+                .validToDate(validTo.getDayDate())
+                .build());
+        if (!travelClassCapacityRepository.existsById_AircraftTypeCodeAndId_TravelClassCode(dto.aircraftTypeCode(), mainDTO.travelClassCode())){
+            travelClassCapacityService.add(TravelClassCapacityCreateDTO.builder()
+                    .aircraftTypeCode(dto.aircraftTypeCode())
+                    .travelClassCode(mainDTO.travelClassCode())
+                    .seatCapacity(10)
+                    .build());
+        }
+
         Leg leg = Leg.builder()
                 .destinationAirport(destinationAirport.getAirportCode())
                 .originAirport(originAirport.getAirportCode())
                 .flightSchedule(flightSchedule)
                 .build();
+
         legRepository.save(leg);
         BookingAgent bookingAgent = bookingAgentRepository.loadById(dto.mainDTO().bookingAgentId());
         Passenger passenger = passengerService.getPassenger(dto.mainDTO().passenger());
