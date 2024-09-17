@@ -113,11 +113,14 @@ public class ReservationServiceImpl implements ReservationService {
         }
         Airport originAirport = originAirportOptional.get();
         Airport destinationAirport = destinationAirportOptional.get();
-        // airlineCode,usualAircraftTypeCode,arrivalDateTime
+
         FlightSchedule flightSchedule = FlightSchedule.builder()
                 .departureDateTime(dto.departureTime())
                 .originAirport(originAirport)
                 .destinationAirport(destinationAirport)
+                .airlineCode(dto.airlineCode())
+                .arrivalDateTime(dto.arrivalTime())
+                .usualAircraftTypeCode(dto.aircraftTypeCode())
                 .build();
         flightScheduleRepository.save(flightSchedule);
         Leg leg = Leg.builder()
