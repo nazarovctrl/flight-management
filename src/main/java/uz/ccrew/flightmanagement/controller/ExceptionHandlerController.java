@@ -19,7 +19,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler {

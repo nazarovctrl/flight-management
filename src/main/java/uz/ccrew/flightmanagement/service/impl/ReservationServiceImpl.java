@@ -2,7 +2,6 @@ package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.dto.flightcost.FlightCostDTO;
 import uz.ccrew.flightmanagement.dto.reservation.*;
-import uz.ccrew.flightmanagement.dto.travelclasscapacity.TravelClassCapacityCreateDTO;
 import uz.ccrew.flightmanagement.entity.*;
 import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
@@ -50,7 +49,6 @@ public class ReservationServiceImpl implements ReservationService {
     private final LegRepository legRepository;
     private final FlightCostService flightCostService;
     private final RefCalendarRepository refCalendarRepository;
-    private final TravelClassCapacityService travelClassCapacityService;
 
     @Transactional
     @Override
@@ -121,6 +119,10 @@ public class ReservationServiceImpl implements ReservationService {
             throw new BadRequestException("Arrival time could not before departure time");
         }
 
+        if (!travelClassCapacityRepository.existsById_AircraftTypeCodeAndId_TravelClassCode(dto.aircraftTypeCode(), mainDTO.travelClassCode())) {
+            throw new BadRequestException("Can't create reservation because there is no travelClassCapacity");
+        }
+
         FlightSchedule flightSchedule = FlightSchedule.builder()
                 .departureDateTime(dto.departureTime())
                 .originAirport(originAirport)
@@ -136,13 +138,11 @@ public class ReservationServiceImpl implements ReservationService {
                 .dayDate(LocalDate.now())
                 .dayNumber(1)
                 .build();
-
         RefCalendar validTo = RefCalendar.builder()
                 .businessDayYn(false)
                 .dayDate(dto.departureTime().toLocalDate())
                 .dayNumber(1)
                 .build();
-
         refCalendarRepository.save(validFrom);
         refCalendarRepository.save(validTo);
 
@@ -153,26 +153,17 @@ public class ReservationServiceImpl implements ReservationService {
                 .validFromDate(validFrom.getDayDate())
                 .validToDate(validTo.getDayDate())
                 .build());
-        if (!travelClassCapacityRepository.existsById_AircraftTypeCodeAndId_TravelClassCode(dto.aircraftTypeCode(), mainDTO.travelClassCode())){
-            travelClassCapacityService.add(TravelClassCapacityCreateDTO.builder()
-                    .aircraftTypeCode(dto.aircraftTypeCode())
-                    .travelClassCode(mainDTO.travelClassCode())
-                    .seatCapacity(10)
-                    .build());
-        }
 
         Leg leg = Leg.builder()
                 .destinationAirport(destinationAirport.getAirportCode())
                 .originAirport(originAirport.getAirportCode())
                 .flightSchedule(flightSchedule)
                 .build();
-
         legRepository.save(leg);
+
         BookingAgent bookingAgent = bookingAgentRepository.loadById(dto.mainDTO().bookingAgentId());
         Passenger passenger = passengerService.getPassenger(dto.mainDTO().passenger());
-
         ItineraryReservation reservation = makeReservation(bookingAgent, passenger, dto.payment(), mainDTO, flightSchedule.getFlightNumber());
-
 
         return reservationMapper.toDTO(reservation);
     }
