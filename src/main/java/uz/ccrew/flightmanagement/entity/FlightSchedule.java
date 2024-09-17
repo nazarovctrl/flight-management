@@ -33,6 +33,6 @@ public class FlightSchedule {
     private Airport destinationAirport;
     @Column(nullable = false)
     private LocalDateTime departureDateTime;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime arrivalDateTime;
 }
