@@ -12,7 +12,5 @@ import java.time.LocalDate;
 @Repository
 public interface FlightCostRepository extends BasicRepository<FlightCost, FlightCost.FlightCostsId> {
     List<FlightCost> findByFlightSchedule_FlightNumberAndId_ValidFromDateLessThanEqualAndValidToDateGreaterThanEqual(Long flightSchedule_flightNumber, LocalDate validToDate, LocalDate validToDate2);
-    @Query("SELECT SUM(fc.flightCost) FROM FlightCost fc WHERE fc.flightSchedule.flightNumber = :flightNumber")
-    Long calculateTotalSalesByFlightNumber(@Param("flightNumber") Long flightNumber);
 }
 

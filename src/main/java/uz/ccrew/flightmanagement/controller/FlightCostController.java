@@ -27,11 +27,4 @@ public class FlightCostController {
         FlightCostDTO result = flightCostService.save(dto);
         return ResponseMaker.ok(result);
     }
-
-    @GetMapping("/total/sales/{flightNumber}")
-    @Operation(summary = "Calculation of total sales for given flight")
-    public ResponseEntity<Response<Long>> getTotalSalesForFlight(@PathVariable("flightNumber") Long flightNumber) {
-        Long result = flightCostService.calculateTotalSalesByFlightNumber(flightNumber);
-        return ResponseMaker.ok(result);
-    }
 }
