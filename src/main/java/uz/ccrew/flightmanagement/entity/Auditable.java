@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @Getter
 public abstract class Auditable {
     @CreatedBy
-    protected Integer createdBy;
+    protected Long createdBy;
 
     @CreatedDate
     protected LocalDateTime createdDate;
 
     @LastModifiedBy
-    protected Integer lastModifiedBy;
+    protected Long lastModifiedBy;
 
     @LastModifiedDate
     protected LocalDateTime lastModifiedDate;

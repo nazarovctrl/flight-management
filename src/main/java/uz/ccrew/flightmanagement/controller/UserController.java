@@ -36,7 +36,7 @@ public class UserController {
     @GetMapping("/get/{userId}")
     @PreAuthorize("hasAuthority('ADMINISTRATOR')")
     @Operation(summary = "Get user by id for Administrator")
-    public ResponseEntity<Response<UserDTO>> getById(@PathVariable(value = "userId") Integer userId) {
+    public ResponseEntity<Response<UserDTO>> getById(@PathVariable(value = "userId") Long userId) {
         UserDTO result = userService.getById(userId);
         return ResponseMaker.ok(result);
     }
@@ -52,7 +52,7 @@ public class UserController {
     @PutMapping("/update/{userId}")
     @PreAuthorize("hasAuthority('ADMINISTRATOR')")
     @Operation(summary = "Update user by id for Administrator")
-    public ResponseEntity<Response<UserDTO>> updateById(@PathVariable("userId") Integer userId, @RequestBody UserUpdateDTO dto) {
+    public ResponseEntity<Response<UserDTO>> updateById(@PathVariable("userId") Long userId, @RequestBody UserUpdateDTO dto) {
         UserDTO result = userService.updateById(userId, dto);
         return ResponseMaker.ok(result);
     }
@@ -60,7 +60,7 @@ public class UserController {
     @DeleteMapping("/delete/{userId}")
     @PreAuthorize("hasAuthority('ADMINISTRATOR')")
     @Operation(summary = "Delete user by id for Administrator")
-    public ResponseEntity<Response<?>> deleteById(@PathVariable("userId") Integer userId) {
+    public ResponseEntity<Response<?>> deleteById(@PathVariable("userId") Long userId) {
         userService.deleteById(userId);
         return ResponseMaker.okMessage("User deleted");
     }

@@ -8,13 +8,13 @@ import org.springframework.data.domain.Page;
 public interface UserService {
     UserDTO get();
 
-    UserDTO getById(Integer userId);
+    UserDTO getById(Long userId);
 
     UserDTO update(UserUpdateDTO dto);
 
-    UserDTO updateById(Integer userId, UserUpdateDTO dto);
+    UserDTO updateById(Long userId, UserUpdateDTO dto);
 
-    void deleteById(Integer userId);
+    void deleteById(Long userId);
 
     Page<UserDTO> getList(int page, int size);
 }

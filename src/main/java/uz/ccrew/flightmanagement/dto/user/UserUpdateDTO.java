@@ -12,6 +12,6 @@ public record UserUpdateDTO(@Schema(description = "login", example = "john")
                             @Schema(description = "role", example = "ADMINISTRATOR")
                             UserRole role) {
     public UserUpdateDTO withRole(UserRole role) {
-        return new UserUpdateDTO(login(), password(), role);
+        return new UserUpdateDTO(login().toLowerCase(), password(), role);
     }
 }
