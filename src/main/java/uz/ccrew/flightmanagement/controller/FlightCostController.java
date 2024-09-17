@@ -5,12 +5,15 @@ import uz.ccrew.flightmanagement.dto.ResponseMaker;
 import uz.ccrew.flightmanagement.service.FlightCostService;
 import uz.ccrew.flightmanagement.dto.flightcost.FlightCostDTO;
 
-import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController

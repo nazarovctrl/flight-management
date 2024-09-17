@@ -1,11 +1,11 @@
 package uz.ccrew.flightmanagement.repository;
 
-import org.springframework.data.repository.query.Param;
 import uz.ccrew.flightmanagement.entity.ItineraryLeg;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
 import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
