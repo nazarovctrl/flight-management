@@ -1,12 +1,8 @@
 package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.dto.flightcost.FlightCostDTO;
-import uz.ccrew.flightmanagement.dto.passenger.PassengerDTO;
 import uz.ccrew.flightmanagement.dto.reservation.*;
-import uz.ccrew.flightmanagement.dto.travelclasscapacity.TravelClassCapacityCreateDTO;
 import uz.ccrew.flightmanagement.entity.*;
-import uz.ccrew.flightmanagement.mapper.FlightCostMapper;
-import uz.ccrew.flightmanagement.mapper.PassengerMapper;
 import uz.ccrew.flightmanagement.service.*;
 import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
@@ -27,7 +23,6 @@ import org.springframework.data.domain.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.sql.Ref;
 import java.time.LocalDate;
 import java.util.*;
 import java.time.LocalDateTime;
@@ -40,7 +35,6 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
     private final PassengerService passengerService;
     private final ReservationMapper reservationMapper;
-    private final PassengerMapper passengerMapper;
     private final PaymentRepository paymentRepository;
     private final ItineraryLegService itineraryLegService;
     private final FlightScheduleMapper flightScheduleMapper;
@@ -55,7 +49,6 @@ public class ReservationServiceImpl implements ReservationService {
     private final LegRepository legRepository;
     private final FlightCostService flightCostService;
     private final RefCalendarRepository refCalendarRepository;
-    private final TravelClassCapacityService travelClassCapacityService;
 
     @Transactional
     @Override
@@ -126,6 +119,10 @@ public class ReservationServiceImpl implements ReservationService {
             throw new BadRequestException("Arrival time could not before departure time");
         }
 
+        if (!travelClassCapacityRepository.existsById_AircraftTypeCodeAndId_TravelClassCode(dto.aircraftTypeCode(), mainDTO.travelClassCode())) {
+            throw new BadRequestException("Can't create reservation because there is no travelClassCapacity");
+        }
+
         FlightSchedule flightSchedule = FlightSchedule.builder()
                 .departureDateTime(dto.departureTime())
                 .originAirport(originAirport)
@@ -141,13 +138,11 @@ public class ReservationServiceImpl implements ReservationService {
                 .dayDate(LocalDate.now())
                 .dayNumber(1)
                 .build();
-
         RefCalendar validTo = RefCalendar.builder()
                 .businessDayYn(false)
                 .dayDate(dto.departureTime().toLocalDate())
                 .dayNumber(1)
                 .build();
-
         refCalendarRepository.save(validFrom);
         refCalendarRepository.save(validTo);
 
@@ -158,26 +153,17 @@ public class ReservationServiceImpl implements ReservationService {
                 .validFromDate(validFrom.getDayDate())
                 .validToDate(validTo.getDayDate())
                 .build());
-        if (!travelClassCapacityRepository.existsById_AircraftTypeCodeAndId_TravelClassCode(dto.aircraftTypeCode(), mainDTO.travelClassCode())){
-            travelClassCapacityService.add(TravelClassCapacityCreateDTO.builder()
-                    .aircraftTypeCode(dto.aircraftTypeCode())
-                    .travelClassCode(mainDTO.travelClassCode())
-                    .seatCapacity(10)
-                    .build());
-        }
 
         Leg leg = Leg.builder()
                 .destinationAirport(destinationAirport.getAirportCode())
                 .originAirport(originAirport.getAirportCode())
                 .flightSchedule(flightSchedule)
                 .build();
-
         legRepository.save(leg);
+
         BookingAgent bookingAgent = bookingAgentRepository.loadById(dto.mainDTO().bookingAgentId());
         Passenger passenger = passengerService.getPassenger(dto.mainDTO().passenger());
-
         ItineraryReservation reservation = makeReservation(bookingAgent, passenger, dto.payment(), mainDTO, flightSchedule.getFlightNumber());
-
 
         return reservationMapper.toDTO(reservation);
     }
@@ -241,16 +227,6 @@ public class ReservationServiceImpl implements ReservationService {
 
         Page<ItineraryReservation> pageObj = reservationRepository.findByPassenger_CustomerId(authUtil.loadLoggedUser().getId(), pageable);
         List<ReservationDTO> dtoList = reservationMapper.toDTOList(pageObj.getContent());
-
-        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
-    }
-
-    @Override
-    public Page<PassengerDTO> findPassengersWithReservedSeatsOnFlight(String flightNumber, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Passenger> pageObj = reservationRepository.findPassengersWithReservedSeatsOnFlight(flightNumber, pageable);
-        List<PassengerDTO> dtoList = passengerMapper.toDTOList(pageObj.getContent());
 
         return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }

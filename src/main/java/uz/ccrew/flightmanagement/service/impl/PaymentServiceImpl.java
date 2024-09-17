@@ -31,6 +31,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     @Override
     public PaymentDTO pay(UUID paymentId) {
+        //TODO check to owner
+
         Payment payment = paymentRepository.loadById(paymentId);
         if (!payment.getPaymentStatusCode().equals(PaymentStatusCode.CREATED)) {
             throw new BadRequestException("Invalid payment status");
@@ -51,6 +53,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     @Override
     public PaymentDTO reverse(UUID paymentId) {
+        //TODO check to owner
+
         Payment payment = paymentRepository.loadById(paymentId);
         if (!payment.getPaymentStatusCode().equals(PaymentStatusCode.PAYED)) {
             throw new BadRequestException("Invalid payment status");

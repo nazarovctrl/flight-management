@@ -14,6 +14,7 @@ import io.jsonwebtoken.security.SignatureException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -37,7 +38,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return ResponseMaker.error(e.getStatus(), e.getMessage());
     }
 
-    @ExceptionHandler({BadCredentialsException.class})
+    @ExceptionHandler({BadCredentialsException.class, AccessDeniedException.class})
     private ResponseEntity<Response<?>> forbiddenHandler(RuntimeException e) {
         return ResponseMaker.error(HttpStatus.FORBIDDEN, e.getMessage());
     }

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class ReservationPaymentController {
     private final ReservationPaymentService reservationPaymentService;
 
     @GetMapping("/get/payment-list/{reservationId}")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get payment list by reservationId")
     public ResponseEntity<Response<List<PaymentDTO>>> getPaymentList(@PathVariable("reservationId") Long reservationId) {
         List<PaymentDTO> result = reservationPaymentService.getPaymentList(reservationId);
