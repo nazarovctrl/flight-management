@@ -24,4 +24,11 @@ public interface ReservationPaymentRepository extends BasicRepository<Reservatio
              where w.payment.paymentId = ?1
             """)
     List<ItineraryReservation> findByPaymentId(UUID paymentId);
+
+    @Query("""
+            select w.reservation.createdBy
+              from ReservationPayment w
+             where w.payment.paymentId = ?1
+            """)
+    Long findReservationOwnerByPaymentId(UUID paymentId);
 }

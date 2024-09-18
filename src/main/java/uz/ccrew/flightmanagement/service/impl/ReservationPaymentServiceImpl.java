@@ -1,6 +1,7 @@
 package uz.ccrew.flightmanagement.service.impl;
 
 import uz.ccrew.flightmanagement.entity.Payment;
+import uz.ccrew.flightmanagement.exp.BadRequestException;
 import uz.ccrew.flightmanagement.mapper.PaymentMapper;
 import uz.ccrew.flightmanagement.service.ReservationService;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
@@ -12,6 +13,7 @@ import uz.ccrew.flightmanagement.repository.ReservationPaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uz.ccrew.flightmanagement.util.AuthUtil;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ReservationPaymentServiceImpl implements ReservationPaymentService {
+    private final AuthUtil authUtil;
     private final PaymentMapper paymentMapper;
     private final ReservationService reservationService;
     private final ReservationRepository reservationRepository;
@@ -26,7 +29,11 @@ public class ReservationPaymentServiceImpl implements ReservationPaymentService 
 
     @Override
     public List<PaymentDTO> getPaymentList(Long reservationId) {
-        //TODO check to owner
+        ItineraryReservation reservation = reservationRepository.loadById(reservationId);
+        if (!reservation.getCreatedBy().equals(authUtil.loadLoggedUser().getId())) {
+            throw new BadRequestException("This is not your reservation");
+        }
+
         List<Payment> paymentList = reservationPaymentRepository.findByReservationId(reservationId);
         return paymentMapper.toDTOList(paymentList);
     }
