@@ -77,7 +77,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void getUserByIdWithPlayer() throws Exception {
+    void getUserByIdWithCustomer() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/user/get/{userId}", USER_ID)
                         .header("Authorization", "Bearer " + ACCESS_TOKEN)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -111,7 +111,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void updateUserByIdWithPlayer() throws Exception {
+    void updateUserByIdWithCustomer() throws Exception {
         UserUpdateDTO updateDTO = new UserUpdateDTO("Nazarov", "200622Az", UserRole.ADMINISTRATOR);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/user/update/{userId}", USER_ID)
@@ -135,9 +135,8 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.role").value(updateDTO.role().name()));
     }
 
-
     @Test
-    void deleteUserByIdWithPlayer() throws Exception {
+    void deleteUserByIdWithCustomer() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/user/delete/{userId}", USER_ID)
                         .header("Authorization", "Bearer " + ACCESS_TOKEN)
                         .contentType(MediaType.APPLICATION_JSON))
