@@ -82,7 +82,7 @@ public class ReservationServiceImpl implements ReservationService {
         FlightSchedule flight = flightScheduleRepository.loadById(dto.flightNumber());
         FlightSchedule returnFlight = flightScheduleRepository.loadById(dto.returnFlightNumber());
 
-        RoundTripFlightDTO roundTrip = roundTripFlightService.getRoundTripDTO(new RoundTrip(flight, returnFlight))
+        RoundTripFlightDTO roundTrip = roundTripFlightService.getRoundTrip(new RoundTrip(flight, returnFlight))
                 .orElseThrow(() -> new BadRequestException("Invalid round trip flight"));
         //check
         checkToAvailability(roundTrip.travelClassAvailableSeats(), roundTrip.travelClassCostList(), mainDTO.travelClassCode());
@@ -193,7 +193,7 @@ public class ReservationServiceImpl implements ReservationService {
             availableSeats = oneWayFlight.travelClassAvailableSeats();
             costList = oneWayFlight.travelClassCostList();
         } else {
-            RoundTripFlightDTO roundTrip = roundTripFlightService.getRoundTripDTO(new RoundTrip(flightList.get(0), flightList.get(1)))
+            RoundTripFlightDTO roundTrip = roundTripFlightService.getRoundTrip(new RoundTrip(flightList.get(0), flightList.get(1)))
                     .orElseThrow(() -> new BadRequestException("Invalid round trip flight"));
 
             availableSeats = roundTrip.travelClassAvailableSeats();

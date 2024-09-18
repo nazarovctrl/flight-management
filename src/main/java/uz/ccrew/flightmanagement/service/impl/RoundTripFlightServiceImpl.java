@@ -28,14 +28,14 @@ public class RoundTripFlightServiceImpl implements RoundTripFlightService {
         List<RoundTrip> roundTrips = flightRepository.findRoundTrip(dto.departureCity(), dto.arrivalCity(), dto.departureDate(), dto.returnDate());
 
         return roundTrips.parallelStream()
-                .map(this::getRoundTripDTO)
+                .map(this::getRoundTrip)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
     }
 
     @Override
-    public Optional<RoundTripFlightDTO> getRoundTripDTO(RoundTrip roundTrip) {
+    public Optional<RoundTripFlightDTO> getRoundTrip(RoundTrip roundTrip) {
         Optional<OneWayFlightDTO> flightOptional = oneWayFlightService.getOneWayFlight(roundTrip.flight());
         if (flightOptional.isEmpty()) {
             return Optional.empty();

@@ -93,8 +93,7 @@ public class FlightScheduleController {
     @GetMapping("/list/one-way")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get list flights for one-way")
-    public ResponseEntity<Response<List<OneWayFlightDTO>>> getOneWayList(@RequestParam("departureCity") String
-                                                                                 departureCity,
+    public ResponseEntity<Response<List<OneWayFlightDTO>>> getOneWayList(@RequestParam("departureCity") String departureCity,
                                                                          @RequestParam("arrivalCity") String arrivalCity,
                                                                          @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate) {
         FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
@@ -109,11 +108,10 @@ public class FlightScheduleController {
     @GetMapping("/list/round-trip")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get list flights for round trip")
-    public ResponseEntity<Response<List<RoundTripFlightDTO>>> getRoundTripList
-            (@RequestParam("departureCity") String departureCity,
-             @RequestParam("arrivalCity") String arrivalCity,
-             @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
-             @RequestParam("returnDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate) {
+    public ResponseEntity<Response<List<RoundTripFlightDTO>>> getRoundTripList(@RequestParam("departureCity") String departureCity,
+                                                                               @RequestParam("arrivalCity") String arrivalCity,
+                                                                               @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+                                                                               @RequestParam("returnDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate) {
         FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
                 .departureCity(departureCity.toUpperCase())
                 .arrivalCity(arrivalCity.toUpperCase())

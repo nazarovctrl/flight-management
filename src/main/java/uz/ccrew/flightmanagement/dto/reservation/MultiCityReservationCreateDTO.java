@@ -13,7 +13,7 @@ import java.util.List;
 public record MultiCityReservationCreateDTO(@NotNull(message = "Invalid flight number")
                                             @Size(min = 3, message = "The flightNumbers list must contain at least 3 flights")
                                             List<Long> flightNumbers,
-                                            @NotNull(message = "Main info can not be null")
                                             @Valid
+                                            @NotNull(message = "Main info can not be null")
                                             MainDTO main) {
 }

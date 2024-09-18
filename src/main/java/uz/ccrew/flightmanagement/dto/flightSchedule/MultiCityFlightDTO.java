@@ -1,7 +1,8 @@
 package uz.ccrew.flightmanagement.dto.flightSchedule;
 
-import lombok.Builder;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
+
+import lombok.Builder;
 
 import java.util.HashMap;
 import java.util.List;

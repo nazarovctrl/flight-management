@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface RoundTripFlightService {
     List<RoundTripFlightDTO> getRoundTripFlights(FlightListRequestDTO dto);
-    Optional<RoundTripFlightDTO> getRoundTripDTO(RoundTrip roundTrip);
+    Optional<RoundTripFlightDTO> getRoundTrip(RoundTrip roundTrip);
 }

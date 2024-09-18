@@ -1,17 +1,18 @@
 package uz.ccrew.flightmanagement.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightListRequestDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
-import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
+import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.entity.FlightCost;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
-import uz.ccrew.flightmanagement.entity.TravelClassCapacity;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
+import uz.ccrew.flightmanagement.entity.TravelClassCapacity;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
-import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.service.OneWayFlightService;
+import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
+import uz.ccrew.flightmanagement.dto.reservation.TravelClassSeatDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.FlightListRequestDTO;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashMap;
