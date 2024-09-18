@@ -2,12 +2,9 @@ package uz.ccrew.flightmanagement.controller;
 
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
+import uz.ccrew.flightmanagement.dto.reservation.*;
 import uz.ccrew.flightmanagement.service.ReservationService;
-import uz.ccrew.flightmanagement.dto.reservation.ReservationDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
-import uz.ccrew.flightmanagement.dto.reservation.ReservationFlexibleDTO;
-import uz.ccrew.flightmanagement.dto.reservation.RoundTripReservationCreate;
-import uz.ccrew.flightmanagement.dto.reservation.OneWayReservationCreateDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +48,14 @@ public class ReservationController {
     @Operation(summary = "Book a flight with flexible time")
     public ResponseEntity<Response<ReservationDTO>> makeFlexible(@RequestBody @Valid ReservationFlexibleDTO dto) {
         ReservationDTO result = reservationService.makeFlexible(dto);
+        return ResponseMaker.ok(result);
+    }
+
+    @PostMapping("/make/multi-city")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    @Operation(summary = "Book a flight with multi city ")
+    public ResponseEntity<Response<ReservationDTO>> makeMultiCity(@RequestBody @Valid MultiCityReservationCreateDTO dto) {
+        ReservationDTO result = reservationService.makeMultiCity(dto);
         return ResponseMaker.ok(result);
     }
 

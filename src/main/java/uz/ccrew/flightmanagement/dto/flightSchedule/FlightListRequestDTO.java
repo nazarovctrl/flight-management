@@ -8,5 +8,6 @@ import java.time.LocalDate;
 public record FlightListRequestDTO(String departureCity,
                                    String arrivalCity,
                                    LocalDate departureDate,
-                                   LocalDate returnDate) {
+                                   LocalDate returnDate,
+                                   Integer maxStops) {
 }

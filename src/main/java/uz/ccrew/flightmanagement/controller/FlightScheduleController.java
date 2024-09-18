@@ -2,13 +2,8 @@ package uz.ccrew.flightmanagement.controller;
 
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
+import uz.ccrew.flightmanagement.dto.flightSchedule.*;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
-import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTripFlightDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightListRequestDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +41,15 @@ public class FlightScheduleController {
     public ResponseEntity<Response<?>> delete(@PathVariable("id") Long id) {
         flightScheduleService.delete(id);
         return ResponseMaker.okMessage("FlightSchedule deleted");
+    }
+
+    @GetMapping("/list")
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @Operation(summary = "Get list flightSchedule, role admin")
+    public ResponseEntity<Response<Page<FlightScheduleDTO>>> getList(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleDTO> result = flightScheduleService.getList(page, size);
+        return ResponseMaker.ok(result);
     }
 
     @GetMapping("/get/{id}")
@@ -113,6 +117,24 @@ public class FlightScheduleController {
                 .returnDate(returnDate).build();
 
         List<RoundTripFlightDTO> result = flightScheduleService.getRoundTripList(flightListRequestDTO);
+        return ResponseMaker.ok(result);
+    }
+
+    @GetMapping("/list/multi-city")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    @Operation(summary = "Get list flights for multi city trip")
+    public ResponseEntity<Response<List<MultiCityFlightDTO>>> getMultiCityTrip(@RequestParam("departureCity") String departureCity,
+                                                                               @RequestParam("arrivalCity") String arrivalCity,
+                                                                               @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+                                                                               @RequestParam("maxStops") Integer maxStops) {
+        FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
+                .departureCity(departureCity.toUpperCase())
+                .arrivalCity(arrivalCity.toUpperCase())
+                .departureDate(departureDate)
+                .maxStops(maxStops)
+                .build();
+
+        List<MultiCityFlightDTO> result = flightScheduleService.getMultiCityTrip(flightListRequestDTO);
         return ResponseMaker.ok(result);
     }
 }

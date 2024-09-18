@@ -49,7 +49,7 @@ public class ReservationPaymentServiceImpl implements ReservationPaymentService 
 
         reservationList.parallelStream().forEach(reservation -> {
             reservationService.reverseReservation(reservation.getReservationId());
-            reservation.setReservationStatusCode(ReservationStatusCode.CANCELED);
+            reservation.setReservationStatusCode(ReservationStatusCode.REVERSED);
         });
 
         reservationRepository.saveAll(reservationList);
