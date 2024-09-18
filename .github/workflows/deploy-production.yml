@@ -24,22 +24,22 @@ jobs:
           push: true
           tags: nazarovv2/flight-management:latest
 
-  deploy_to_droplet:
-    runs-on: ubuntu-latest
-    needs: build_and_push
-    name: Deploy to Droplet
-    steps:
-      - name: Connect with SSH and Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PASSWORD }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          script: |
-            cd flight-management
-            docker-compose stop flight-management-app
-            docker rm flight-management
-            docker pull nazarovv2/flight-management:latest
-            docker-compose up -d flight-management-app
-            docker ps -a
+  # deploy_to_droplet:
+  #   runs-on: ubuntu-latest
+  #   needs: build_and_push
+  #   name: Deploy to Droplet
+  #   steps:
+  #     - name: Connect with SSH and Deploy
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.HOST }}
+  #         username: ${{ secrets.USERNAME }}
+  #         key: ${{ secrets.PASSWORD }}
+  #         passphrase: ${{ secrets.PASSPHRASE }}
+  #         script: |
+  #           cd flight-management
+  #           docker-compose stop flight-management-app
+  #           docker rm flight-management
+  #           docker pull nazarovv2/flight-management:latest
+  #           docker-compose up -d flight-management-app
+  #           docker ps -a
