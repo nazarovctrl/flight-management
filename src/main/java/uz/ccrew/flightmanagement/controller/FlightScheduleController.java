@@ -73,9 +73,8 @@ public class FlightScheduleController {
     @GetMapping("/list/on-time")
     @PreAuthorize("hasAnyAuthority('ADMINISTRATOR','EMPLOYEE')")
     @Operation(summary = "Get all flights on time")
-    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getOnTimeFlights(
-            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getOnTimeFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
         Page<FlightScheduleReportDTO> result = flightScheduleService.getOnTimeFlights(page, size);
         return ResponseMaker.ok(result);
     }
@@ -83,9 +82,8 @@ public class FlightScheduleController {
     @GetMapping("/list/delayed")
     @PreAuthorize("hasAnyAuthority('ADMINISTRATOR','EMPLOYEE')")
     @Operation(summary = "Get all flights delayed")
-    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getDelayedFlights(
-            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getDelayedFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
         Page<FlightScheduleReportDTO> result = flightScheduleService.getDelayedFlights(page, size);
         return ResponseMaker.ok(result);
     }
