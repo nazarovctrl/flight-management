@@ -67,8 +67,8 @@ public class UserControllerTest {
     @Test
     void getUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/user/get")
-                        .header("Authorization", "Bearer " + ACCESS_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").isNotEmpty())
@@ -77,18 +77,18 @@ public class UserControllerTest {
     }
 
     @Test
-    void getUserByIdWithPlayer() throws Exception {
+    void getUserByIdWithCustomer() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/user/get/{userId}", USER_ID)
-                        .header("Authorization", "Bearer " + ACCESS_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
     @Test
     void getUserByIdWithAdmin() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/user/get/{userId}", USER_ID)
-                        .header("Authorization", "Bearer " + getAdminAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON))
+                .header("Authorization", "Bearer " + getAdminAccessToken())
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").isNotEmpty())
@@ -101,9 +101,9 @@ public class UserControllerTest {
         UserUpdateDTO updateDTO = new UserUpdateDTO("Nazarov", "200622Az", UserRole.ADMINISTRATOR);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/user/update")
-                        .header("Authorization", "Bearer " + ACCESS_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.login").value(updateDTO.login().toLowerCase()))
@@ -111,13 +111,13 @@ public class UserControllerTest {
     }
 
     @Test
-    void updateUserByIdWithPlayer() throws Exception {
+    void updateUserByIdWithCustomer() throws Exception {
         UserUpdateDTO updateDTO = new UserUpdateDTO("Nazarov", "200622Az", UserRole.ADMINISTRATOR);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/user/update/{userId}", USER_ID)
-                        .header("Authorization", "Bearer " + ACCESS_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
@@ -126,29 +126,28 @@ public class UserControllerTest {
         UserUpdateDTO updateDTO = new UserUpdateDTO("Nazarov", "200622Az", UserRole.ADMINISTRATOR);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/user/update/{userId}", USER_ID)
-                        .header("Authorization", "Bearer " + getAdminAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .header("Authorization", "Bearer " + getAdminAccessToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.login").value(updateDTO.login()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.role").value(updateDTO.role().name()));
     }
 
-
     @Test
-    void deleteUserByIdWithPlayer() throws Exception {
+    void deleteUserByIdWithCustomer() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/user/delete/{userId}", USER_ID)
-                        .header("Authorization", "Bearer " + ACCESS_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
     @Test
     void deleteUserByIdWithAdmin() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/user/delete/{userId}", USER_ID)
-                        .header("Authorization", "Bearer " + getAdminAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON))
+                .header("Authorization", "Bearer " + getAdminAccessToken())
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("User deleted"));
     }
@@ -156,10 +155,10 @@ public class UserControllerTest {
     @Test
     void getUserList() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/user/get/list")
-                        .param("page", String.valueOf(0))
-                        .param("size", String.valueOf(10))
-                        .header("Authorization", "Bearer " + getAdminAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("page", String.valueOf(0))
+                .param("size", String.valueOf(10))
+                .header("Authorization", "Bearer " + getAdminAccessToken())
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").exists())
