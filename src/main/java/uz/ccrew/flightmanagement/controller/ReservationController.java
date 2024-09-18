@@ -53,7 +53,7 @@ public class ReservationController {
 
     @PostMapping("/make/multi-city")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Operation(summary = "Book a flight with multi city trip")
+    @Operation(summary = "Book a flight with multi city ")
     public ResponseEntity<Response<ReservationDTO>> makeMultiCity(@RequestBody @Valid MultiCityReservationCreateDTO dto) {
         ReservationDTO result = reservationService.makeMultiCity(dto);
         return ResponseMaker.ok(result);

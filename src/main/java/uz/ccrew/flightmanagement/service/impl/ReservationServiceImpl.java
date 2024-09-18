@@ -6,6 +6,7 @@ import uz.ccrew.flightmanagement.repository.*;
 import uz.ccrew.flightmanagement.util.AuthUtil;
 import uz.ccrew.flightmanagement.util.RandomUtil;
 import uz.ccrew.flightmanagement.dto.reservation.*;
+import uz.ccrew.flightmanagement.dto.flightSchedule.*;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.enums.PaymentStatusCode;
 import uz.ccrew.flightmanagement.exp.BadRequestException;
@@ -13,10 +14,6 @@ import uz.ccrew.flightmanagement.mapper.ReservationMapper;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
 import uz.ccrew.flightmanagement.dto.flightcost.FlightCostDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTrip;
-import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTripFlightDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -57,8 +54,8 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationDTO makeOneWay(OneWayReservationCreateDTO dto) {
         MainDTO mainDTO = dto.main();
         FlightSchedule flight = flightScheduleRepository.loadById(dto.flightNumber());
-
         BookingAgent bookingAgent = bookingAgentRepository.loadById(mainDTO.bookingAgentId());
+        Passenger passenger = passengerService.getPassenger(mainDTO.passenger());
 
         OneWayFlightDTO oneWayFlight = oneWayFlightService.getOneWayFlight(flight)
                 .orElseThrow(() -> new BadRequestException("Invalid one way flight"));
@@ -66,8 +63,6 @@ public class ReservationServiceImpl implements ReservationService {
         checkToAvailability(oneWayFlight.travelClassAvailableSeats(), oneWayFlight.travelClassCostList(), mainDTO.travelClassCode());
 
         Long paymentAmount = oneWayFlight.travelClassCostList().get(mainDTO.travelClassCode());
-        Passenger passenger = passengerService.getPassenger(mainDTO.passenger());
-
         ItineraryReservation reservation = makeReservation(bookingAgent, passenger, paymentAmount, mainDTO, flight.getFlightNumber());
 
         return reservationMapper.toDTO(reservation);
@@ -78,7 +73,7 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationDTO makeRoundTrip(RoundTripReservationCreate dto) {
         MainDTO mainDTO = dto.main();
         BookingAgent bookingAgent = bookingAgentRepository.loadById(mainDTO.bookingAgentId());
-
+        Passenger passenger = passengerService.getPassenger(mainDTO.passenger());
         FlightSchedule flight = flightScheduleRepository.loadById(dto.flightNumber());
         FlightSchedule returnFlight = flightScheduleRepository.loadById(dto.returnFlightNumber());
 
@@ -88,17 +83,10 @@ public class ReservationServiceImpl implements ReservationService {
         checkToAvailability(roundTrip.travelClassAvailableSeats(), roundTrip.travelClassCostList(), mainDTO.travelClassCode());
 
         Long paymentAmount = roundTrip.travelClassCostList().get(mainDTO.travelClassCode());
-        Passenger passenger = passengerService.getPassenger(mainDTO.passenger());
 
         ItineraryReservation reservation = makeReservation(bookingAgent, passenger, paymentAmount, mainDTO, flight.getFlightNumber(), returnFlight.getFlightNumber());
 
         return reservationMapper.toDTO(reservation);
-    }
-
-    @Override
-    public List<FlightScheduleDTO> getFlightList(Long reservationId) {
-        List<FlightSchedule> flightList = reservationRepository.getFlightListByReservationId(reservationId);
-        return flightScheduleMapper.toDTOList(flightList);
     }
 
     @Transactional
@@ -173,7 +161,29 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     @Override
     public ReservationDTO makeMultiCity(MultiCityReservationCreateDTO dto) {
-        return null;
+        MainDTO mainDTO = dto.main();
+        BookingAgent bookingAgent = bookingAgentRepository.loadById(mainDTO.bookingAgentId());
+        Passenger passenger = passengerService.getPassenger(mainDTO.passenger());
+
+        List<FlightSchedule> flights = flightScheduleRepository.findAllById(dto.flightNumbers());
+        if (flights.size() != dto.flightNumbers().size()) {
+            throw new BadRequestException("Flight not found");
+        }
+        MultiCityFlightDTO multiCityFlight = multiCityFlightService.getMultiCityFlight(flights)
+                .orElseThrow(() -> new BadRequestException("Invalid multi city flight"));
+        //check
+        checkToAvailability(multiCityFlight.travelClassAvailableSeats(), multiCityFlight.travelClassCostList(), mainDTO.travelClassCode());
+
+        Long paymentAmount = multiCityFlight.travelClassCostList().get(mainDTO.travelClassCode());
+        ItineraryReservation reservation = makeReservation(bookingAgent, passenger, paymentAmount, mainDTO, dto.flightNumbers().toArray(new Long[0]));
+
+        return reservationMapper.toDTO(reservation);
+    }
+
+    @Override
+    public List<FlightScheduleDTO> getFlightList(Long reservationId) {
+        List<FlightSchedule> flightList = reservationRepository.getFlightListByReservationId(reservationId);
+        return flightScheduleMapper.toDTOList(flightList);
     }
 
     @Override
