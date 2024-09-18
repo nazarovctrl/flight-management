@@ -4,7 +4,7 @@
 ## Requirements
 
 - Java 21
-- Spring Boot 3.3.1
+- Spring Boot 3.3.3
 
 ## How to run
 
