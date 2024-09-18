@@ -215,11 +215,9 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
         List<FlightSchedule> nextFlights;
         if (previousArrival != null) {
-            LocalDateTime min = previousArrival.plusHours(1);
-            LocalDateTime max = previousArrival.plusHours(2);
-            nextFlights = flightScheduleRepository.findByOriginAirportAndTimeConstraints(currentCity, min, max);
+            nextFlights = flightScheduleRepository.findByOriginAirportCityAndTimeConstraints(currentCity, previousArrival.plusHours(1), previousArrival.plusHours(2));
         } else {
-            nextFlights = flightScheduleRepository.findByOriginAirport_City(currentCity);
+            nextFlights = flightScheduleRepository.findByOriginAirportCity(currentCity);
         }
 
         for (FlightSchedule flight : nextFlights) {

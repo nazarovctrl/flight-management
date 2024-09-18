@@ -92,8 +92,29 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
               from FlightSchedule w
              where w.originAirport.city = ?1
                and w.departureDateTime between ?2 and ?3
+               and exists (select 1
+                             from Leg l
+                            where l.flightSchedule = w
+                              and l.destinationAirport = w.destinationAirport.airportCode)
+               and exists (select 1
+                             from FlightCost c
+                            where c.flightSchedule.flightNumber= w.flightNumber
+                              and CURRENT_TIMESTAMP between c.id.validFromDate and c.validToDate)
             """)
-    List<FlightSchedule> findByOriginAirportAndTimeConstraints(String city, LocalDateTime minDepartureDate, LocalDateTime maxDepartureDate);
+    List<FlightSchedule> findByOriginAirportCityAndTimeConstraints(String city, LocalDateTime minDepartureDate, LocalDateTime maxDepartureDate);
 
-    List<FlightSchedule> findByOriginAirport_City(String city);
+    @Query("""
+            select w
+              from FlightSchedule w
+             where w.originAirport.city = ?1
+               and exists (select 1
+                             from Leg l
+                            where l.flightSchedule = w
+                              and l.destinationAirport = w.destinationAirport.airportCode)
+               and exists (select 1
+                             from FlightCost c
+                            where c.flightSchedule.flightNumber= w.flightNumber
+                              and CURRENT_TIMESTAMP between c.id.validFromDate and c.validToDate)
+            """)
+    List<FlightSchedule> findByOriginAirportCity(String city);
 }
