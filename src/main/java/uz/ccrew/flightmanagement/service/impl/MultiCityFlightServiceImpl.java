@@ -1,17 +1,14 @@
 package uz.ccrew.flightmanagement.service.impl;
 
-import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.TravelClassAggregationDTO;
 import uz.ccrew.flightmanagement.util.FlightUtil;
 import uz.ccrew.flightmanagement.entity.FlightSchedule;
-import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.repository.LegRepository;
 import uz.ccrew.flightmanagement.mapper.FlightScheduleMapper;
-import uz.ccrew.flightmanagement.service.OneWayFlightService;
 import uz.ccrew.flightmanagement.service.MultiCityFlightService;
 import uz.ccrew.flightmanagement.repository.FlightScheduleRepository;
 import uz.ccrew.flightmanagement.dto.flightSchedule.MultiCityFlightDTO;
 import uz.ccrew.flightmanagement.dto.flightSchedule.FlightListRequestDTO;
+import uz.ccrew.flightmanagement.dto.flightSchedule.TravelClassAggregationDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +22,6 @@ public class MultiCityFlightServiceImpl implements MultiCityFlightService {
     private final FlightUtil flightUtil;
     private final LegRepository legRepository;
     private final FlightScheduleMapper flightMapper;
-    private final OneWayFlightService oneWayFlightService;
     private final FlightScheduleRepository flightRepository;
 
     @Override
