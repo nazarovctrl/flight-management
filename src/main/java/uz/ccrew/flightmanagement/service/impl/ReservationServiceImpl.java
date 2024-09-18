@@ -182,7 +182,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<FlightScheduleDTO> getFlightList(Long reservationId) {
-        List<FlightSchedule> flightList = reservationRepository.getFlightListByReservationId(reservationId);
+        List<FlightSchedule> flightList = reservationRepository.getFlightListByReservationId(reservationId, authUtil.loadLoggedUser().getId());
         return flightScheduleMapper.toDTOList(flightList);
     }
 
@@ -243,7 +243,7 @@ public class ReservationServiceImpl implements ReservationService {
     public Page<ReservationDTO> getList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("dateReservationMade").descending());
 
-        Page<ItineraryReservation> pageObj = reservationRepository.findByPassenger_CustomerId(authUtil.loadLoggedUser().getId(), pageable);
+        Page<ItineraryReservation> pageObj = reservationRepository.findByCreatedBy(authUtil.loadLoggedUser().getId(), pageable);
         List<ReservationDTO> dtoList = reservationMapper.toDTOList(pageObj.getContent());
 
         return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());

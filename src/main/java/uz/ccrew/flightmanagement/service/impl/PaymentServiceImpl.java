@@ -11,6 +11,7 @@ import uz.ccrew.flightmanagement.repository.UserRepository;
 import uz.ccrew.flightmanagement.repository.PaymentRepository;
 import uz.ccrew.flightmanagement.dto.reservationpayment.PaymentDTO;
 import uz.ccrew.flightmanagement.service.ReservationPaymentService;
+import uz.ccrew.flightmanagement.repository.ReservationPaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 import jakarta.transaction.Transactional;
@@ -27,11 +28,13 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final ReservationPaymentService reservationPaymentService;
+    private final ReservationPaymentRepository reservationPaymentRepository;
 
     @Transactional
     @Override
     public PaymentDTO pay(UUID paymentId) {
-        //TODO check to owner
+        checkToOwner(paymentId);
+
         Payment payment = paymentRepository.loadById(paymentId);
         if (!payment.getPaymentStatusCode().equals(PaymentStatusCode.CREATED)) {
             throw new BadRequestException("Invalid payment status");
@@ -52,7 +55,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     @Override
     public PaymentDTO reverse(UUID paymentId) {
-        //TODO check to owner
+        checkToOwner(paymentId);
+
         Payment payment = paymentRepository.loadById(paymentId);
         if (!payment.getPaymentStatusCode().equals(PaymentStatusCode.PAYED)) {
             throw new BadRequestException("Invalid payment status");
@@ -72,4 +76,10 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentMapper.toDTO(payment);
     }
 
+    private void checkToOwner(UUID paymentId) {
+        Long ownerId = reservationPaymentRepository.findReservationOwnerByPaymentId(paymentId);
+        if (!authUtil.loadLoggedUser().getId().equals(ownerId)) {
+            throw new BadRequestException("You cant pay/reverse this payment");
+        }
+    }
 }

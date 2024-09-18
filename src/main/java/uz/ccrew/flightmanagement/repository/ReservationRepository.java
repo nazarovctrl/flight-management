@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ReservationRepository extends BasicRepository<ItineraryReservation, Long> {
-    Page<ItineraryReservation> findByPassenger_CustomerId(Long customerId, Pageable pageable);
+    Page<ItineraryReservation> findByCreatedBy(Long customerId, Pageable pageable);
 
     @Query("""
             select l.reservation.passenger
@@ -26,6 +26,7 @@ public interface ReservationRepository extends BasicRepository<ItineraryReservat
             select distinct l.leg.flightSchedule
               from ItineraryLeg l
              where l.reservation.reservationId = ?1
+               and l.reservation.createdBy = ?2
             """)
-    List<FlightSchedule> getFlightListByReservationId(Long reservationId);
+    List<FlightSchedule> getFlightListByReservationId(Long reservationId, Long createdBY);
 }
