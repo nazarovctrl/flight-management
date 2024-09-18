@@ -1,8 +1,10 @@
 package uz.ccrew.flightmanagement.entity;
 
-import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
+import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 
+import lombok.Getter;
+import lombok.Builder;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -12,7 +14,11 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "travel_class_capacity")
-public class TravelClassCapacity {
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class TravelClassCapacity extends Auditable {
     @EmbeddedId
     private TravelClassCapacityId id;
     @Column(nullable = false)
@@ -20,10 +26,13 @@ public class TravelClassCapacity {
 
 
     @Embeddable
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class TravelClassCapacityId implements Serializable {
+        @Enumerated(EnumType.STRING)
         private AircraftTypeCode aircraftTypeCode;
+        @Enumerated(EnumType.STRING)
         private TravelClassCode travelClassCode;
 
         @Override

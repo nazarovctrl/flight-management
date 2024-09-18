@@ -1,8 +1,9 @@
 package uz.ccrew.flightmanagement.mapper;
 
-import org.springframework.stereotype.Component;
 import uz.ccrew.flightmanagement.entity.RefCalendar;
 import uz.ccrew.flightmanagement.dto.refcalendar.RefCalendarDTO;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class RefCalendarMapper implements Mapper<RefCalendarDTO, RefCalendarDTO, RefCalendar> {

@@ -1,7 +1,7 @@
 package uz.ccrew.flightmanagement.entity;
 
-import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 import uz.ccrew.flightmanagement.enums.AirlineCode;
+import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 
 import lombok.*;
 import jakarta.persistence.*;
@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "flight_schedules")
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
-public class FlightSchedule {
+public class FlightSchedule extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightNumber;

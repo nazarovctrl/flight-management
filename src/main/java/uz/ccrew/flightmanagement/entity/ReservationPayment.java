@@ -1,8 +1,7 @@
 package uz.ccrew.flightmanagement.entity;
 
+import lombok.*;
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 import java.util.UUID;
 import java.util.Objects;
@@ -10,7 +9,12 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "reservation_payments")
-public class ReservationPayment {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ReservationPayment extends Auditable {
     @EmbeddedId
     private ReservationPaymentId id;
 

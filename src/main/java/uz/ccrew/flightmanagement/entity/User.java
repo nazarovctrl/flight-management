@@ -24,9 +24,12 @@ public class User extends Auditable {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private UserRole role;
 
     @Column(nullable = false, columnDefinition = "timestamp default CURRENT_TIMESTAMP")
     private LocalDateTime credentialsModifiedDate;
+
+    @Column(nullable = false)
+    private Long cashbackAmount;
 }

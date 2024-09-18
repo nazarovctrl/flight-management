@@ -7,8 +7,8 @@ import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 import lombok.Builder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)

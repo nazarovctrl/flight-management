@@ -15,13 +15,15 @@ import jakarta.persistence.Entity;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Airport {
+public class Airport extends Auditable {
     @Id
     private String airportCode;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String airportName;
     @Column(nullable = false)
     private String airportLocation;
     @Column
     private String otherDetails;
+    @Column(nullable = false)
+    private String city;
 }

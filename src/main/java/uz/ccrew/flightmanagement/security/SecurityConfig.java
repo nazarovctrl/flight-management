@@ -1,6 +1,5 @@
 package uz.ccrew.flightmanagement.security;
 
-import uz.ccrew.flightmanagement.enums.UserRole;
 import uz.ccrew.flightmanagement.security.jwt.JWTAuthenticationFilter;
 import uz.ccrew.flightmanagement.security.user.UserAuthenticationEntryPoint;
 
@@ -20,10 +19,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JWTAuthenticationFilter authenticationFilter;
@@ -71,12 +72,6 @@ public class SecurityConfig {
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll()
-                        .requestMatchers("/api/v1/auth/refresh", "/api/v1/user/*").hasAnyAuthority(UserRole.all())
-                        .requestMatchers("/api/v1/flight-schedule/get/*","/api/v1/flight-schedule/get-by-airport/*").hasAnyAuthority(UserRole.all())
-                        .requestMatchers("/api/v1/user/**", "/api/v1/airport/**", "/api/v1/ref-calendar/**",
-                                "/api/v1/flight-cost/**", "/api/v1/flight-schedule/**", "/api/v1/leg/**")
-                        .hasAuthority(UserRole.ADMINISTRATOR.name())
-                        .requestMatchers("/api/v1/passenger/add").hasAuthority(UserRole.CUSTOMER.name())
                         .anyRequest().authenticated());
         return httpSecurity.build();
     }

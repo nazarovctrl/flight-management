@@ -21,19 +21,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private final AuthenticationManager authenticationManager;
+    private final AuthUtil authUtil;
+    private final UserMapper userMapper;
     private final JWTService jwtService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
-    private final AuthUtil authUtil;
-
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public UserDTO register(RegisterDTO dto) {
@@ -46,8 +45,8 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(dto.password()))
                 .role(UserRole.CUSTOMER)
                 .credentialsModifiedDate(LocalDateTime.now())
+                .cashbackAmount(0L)
                 .build();
-
         userRepository.save(user);
         return userMapper.toDTO(user);
     }

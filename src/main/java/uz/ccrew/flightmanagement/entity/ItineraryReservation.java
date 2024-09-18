@@ -4,13 +4,19 @@ import uz.ccrew.flightmanagement.enums.TicketTypeCode;
 import uz.ccrew.flightmanagement.enums.TravelClassCode;
 import uz.ccrew.flightmanagement.enums.ReservationStatusCode;
 
+import lombok.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "itinerary_reservations")
-public class ItineraryReservation {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ItineraryReservation extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;

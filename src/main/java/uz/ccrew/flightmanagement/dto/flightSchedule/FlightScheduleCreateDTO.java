@@ -1,12 +1,12 @@
 package uz.ccrew.flightmanagement.dto.flightSchedule;
 
-import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 import uz.ccrew.flightmanagement.enums.AirlineCode;
+import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 
-import jakarta.validation.constraints.NotNull;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 

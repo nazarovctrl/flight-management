@@ -1,8 +1,8 @@
 package uz.ccrew.flightmanagement.entity;
 
-import lombok.*;
 import uz.ccrew.flightmanagement.enums.AircraftTypeCode;
 
+import lombok.*;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlightCost {
+public class FlightCost extends Auditable {
     @EmbeddedId
     private FlightCostsId id;
 
