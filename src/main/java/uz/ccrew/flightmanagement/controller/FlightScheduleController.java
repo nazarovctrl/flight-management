@@ -2,13 +2,8 @@ package uz.ccrew.flightmanagement.controller;
 
 import uz.ccrew.flightmanagement.dto.Response;
 import uz.ccrew.flightmanagement.dto.ResponseMaker;
+import uz.ccrew.flightmanagement.dto.flightSchedule.*;
 import uz.ccrew.flightmanagement.service.FlightScheduleService;
-import uz.ccrew.flightmanagement.dto.flightSchedule.OneWayFlightDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.RoundTripFlightDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightListRequestDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleCreateDTO;
-import uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -132,11 +127,10 @@ public class FlightScheduleController {
     @GetMapping("/list/multi-city")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get list flights for multi city trip")
-    public ResponseEntity<Response<List<List<FlightScheduleDTO>>>> getMultiCityTrip
-            (@RequestParam("departureCity") String departureCity,
-             @RequestParam("arrivalCity") String arrivalCity,
-             @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
-             @RequestParam("maxStops") Integer maxStops) {
+    public ResponseEntity<Response<List<MultiCityFlightDTO>>> getMultiCityTrip(@RequestParam("departureCity") String departureCity,
+                                                                               @RequestParam("arrivalCity") String arrivalCity,
+                                                                               @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+                                                                               @RequestParam("maxStops") Integer maxStops) {
         FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
                 .departureCity(departureCity.toUpperCase())
                 .arrivalCity(arrivalCity.toUpperCase())
@@ -144,7 +138,7 @@ public class FlightScheduleController {
                 .maxStops(maxStops)
                 .build();
 
-        List<List<FlightScheduleDTO>> result = flightScheduleService.getMultiCityTrip(flightListRequestDTO);
+        List<MultiCityFlightDTO> result = flightScheduleService.getMultiCityTrip(flightListRequestDTO);
         return ResponseMaker.ok(result);
     }
 }

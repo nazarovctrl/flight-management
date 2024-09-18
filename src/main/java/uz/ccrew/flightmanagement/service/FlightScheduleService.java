@@ -1,12 +1,10 @@
 package uz.ccrew.flightmanagement.service;
 
 import uz.ccrew.flightmanagement.dto.flightSchedule.*;
-import uz.ccrew.flightmanagement.entity.FlightSchedule;
 
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FlightScheduleService {
     FlightScheduleDTO addFlightSchedule(FlightScheduleCreateDTO flightScheduleCreateDTO);
@@ -25,11 +23,7 @@ public interface FlightScheduleService {
 
     List<OneWayFlightDTO> getOneWayList(FlightListRequestDTO dto);
 
-    Optional<OneWayFlightDTO> getOneWayFlight(FlightSchedule flight);
-
     List<RoundTripFlightDTO> getRoundTripList(FlightListRequestDTO flightListRequestDTO);
 
-    Optional<RoundTripFlightDTO> getRoundTripDTO(RoundTrip roundTrip);
-
-    List<List<FlightScheduleDTO>> getMultiCityTrip(FlightListRequestDTO flightListRequestDTO);
+    List<MultiCityFlightDTO> getMultiCityTrip(FlightListRequestDTO flightListRequestDTO);
 }

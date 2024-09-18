@@ -1,8 +1,7 @@
 package uz.ccrew.flightmanagement.dto.reservation;
 
-import jakarta.validation.Valid;
-
 import lombok.Builder;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import io.swagger.v3.oas.annotations.media.Schema;
 

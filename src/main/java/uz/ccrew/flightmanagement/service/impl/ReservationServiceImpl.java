@@ -39,10 +39,12 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationMapper reservationMapper;
     private final PaymentRepository paymentRepository;
     private final FlightCostService flightCostService;
+    private final OneWayFlightService oneWayFlightService;
     private final ItineraryLegService itineraryLegService;
     private final FlightScheduleMapper flightScheduleMapper;
-    private final FlightScheduleService flightScheduleService;
     private final ReservationRepository reservationRepository;
+    private final RoundTripFlightService roundTripFlightService;
+    private final MultiCityFlightService multiCityFlightService;
     private final RefCalendarRepository refCalendarRepository;
     private final ItineraryLegRepository itineraryLegRepository;
     private final BookingAgentRepository bookingAgentRepository;
@@ -58,7 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         BookingAgent bookingAgent = bookingAgentRepository.loadById(mainDTO.bookingAgentId());
 
-        OneWayFlightDTO oneWayFlight = flightScheduleService.getOneWayFlight(flight)
+        OneWayFlightDTO oneWayFlight = oneWayFlightService.getOneWayFlight(flight)
                 .orElseThrow(() -> new BadRequestException("Invalid one way flight"));
         //check
         checkToAvailability(oneWayFlight.travelClassAvailableSeats(), oneWayFlight.travelClassCostList(), mainDTO.travelClassCode());
@@ -80,7 +82,7 @@ public class ReservationServiceImpl implements ReservationService {
         FlightSchedule flight = flightScheduleRepository.loadById(dto.flightNumber());
         FlightSchedule returnFlight = flightScheduleRepository.loadById(dto.returnFlightNumber());
 
-        RoundTripFlightDTO roundTrip = flightScheduleService.getRoundTripDTO(new RoundTrip(flight, returnFlight))
+        RoundTripFlightDTO roundTrip = roundTripFlightService.getRoundTripDTO(new RoundTrip(flight, returnFlight))
                 .orElseThrow(() -> new BadRequestException("Invalid round trip flight"));
         //check
         checkToAvailability(roundTrip.travelClassAvailableSeats(), roundTrip.travelClassCostList(), mainDTO.travelClassCode());
@@ -168,6 +170,12 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationMapper.toDTO(reservation);
     }
 
+    @Transactional
+    @Override
+    public ReservationDTO makeMultiCity(MultiCityReservationCreateDTO dto) {
+        return null;
+    }
+
     @Override
     public void checkToConfirmation(Long reservationId, TravelClassCode travelClassCode) {
         List<FlightSchedule> flightList = itineraryLegRepository.findFlightByReservationId(reservationId);
@@ -179,13 +187,13 @@ public class ReservationServiceImpl implements ReservationService {
         Map<TravelClassCode, Long> costList;
 
         if (flightList.size() == 1) {
-            OneWayFlightDTO oneWayFlight = flightScheduleService.getOneWayFlight(flightList.getFirst())
+            OneWayFlightDTO oneWayFlight = oneWayFlightService.getOneWayFlight(flightList.getFirst())
                     .orElseThrow(() -> new BadRequestException("Invalid one way flight"));
 
             availableSeats = oneWayFlight.travelClassAvailableSeats();
             costList = oneWayFlight.travelClassCostList();
         } else {
-            RoundTripFlightDTO roundTrip = flightScheduleService.getRoundTripDTO(new RoundTrip(flightList.get(0), flightList.get(1)))
+            RoundTripFlightDTO roundTrip = roundTripFlightService.getRoundTripDTO(new RoundTrip(flightList.get(0), flightList.get(1)))
                     .orElseThrow(() -> new BadRequestException("Invalid round trip flight"));
 
             availableSeats = roundTrip.travelClassAvailableSeats();
