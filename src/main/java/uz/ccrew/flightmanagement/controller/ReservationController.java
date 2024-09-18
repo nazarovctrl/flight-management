@@ -37,7 +37,7 @@ public class ReservationController {
 
     @PostMapping("/make/round-trip")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Operation(summary = "Make one way reservation")
+    @Operation(summary = "Make round trip reservation")
     public ResponseEntity<Response<ReservationDTO>> makeRoundTrip(@RequestBody @Valid RoundTripReservationCreate dto) {
         ReservationDTO result = reservationService.makeRoundTrip(dto);
         return ResponseMaker.ok(result);
@@ -45,7 +45,7 @@ public class ReservationController {
 
     @PostMapping("/make/flexible")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Operation(summary = "Book a flight with flexible time")
+    @Operation(summary = "Make flexible time reservation")
     public ResponseEntity<Response<ReservationDTO>> makeFlexible(@RequestBody @Valid ReservationFlexibleDTO dto) {
         ReservationDTO result = reservationService.makeFlexible(dto);
         return ResponseMaker.ok(result);
@@ -53,7 +53,7 @@ public class ReservationController {
 
     @PostMapping("/make/multi-city")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Operation(summary = "Book a flight with multi city ")
+    @Operation(summary = "Make multi city reservation")
     public ResponseEntity<Response<ReservationDTO>> makeMultiCity(@RequestBody @Valid MultiCityReservationCreateDTO dto) {
         ReservationDTO result = reservationService.makeMultiCity(dto);
         return ResponseMaker.ok(result);
