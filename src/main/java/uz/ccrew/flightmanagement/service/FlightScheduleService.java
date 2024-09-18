@@ -13,6 +13,8 @@ public interface FlightScheduleService {
 
     void delete(Long flightNumber);
 
+    Page<FlightScheduleDTO> getList(int page, int size);
+
     FlightScheduleDTO getFlightSchedule(Long flightNumber);
 
     Page<FlightScheduleDTO> getAllFlightSchedulesByAirportCode(String airportCode, int page, int size);
@@ -28,4 +30,6 @@ public interface FlightScheduleService {
     List<RoundTripFlightDTO> getRoundTripList(FlightListRequestDTO flightListRequestDTO);
 
     Optional<RoundTripFlightDTO> getRoundTripDTO(RoundTrip roundTrip);
+
+    List<List<FlightScheduleDTO>> getMultiCityTrip(FlightListRequestDTO flightListRequestDTO);
 }

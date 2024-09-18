@@ -48,6 +48,15 @@ public class FlightScheduleController {
         return ResponseMaker.okMessage("FlightSchedule deleted");
     }
 
+    @GetMapping("/list")
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @Operation(summary = "Get list flightSchedule, role admin")
+    public ResponseEntity<Response<Page<FlightScheduleDTO>>> getList(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Page<FlightScheduleDTO> result = flightScheduleService.getList(page, size);
+        return ResponseMaker.ok(result);
+    }
+
     @GetMapping("/get/{id}")
     @PreAuthorize("hasAnyAuthority('ADMINISTRATOR','EMPLOYEE','CUSTOMER')")
     @Operation(summary = "Get flightSchedule")
@@ -69,8 +78,9 @@ public class FlightScheduleController {
     @GetMapping("/list/on-time")
     @PreAuthorize("hasAnyAuthority('ADMINISTRATOR','EMPLOYEE')")
     @Operation(summary = "Get all flights on time")
-    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getOnTimeFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                                                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getOnTimeFlights(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
         Page<FlightScheduleReportDTO> result = flightScheduleService.getOnTimeFlights(page, size);
         return ResponseMaker.ok(result);
     }
@@ -78,8 +88,9 @@ public class FlightScheduleController {
     @GetMapping("/list/delayed")
     @PreAuthorize("hasAnyAuthority('ADMINISTRATOR','EMPLOYEE')")
     @Operation(summary = "Get all flights delayed")
-    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getDelayedFlights(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                                                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+    public ResponseEntity<Response<Page<FlightScheduleReportDTO>>> getDelayedFlights(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
         Page<FlightScheduleReportDTO> result = flightScheduleService.getDelayedFlights(page, size);
         return ResponseMaker.ok(result);
     }
@@ -87,7 +98,8 @@ public class FlightScheduleController {
     @GetMapping("/list/one-way")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get list flights for one-way")
-    public ResponseEntity<Response<List<OneWayFlightDTO>>> getOneWayList(@RequestParam("departureCity") String departureCity,
+    public ResponseEntity<Response<List<OneWayFlightDTO>>> getOneWayList(@RequestParam("departureCity") String
+                                                                                 departureCity,
                                                                          @RequestParam("arrivalCity") String arrivalCity,
                                                                          @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate) {
         FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
@@ -102,10 +114,11 @@ public class FlightScheduleController {
     @GetMapping("/list/round-trip")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get list flights for round trip")
-    public ResponseEntity<Response<List<RoundTripFlightDTO>>> getRoundTripList(@RequestParam("departureCity") String departureCity,
-                                                                               @RequestParam("arrivalCity") String arrivalCity,
-                                                                               @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
-                                                                               @RequestParam("returnDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate) {
+    public ResponseEntity<Response<List<RoundTripFlightDTO>>> getRoundTripList
+            (@RequestParam("departureCity") String departureCity,
+             @RequestParam("arrivalCity") String arrivalCity,
+             @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+             @RequestParam("returnDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate) {
         FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
                 .departureCity(departureCity.toUpperCase())
                 .arrivalCity(arrivalCity.toUpperCase())
@@ -113,6 +126,25 @@ public class FlightScheduleController {
                 .returnDate(returnDate).build();
 
         List<RoundTripFlightDTO> result = flightScheduleService.getRoundTripList(flightListRequestDTO);
+        return ResponseMaker.ok(result);
+    }
+
+    @GetMapping("/list/multi-city")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    @Operation(summary = "Get list flights for multi city trip")
+    public ResponseEntity<Response<List<List<FlightScheduleDTO>>>> getMultiCityTrip
+            (@RequestParam("departureCity") String departureCity,
+             @RequestParam("arrivalCity") String arrivalCity,
+             @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+             @RequestParam("maxStops") Integer maxStops) {
+        FlightListRequestDTO flightListRequestDTO = FlightListRequestDTO.builder()
+                .departureCity(departureCity.toUpperCase())
+                .arrivalCity(arrivalCity.toUpperCase())
+                .departureDate(departureDate)
+                .maxStops(maxStops)
+                .build();
+
+        List<List<FlightScheduleDTO>> result = flightScheduleService.getMultiCityTrip(flightListRequestDTO);
         return ResponseMaker.ok(result);
     }
 }

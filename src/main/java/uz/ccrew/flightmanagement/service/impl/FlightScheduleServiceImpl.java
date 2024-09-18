@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +57,16 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     public void delete(Long flightNumber) {
         FlightSchedule flightSchedule = flightScheduleRepository.loadById(flightNumber);
         flightScheduleRepository.delete(flightSchedule);
+    }
+
+    @Override
+    public Page<FlightScheduleDTO> getList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+
+        Page<FlightSchedule> pageObj = flightScheduleRepository.findAll(pageable);
+        List<FlightScheduleDTO> dtoList = flightScheduleMapper.toDTOList(pageObj.getContent());
+
+        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
     }
 
     @Override
@@ -162,6 +173,71 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                 .travelClassAvailableSeats(availableSeats)
                 .build();
         return Optional.of(roundTripFlightDTO);
+    }
+
+    @Override
+    public List<List<FlightScheduleDTO>> getMultiCityTrip(FlightListRequestDTO dto) {
+        if (dto.departureDate().isBefore(LocalDate.now())) {
+            throw new BadRequestException("Departure date can be minimum today");
+        }
+        if (dto.maxStops() < 2) {
+            throw new BadRequestException("Max stops minimum value is 3");
+        }
+
+        Optional<Airport> originAirportOptional = airportRepository.findFirstByCity(dto.departureCity());
+        Optional<Airport> destinationAirportOptional = airportRepository.findFirstByCity(dto.arrivalCity());
+        if (originAirportOptional.isEmpty() || destinationAirportOptional.isEmpty()) {
+            throw new BadRequestException("Departure or arrival city are not found");
+        }
+
+        List<List<FlightSchedule>> possibleRoutes = new ArrayList<>();
+        findRoutes(dto.departureCity(), dto.arrivalCity(), new ArrayList<>(), possibleRoutes, new HashSet<>(), dto.maxStops());
+
+        return possibleRoutes.stream()
+                .filter(route -> route.size() > 2)
+                .map(flightScheduleMapper::toDTOList)
+                .collect(Collectors.toList());
+    }
+
+
+    private void findRoutes(String currentCity, String finalCity, List<FlightSchedule> currentRoute,
+                            List<List<FlightSchedule>> possibleRoutes, Set<String> visitedCity, int remainingStops) {
+        if (remainingStops < 0) {
+            return;
+        }
+
+        visitedCity.add(currentCity);
+
+        LocalDateTime previousArrival = null;
+        if (!currentRoute.isEmpty()) {
+            previousArrival = currentRoute.getLast().getArrivalDateTime();
+        }
+
+        List<FlightSchedule> nextFlights;
+        if (previousArrival != null) {
+            LocalDateTime min = previousArrival.plusHours(1);
+            LocalDateTime max = previousArrival.plusHours(2);
+            nextFlights = flightScheduleRepository.findByOriginAirportAndTimeConstraints(currentCity, min, max);
+        } else {
+            nextFlights = flightScheduleRepository.findByOriginAirport_City(currentCity);
+        }
+
+        for (FlightSchedule flight : nextFlights) {
+            int legCount = legRepository.countByFlightSchedule_FlightNumber(flight.getFlightNumber());
+
+            if (visitedCity.contains(flight.getDestinationAirport().getCity())) {
+                continue;
+            }
+
+            List<FlightSchedule> newRoute = new ArrayList<>(currentRoute);
+            newRoute.add(flight);
+
+            if (flight.getDestinationAirport().getCity().equals(finalCity)) {
+                possibleRoutes.add(newRoute);
+            } else {
+                findRoutes(flight.getDestinationAirport().getCity(), finalCity, newRoute, possibleRoutes, new HashSet<>(visitedCity), remainingStops - legCount);
+            }
+        }
     }
 
     private HashMap<TravelClassCode, Integer> getAvailableSeats(HashMap<TravelClassCode, Integer> flightAvailableSeats, HashMap<TravelClassCode, Integer> returnFlightAvailableSeats) {

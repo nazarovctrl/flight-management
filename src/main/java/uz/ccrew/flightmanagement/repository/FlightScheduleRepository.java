@@ -11,10 +11,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Repository
 public interface FlightScheduleRepository extends BasicRepository<FlightSchedule, Long> {
-
     @Query("""
             select distinct new uz.ccrew.flightmanagement.dto.flightSchedule.FlightScheduleReportDTO(fs.flightNumber,fs.departureDateTime,fs.arrivalDateTime,l.actualDepartureTime,l.actualArrivalTime)
               from FlightSchedule fs
@@ -86,4 +86,14 @@ public interface FlightScheduleRepository extends BasicRepository<FlightSchedule
                               and CURRENT_TIMESTAMP between c.id.validFromDate and c.validToDate)
              """)
     List<RoundTrip> findRoundTrip(String departureCity, String s1, LocalDate localDate, LocalDate localDate1);
+
+    @Query("""
+            select w
+              from FlightSchedule w
+             where w.originAirport.city = ?1
+               and w.departureDateTime between ?2 and ?3
+            """)
+    List<FlightSchedule> findByOriginAirportAndTimeConstraints(String city, LocalDateTime minDepartureDate, LocalDateTime maxDepartureDate);
+
+    List<FlightSchedule> findByOriginAirport_City(String city);
 }
