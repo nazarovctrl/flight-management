@@ -93,10 +93,13 @@ Then, execute the commands in the specified order.
    To run the application, make sure you have Java 21 installed
 
     ```sh
-    java -jar target/flight-management-0.0.1.jar
+    java -jar target/flight-management-1.0.jar
     ```
 5. **Link for the application**
 
    http://localhost/swagger-ui/index.html#/
 
 </details>
+
+## Link to documentation
+ https://dour-scilla-281.notion.site/flight-management-app-104ba012c4438024a566fb971f3a5159
